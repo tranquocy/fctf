@@ -31,12 +31,13 @@
                 <a class="navbar-brand" href="{{ url_for('index') }}">Framgia CTF</a>
               </div>
               <div class="navbar-collapse collapse">
+                {% if g.user.is_authenticated() %}
                 <ul class="nav navbar-nav">
                   <li class="active"><a href="{{ url_for('index') }}">Home</a></li>
                   <li><a href="#about">Tasks</a></li>
-                  <li><a href="#contact">Teams</a></li>
-                  <li><a href="#contact">Users</a></li>
+                  <li><a href="{{ url_for('all_team') }}">Teams</a></li>
                 </ul>
+                {% endif %}
                 <ul class="nav navbar-nav navbar-right">
                   {% if g.user.is_authenticated() %}
                   <li class="dropdown">

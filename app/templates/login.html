@@ -7,7 +7,7 @@
 {% for message in form.password.errors %}
 <div class="alert alert-danger">{{ message }}</div>
 {% endfor %}
-<form class="form-signin" role="form" action="{{ url_for('login') }}" method="POST">
+<form class="form-signin" role="form" action="" method="POST">
     <h2 class="form-signin-heading">Please login</h2>
     <input name="username" type="text" class="form-control" placeholder="Username" required autofocus>
     <input name="password" type="password" class="form-control" placeholder="Password" required>

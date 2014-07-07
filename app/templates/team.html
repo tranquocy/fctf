@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row clearfix">
+
+<div class="row">
+  <div class="col-md-8">
+      <h1>{{ team.name }}</h1>
+      <h6>{{ team.description }}</h6>
+      <br>
+      <table class="table table-striped">
+        <tr>
+          <td><h6>Members:</h6></td>
+          <td>
+          {% for user in team.members %}
+          <span class="glyphicon glyphicon-user"></span> <a href="{{ url_for('profile', user_id=user.id) }}">{{ user.name }}</a><br>
+          {% endfor %}
+          </td>
+        </tr>
+        {% if g.user in team.members %}
+        <tr>
+          <td><h6>Invite Code:</h6></td>
+          <td>{{ team.invite_code }}</td>
+        </tr>
+        {% endif %}
+      </table>
+  </div>
+</div>
+{% endblock %}

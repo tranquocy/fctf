@@ -28,7 +28,7 @@
       </div>
       <div class="panel-body">
         {% if user.team %}
-          {{ user.team.name }}
+          <a href="{{ url_for('team', team_id=user.team.id) }}">{{ user.team.name }}</a>
         {% else %}
           {% if g.user.id == user.id %}
           You not belong to any team.<br>

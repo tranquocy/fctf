@@ -1,6 +1,6 @@
 from flask_wtf import Form
 from wtforms import TextField, SubmitField, validators, PasswordField
-from models import User
+from models import User, Team
 
 class SignupForm(Form):
     username = TextField('Username',  [
@@ -57,3 +57,25 @@ class LoginForm(Form):
         else:
             self.password.errors.append('Invalid e-mail or password')
             return False
+
+class CreateTeamForm(Form):
+    name = TextField('Name',  [
+        validators.Required('Please enter your team name.'),
+        validators.Length(max=30, message='Team name is at most 30 characters.'),
+    ])
+    description = TextField('Description')
+    submit = SubmitField('Create team')
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+
+    def validate(self):
+        if not Form.validate(self):
+            return False
+    
+        team = Team.query.filter_by(name = self.name.data).first()
+        if team:
+            self.name.errors.append('That team name is already taken.')
+            return False
+        else:
+            return True

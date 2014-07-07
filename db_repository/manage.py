@@ -2,4 +2,4 @@
 from migrate.versioning.shell import main
 
 if __name__ == '__main__':
-    main(six='<module 'six' from '/home/vigo/fctf/flask/local/lib/python2.7/site-packages/six.pyc'>')
+    main(url='mysql://ctf_admin:ctf_admin@localhost/ctf', debug='False', six="<module 'six' from '/home/vigo/fctf/flask/local/lib/python2.7/site-packages/six.pyc'>", repository='../db_repository/')

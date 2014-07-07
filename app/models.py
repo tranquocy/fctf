@@ -1,4 +1,6 @@
 import hashlib
+import string
+import random
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -50,9 +52,16 @@ class User(db.Model):
 class Team(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(30))
+    name = db.Column(db.String(30), unique = True, nullable = False)
     description = db.Column(db.Text)
+    invite_code = db.Column(db.String(16), unique = True, nullable = False)
     members = db.relationship('User', backref = 'team', lazy = 'dynamic')
 
     def __repr__(self):
         return '<Team %r>' % (self.name)
+
+    def __init__(self, name, description):
+        charset = string.ascii_letters + string.digits
+        self.name = name
+        self.description = description
+        self.invite_code = ''.join(random.choice(charset) for _ in range(32))
