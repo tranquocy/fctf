@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, abort, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from forms import LoginForm, SignupForm, CreateTeamForm
+from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm
 from wtforms.ext.sqlalchemy.orm import model_form
 from flask_wtf import Form
 from models import User, Team, ROLE_USER, ROLE_ADMIN
@@ -64,8 +64,15 @@ def logout():
 @app.route('/profile/<int:user_id>', methods = ['GET', 'POST'])
 @login_required
 def profile(user_id = None):
-    if user_id is None:
-        return render_template('profile.html', user=g.user)
+    if user_id is None or user_id == g.user.id:
+        form = JoinTeamForm()
+        if form.validate_on_submit() and not g.user.team:
+            team = Team.query.filter_by(invite_code = form.invite_code.data).first()
+            g.user.team = team
+            db.session.add(g.user)
+            db.session.commit()
+            flash("You've joined team <strong>%s</strong> !" % team.name, category='success')
+        return render_template('profile.html', user=g.user, form=form)
     else:
         user = User.query.get(user_id)
         if user:
@@ -113,10 +120,8 @@ def create_team():
 @app.route('/team/<int:team_id>', methods = ['GET', 'POST'])
 @login_required
 def team(team_id = None):
-    print team_id
     if team_id is None:
         if g.user.team:
-            print 1
             return render_template('team.html', team=g.user.team)
         else:
             return redirect(url_for('profile'))

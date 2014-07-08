@@ -72,10 +72,31 @@ class CreateTeamForm(Form):
     def validate(self):
         if not Form.validate(self):
             return False
-    
+
         team = Team.query.filter_by(name = self.name.data).first()
         if team:
             self.name.errors.append('That team name is already taken.')
+            return False
+        else:
+            return True
+
+class JoinTeamForm(Form):
+    invite_code = TextField('Invite Code', [
+        validators.Required('Please enter invite code'),
+        validators.Length(max=32, message='Invite code is at most 32 characters.'),
+    ])
+    submit = SubmitField('Join Team')
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+
+    def validate(self):
+        if not Form.validate(self):
+            return False
+
+        team = Team.query.filter_by(invite_code = self.invite_code.data).first()
+        if not team:
+            self.invite_code.errors.append('The invite code is invalid.')
             return False
         else:
             return True
