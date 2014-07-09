@@ -61,7 +61,11 @@ class Team(db.Model):
         return '<Team %r>' % (self.name)
 
     def __init__(self, name, description):
-        charset = string.ascii_letters + string.digits
         self.name = name
         self.description = description
-        self.invite_code = ''.join(random.choice(charset) for _ in range(32))
+        self.invite_code = self.genInviteCode()
+
+    @staticmethod
+    def genInviteCode(object):
+        charset = string.ascii_letters + string.digits
+        return ''.join(random.choice(charset) for _ in range(32))

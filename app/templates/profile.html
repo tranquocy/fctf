@@ -29,6 +29,14 @@
       <div class="panel-body">
         {% if user.team %}
           <a href="{{ url_for('team', team_id=user.team.id) }}">{{ user.team.name }}</a>
+          <br>
+          <br>
+          <form role="form" action="" method="POST">
+            <input name="team_id" type="hidden" value="{{ user.team.id }}">
+            {{ leave_team_form.hidden_tag() }}
+            <br>
+            <button class="btn btn-primary" type="submit">Leave Team</button>
+          </form>
         {% else %}
           {% if g.user.id == user.id %}
           You're not belong to any team.
@@ -53,9 +61,9 @@
       </div>
       <div class="panel-body">
         <form role="form" action="" method="POST">
-            <label>{{ form.invite_code.label }}</label>
+            <label>{{ join_team_form.invite_code.label }}</label>
             <input name="invite_code" type="text" class="form-control" required autofocus>
-            {{ form.hidden_tag() }}
+            {{ join_team_form.hidden_tag() }}
             <br>
             <button class="btn btn-primary" type="submit">Join Team</button>
         </form>

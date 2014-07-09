@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import TextField, SubmitField, validators, PasswordField
+from wtforms import TextField, SubmitField, validators, PasswordField, HiddenField
 from models import User, Team
 
 class SignupForm(Form):
@@ -97,6 +97,24 @@ class JoinTeamForm(Form):
         team = Team.query.filter_by(invite_code = self.invite_code.data).first()
         if not team:
             self.invite_code.errors.append('The invite code is invalid.')
+            return False
+        else:
+            return True
+
+class LeaveTeamForm(Form):
+    team_id = HiddenField('team_id')
+    submit = SubmitField('Join Team')
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+
+    def validate(self):
+        if not Form.validate(self):
+            return False
+
+        print 1
+        team = Team.query.get(self.team_id.data)
+        if not team:
             return False
         else:
             return True
