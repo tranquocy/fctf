@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row clearfix">
+
+<div class="row">
+  <div class="col-md-12">
+    <h1>All Tasks</h1>
+    <br>
+    {% for task in tasks %}
+    {% if task.is_open %}
+    <a class="btn btn-default btn-large" href="{{ url_for('task', task_id=task.id)}}">{{ task.name }}&nbsp;&nbsp;&nbsp;<span class="label label-primary">{{ task.point }}pt</span></a>
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

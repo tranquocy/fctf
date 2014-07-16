@@ -69,3 +69,35 @@ class Team(db.Model):
     def genInviteCode(object):
         charset = string.ascii_letters + string.digits
         return ''.join(random.choice(charset) for _ in range(32))
+
+
+class Task(db.Model):
+    __tablename__ = 'tasks'
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(255))
+    description = db.Column(db.Text)
+    point = db.Column(db.Integer, default=0)
+    flag = db.Column(db.String(255))
+    is_open = db.Column(db.Boolean)
+    hints = db.relationship('Hint', backref = 'task', lazy = 'dynamic')
+
+    def __repr__(self):
+        return '<Task %r>' % (self.name)
+
+    def __init__(self, name='', description='', flag='', point = 0, is_open=False):
+        self.name = name
+        self.description = description
+        self.point = point
+        self.flag = flag
+        self.is_open = is_open
+
+
+class Hint(db.Model):
+    __tablename__ = 'hints'
+    id = db.Column(db.Integer, primary_key = True)
+    description = db.Column(db.Text)
+    is_open = db.Column(db.Boolean)
+    task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
+
+    def __repr__(self):
+        return '<Hint %r>' % (self.task)

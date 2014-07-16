@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row clearfix">
+
+<div class="row">
+  <div class="col-md-8">
+      <h1>{{ task.name }} ({{ task.point }}pt)</h1>
+      <br>
+      <div>
+      {{ task.description }}
+      </div>
+      </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row clearfix">
+<div class="row">
+  <div class="col-md-12">
+    <h1>All Tasks</h1>
+      <br>
+      <table class="table table-borderd">
+        <thead>
+          <tr>
+            <td>Name</td>
+            <td>Open?</td>
+            <td>Point</td>
+            <td>Solved Users</td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in tasks %}
+          <tr>
+            <td><a href="{{ url_for('task', task_id=task.id)}}">{{ task.name }}</td>
+            <td>{{ task.is_open }}</td>
+            <td>{{ task.point }}</td>
+            <td></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+      <h1>All Teams</h1>
+      <br>
+      <table class="table table-borderd">
+        <thead>
+          <tr>
+            <td>Name</td>
+            <td>Description</td>
+            <td>Number of members</td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for team in teams %}
+          <tr>
+            <td><a href="{{ url_for('team', team_id=team.id)}}">{{ team.name }}</td>
+            <td>{{ team.description }}</td>
+            <td>{{ team.members.count() }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
+  <div class="col-md-6">
+    <h1>All Users</h1>
+    <br>
+    {% for user in users %}
+      <span class="profile">
+        <img src="{{ user.getAvatar(24) }}"/> <a href="{{ url_for('profile', user_id=user.id) }}">{{ user.name }}</a>
+        <div class="info">
+          User name: {{ user.username }} <br>
+          Email: {{ user.email }} <br>
+          {% if user.team %}
+          Team: {{ user.team.name }} <br>
+          {% endif %}
+        </div>
+      </span>
+    {% endfor %}
+    <script type="text/javascript">
+    $( document ).ready(function() {
+      $(".profile").each(function(index, el) {
+        $(el).children(".info").hide();
+      });
+    });
+    $(".profile").each(function(index, el) {
+      $(el).hover(function() {
+        $(this).children(".info").show();
+      }, function() {
+        $(this).children(".info").hide();
+      });
+    });
+    </script>
+  </div>
+</div>
+{% endblock %}

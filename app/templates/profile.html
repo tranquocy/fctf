@@ -27,7 +27,7 @@
         <h3 class="panel-title">Team</h3>
       </div>
       <div class="panel-body">
-        {% if user.team %}
+        {% if user.team and g.user.id == user.id %}
           <a href="{{ url_for('team', team_id=user.team.id) }}">{{ user.team.name }}</a>
           <br>
           <br>

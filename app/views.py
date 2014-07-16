@@ -1,10 +1,10 @@
 from flask import render_template, flash, redirect, url_for, request, abort, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm
+from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm
 from wtforms.ext.sqlalchemy.orm import model_form
 from flask_wtf import Form
-from models import User, Team, ROLE_USER, ROLE_ADMIN
+from models import User, Team, Task, Hint, ROLE_USER, ROLE_ADMIN
 
 @app.before_request
 def before_request():
@@ -34,7 +34,7 @@ def signup():
         db.session.commit()
         login_user(new_user)
         flash('Signed up successfully.', category='success')
-        redirect(url_for('profile'))
+        return redirect(url_for('profile'))
     return render_template('signup.html', form=form)
 
 
@@ -130,6 +130,28 @@ def create_team():
     return render_template('create_team.html', form=form)
 
 
+@app.route('/task/create', methods = ['GET', 'POST'])
+@login_required
+def create_task():
+    if g.user.role != ROLE_ADMIN:
+        return redirect(url_for('index'))
+
+    form = CreateTaskForm()
+    if form.validate_on_submit():
+        new_task = Task(
+            name=form.name.data,
+            description=form.description.data,
+            point=form.point.data,
+            flag=form.flag.data,
+            is_open=form.is_open.data
+        )
+        db.session.add(new_task)
+        db.session.commit()
+        flash('Task created successfully.', category='success')
+        return redirect(url_for('admin'))
+    return render_template('create_task.html', form=form)
+
+
 @app.route('/team', methods = ['GET', 'POST'])
 @app.route('/team/<int:team_id>', methods = ['GET', 'POST'])
 @login_required
@@ -147,11 +169,38 @@ def team(team_id = None):
         abort(404)
 
 
-@app.route('/all_team', methods = ['GET', 'POST'])
+@app.route('/team/all', methods = ['GET', 'POST'])
 @login_required
 def all_team():
     teams = Team.query.all()
     return render_template('all_team.html', teams=teams)
+
+
+@app.route('/task/all', methods = ['GET', 'POST'])
+@login_required
+def all_task():
+    tasks = Task.query.all()
+    return render_template('all_task.html', tasks=tasks)
+
+
+@app.route('/task', methods = ['GET', 'POST'])
+@app.route('/task/<int:task_id>', methods = ['GET', 'POST'])
+@login_required
+def task(task_id = None):
+    task = Task.query.get(task_id)
+    if task:
+        return render_template('task.html', task=task)
+    else:
+        abort(404)
+
+
+@app.route('/admin', methods = ['GET', 'POST'])
+@login_required
+def admin():
+    teams = Team.query.all()
+    users = User.query.all()
+    tasks = Task.query.all()
+    return render_template('admin.html', teams=teams, users=users, tasks=tasks)
 
 
 @app.errorhandler(404)

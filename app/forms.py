@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import TextField, SubmitField, validators, PasswordField, HiddenField
+from wtforms import TextField, SubmitField, validators, PasswordField, HiddenField, BooleanField, IntegerField
 from models import User, Team
 
 class SignupForm(Form):
@@ -112,9 +112,22 @@ class LeaveTeamForm(Form):
         if not Form.validate(self):
             return False
 
-        print 1
         team = Team.query.get(self.team_id.data)
         if not team:
             return False
         else:
             return True
+
+class CreateTaskForm(Form):
+    name = TextField('Name',  [
+        validators.Required('Please enter task name.'),
+        validators.Length(max=255, message='Task name is at most 255 characters.'),
+    ])
+    point = IntegerField('Point')
+    description = TextField('Description')
+    flag = TextField('Flag')
+    is_open = BooleanField('Is Open')
+    submit = SubmitField('Create task')
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
