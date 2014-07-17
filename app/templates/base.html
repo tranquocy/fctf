@@ -15,7 +15,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Latest compiled and minified JavaScript -->
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/jquery-1.11.0.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     {% block css %}{% endblock %}
     {% block js %}{% endblock %}
@@ -36,6 +36,9 @@
                   <li><a href="{{ url_for('index') }}">Home</a></li>
                   <li><a href="{{ url_for('all_task') }}">Tasks</a></li>
                   <li><a href="{{ url_for('all_team') }}">Teams</a></li>
+                  {% if g.user.is_admin() %}
+                  <li><a href="{{ url_for('admin') }}">Admin</a></li>
+                  {% endif %}
                 </ul>
                 {% endif %}
                 <ul class="nav navbar-nav navbar-right">

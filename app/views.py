@@ -1,10 +1,10 @@
 from flask import render_template, flash, redirect, url_for, request, abort, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm
+from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm
 from wtforms.ext.sqlalchemy.orm import model_form
 from flask_wtf import Form
-from models import User, Team, Task, Hint, ROLE_USER, ROLE_ADMIN
+from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_USER, ROLE_ADMIN
 
 @app.before_request
 def before_request():
@@ -183,13 +183,51 @@ def all_task():
     return render_template('all_task.html', tasks=tasks)
 
 
-@app.route('/task', methods = ['GET', 'POST'])
 @app.route('/task/<int:task_id>', methods = ['GET', 'POST'])
 @login_required
 def task(task_id = None):
     task = Task.query.get(task_id)
     if task:
-        return render_template('task.html', task=task)
+        form = SubmitFlagForm()
+        if form.validate_on_submit():
+            log_data = SubmitLogs(g.user, task, form.flag.data)
+            db.session.add(log_data)
+            db.session.commit()
+            task = Task.query.get(form.task_id.data)
+            if form.flag.data == task.flag:
+                if g.user.team and UserSolved.query.filter_by(team_id = g.user.team.id, task_id = task.id).first():
+                    flash('Your team-mate already solved this task.', category='success')
+                    return redirect(url_for('task', task_id=task.id))
+                elif UserSolved.query.filter_by(user_id = g.user.id, task_id = task.id).first():
+                    flash('Your already solved this task.', category='success')
+                    return redirect(url_for('task', task_id=task.id))
+                else:
+                    solved_data = UserSolved(g.user, task)
+                    db.session.add(solved_data)
+                    db.session.commit()
+                    flash('Correct Flag. Congrats!', category='success')
+                    return redirect(url_for('task', task_id=task.id))
+            else:
+                flash('Wrong Flag. Bad luck!', category='danger')
+        return render_template('task.html', task=task, form=form)
+    else:
+        abort(404)
+
+
+@app.route('/task/<int:task_id>/<string:toggle>', methods = ['GET', 'POST'])
+@login_required
+def open_task(task_id = None, toggle = ''):
+    if g.user.role != ROLE_ADMIN:
+        return redirect(url_for('index'))
+    task = Task.query.get(task_id)
+    if task:
+        if toggle not in ['open', 'close']:
+            return redirect(url_for('index'))
+        else:
+            task.is_open = True if toggle == 'open' else False
+            db.session.add(task)
+            db.session.commit()
+            return redirect(url_for('admin'))
     else:
         abort(404)
 
@@ -197,10 +235,21 @@ def task(task_id = None):
 @app.route('/admin', methods = ['GET', 'POST'])
 @login_required
 def admin():
+    if g.user.role != ROLE_ADMIN:
+        return redirect(url_for('index'))
     teams = Team.query.all()
     users = User.query.all()
     tasks = Task.query.all()
     return render_template('admin.html', teams=teams, users=users, tasks=tasks)
+
+
+@app.route('/admin/log_submit/<int:page>', methods = ['GET', 'POST'])
+@login_required
+def log_submit(page = 1):
+    if g.user.role != ROLE_ADMIN:
+        return redirect(url_for('index'))
+    logs = SubmitLogs.query.paginate(page, per_page=100, error_out=True)
+    return render_template('log_submit.html', logs=logs)
 
 
 @app.errorhandler(404)

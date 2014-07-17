@@ -1,6 +1,6 @@
 from flask_wtf import Form
 from wtforms import TextField, SubmitField, validators, PasswordField, HiddenField, BooleanField, IntegerField
-from models import User, Team
+from models import User, Team, Task
 
 class SignupForm(Form):
     username = TextField('Username',  [
@@ -131,3 +131,24 @@ class CreateTaskForm(Form):
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
+
+class SubmitFlagForm(Form):
+    flag = TextField('Flag',  [
+        validators.Required('Please enter the flag'),
+        validators.Length(max=255, message='Flag is at most 255 characters.'),
+    ])
+    task_id = HiddenField('task_id')
+    submit = SubmitField('Submit')
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+
+    def validate(self):
+        if not Form.validate(self):
+            return False
+
+        task = Task.query.get(self.task_id.data)
+        if not task or not task.is_open:
+            self.task_id.errors.append('The submitted task is invalid.')
+        else:
+            return True

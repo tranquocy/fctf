@@ -1,6 +1,7 @@
 import hashlib
 import string
 import random
+import datetime
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -16,6 +17,7 @@ class User(db.Model):
     email = db.Column(db.String(45))
     role = db.Column(db.SmallInteger, default = ROLE_USER)
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    solved_tasks = db.relationship('Task', secondary='user_solved', backref='solved_users')
 
     def __init__(self, username, email, password):
         self.username = username
@@ -48,6 +50,20 @@ class User(db.Model):
         email_hash = hashlib.md5(self.email).hexdigest()
         return "http://www.gravatar.com/avatar/%s?d=mm&s=%d" % (email_hash, size)
 
+    def is_solved_task(self, task):
+        if self in task.solved_users:
+            return True
+        if self.team and self.team in task.solved_teams:
+            return True
+
+        return False
+
+    def is_admin(self):
+        return self.role == ROLE_ADMIN
+
+    def is_normal_user(self):
+        return self.role == ROLE_USER
+
 
 class Team(db.Model):
     __tablename__ = 'teams'
@@ -56,6 +72,7 @@ class Team(db.Model):
     description = db.Column(db.Text)
     invite_code = db.Column(db.String(16), unique = True, nullable = False)
     members = db.relationship('User', backref = 'team', lazy = 'dynamic')
+    solved_tasks = db.relationship('Task', secondary='user_solved', backref='solved_teams')
 
     def __repr__(self):
         return '<Team %r>' % (self.name)
@@ -66,7 +83,7 @@ class Team(db.Model):
         self.invite_code = self.genInviteCode()
 
     @staticmethod
-    def genInviteCode(object):
+    def genInviteCode():
         charset = string.ascii_letters + string.digits
         return ''.join(random.choice(charset) for _ in range(32))
 
@@ -101,3 +118,37 @@ class Hint(db.Model):
 
     def __repr__(self):
         return '<Hint %r>' % (self.task)
+
+class UserSolved(db.Model):
+    __tablename__ = 'user_solved'
+    id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    point = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime)
+
+    def __init__(self, user, task):
+        self.user_id = user.id
+        self.team_id = user.team.id if user.team else None
+        self.task_id = task.id
+        self.point = task.point
+        self.created_at = datetime.datetime.now()
+
+class SubmitLogs(db.Model):
+    __tablename__ = 'submit_logs'
+    id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    flag = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime)
+    user = db.relationship('User', backref=db.backref('log_submit', lazy = 'dynamic'))
+    task = db.relationship('Task', backref=db.backref('log_submit', lazy = 'dynamic'))
+
+    def __init__(self, user, task, flag):
+        self.user_id = user.id
+        self.team_id = user.team.id if user.team else None
+        self.task_id = task.id
+        self.flag = flag
+        self.created_at = datetime.datetime.now()
