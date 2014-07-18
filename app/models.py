@@ -4,9 +4,19 @@ import random
 import datetime
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.orm import exc
+from werkzeug.exceptions import abort
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
+
+def get_object_or_404(model, *criterion):
+    """ Snippet byVitaliy Shishorin, http://flask.pocoo.org/snippets/115/"""
+    try:
+        return model.query.filter(*criterion).one()
+    except exc.NoResultFound, exc.MultipleResultsFound:
+        abort(404)
+
 
 class User(db.Model):
     __tablename__ = 'users'

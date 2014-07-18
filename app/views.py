@@ -4,7 +4,7 @@ from app import app, db, lm
 from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm
 from wtforms.ext.sqlalchemy.orm import model_form
 from flask_wtf import Form
-from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_USER, ROLE_ADMIN
+from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404
 
 @app.before_request
 def before_request():
@@ -216,7 +216,7 @@ def task(task_id = None):
 
 @app.route('/task/<int:task_id>/<string:toggle>', methods = ['GET', 'POST'])
 @login_required
-def open_task(task_id = None, toggle = ''):
+def toggle_task(task_id = None, toggle = ''):
     if g.user.role != ROLE_ADMIN:
         return redirect(url_for('index'))
     task = Task.query.get(task_id)
@@ -230,6 +230,42 @@ def open_task(task_id = None, toggle = ''):
             return redirect(url_for('admin'))
     else:
         abort(404)
+
+
+@app.route('/task/<int:task_id>/edit', methods = ['GET', 'POST'])
+@login_required
+def edit_task(task_id = None):
+    if g.user.role != ROLE_ADMIN:
+        return redirect(url_for('index'))
+    model = Task.query.get(task_id)
+    if not model:
+        abort(404)
+    TaskForm = model_form(Task, db_session=db.session, base_class=Form)
+    form = TaskForm(request.form, model)
+
+    if form.validate_on_submit():
+        form.populate_obj(model)
+        db.session.add(model)
+        db.session.commit()
+        flash('Task updated', category='success')
+        return redirect(url_for('admin'))
+    return render_template('edit_task.html', task=model, form=form)
+
+
+@app.route('/task/<int:task_id>/delete', methods = ['GET', 'POST'])
+@login_required
+def confirm_delete_task(task_id = None):
+    if g.user.role != ROLE_ADMIN:
+        return redirect(url_for('index'))
+    task = get_object_or_404(Task, Task.id == task_id)
+    print task
+    if request.method == 'POST':
+        db.session.delete(task)
+        db.session.commit()
+        flash('Task deleted', category='success')
+        return redirect(url_for('admin'))
+    return render_template('confirm_delete_task.html', task=task)
+
 
 
 @app.route('/admin', methods = ['GET', 'POST'])

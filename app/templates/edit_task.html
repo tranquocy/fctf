@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+{% for message in form.name.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+{% for message in form.point.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+{% for message in form.flag.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+{% for message in form.description.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+{% for message in form.is_open.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+<div class="row">
+  <div class="col-md-6">
+    <form class="well" role="form" action="" method="POST">
+        <h2>Edit Task</h2>
+        <label>{{ form.name.label }}</label>
+        <input name="name" type="text" class="form-control" required autofocus value="{{ form.name.data }}">
+        <br>
+        <label>{{ form.point.label }}</label><br>
+        <input  name="point" type="text" value="{{ form.point.data }}">
+        <br>
+        <label>{{ form.flag.label }}</label>
+        <input  name="flag" type="text" class="form-control" value="{{ form.flag.data }}">
+        <br>
+        <label>{{ form.description.label }}</label>
+        <textarea id="description" name="description" type="text" class="form-control" rows="10" cols="50">{{ form.description.data }}</textarea>
+        <br>
+        <label>{{ form.is_open.label }}</label>
+        {{ form.is_open }}
+        {{ form.hidden_tag() }}
+        <br>
+        <button class="btn btn-lg btn-primary" type="submit">Edit</button>
+    </form>
+  </div>
+  <h3>Preview</h3>
+  <div class="col-md-6 well">
+    <div id="preview">
+    </div>
+  </div>
+  <script type="text/javascript">
+  try {
+      $("#description").keyup(function(event) {
+          $("#preview").html($("#description").val());
+      });
+  } catch(e) {
+    alert(e);
+  }
+  </script>
+</div>
+{% endblock %}

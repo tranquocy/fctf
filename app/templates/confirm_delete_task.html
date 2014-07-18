@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Delete Task</h2>
+<form action="" method="post">
+    <p>Are you sure you want to delete task <a href="{{ url_for('task', task_id=task.id) }}">"{{ task.name }}"</a> ?</p>
+    <input type="submit" class="btn btn-primary" value="Confirm" />
+</form>
+{% endblock %}
