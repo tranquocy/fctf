@@ -33,11 +33,11 @@
               <div class="navbar-collapse collapse">
                 {% if g.user.is_authenticated() %}
                 <ul class="nav navbar-nav">
-                  <li><a href="{{ url_for('index') }}">Home</a></li>
-                  <li><a href="{{ url_for('all_task') }}">Tasks</a></li>
-                  <li><a href="{{ url_for('all_team') }}">Teams</a></li>
+                  <li {% if request.path == url_for('index') %}class="active"{% endif %}><a href="{{ url_for('index') }}">Home</a></li>
+                  <li {% if request.path == url_for('all_task') %}class="active"{% endif %}><a href="{{ url_for('all_task') }}">Tasks</a></li>
+                  <li {% if request.path == url_for('all_team') %}class="active"{% endif %}><a href="{{ url_for('all_team') }}">Teams</a></li>
                   {% if g.user.is_admin() %}
-                  <li><a href="{{ url_for('admin') }}">Admin</a></li>
+                  <li {% if request.path == url_for('admin') %}class="active"{% endif %}><a href="{{ url_for('admin') }}">Admin</a></li>
                   {% endif %}
                 </ul>
                 {% endif %}

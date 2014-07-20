@@ -129,6 +129,12 @@ class Hint(db.Model):
     def __repr__(self):
         return '<Hint %r>' % (self.task)
 
+    def __init__(self, description='', is_open=False, task=None):
+        self.description = description
+        self.is_open = is_open
+        self.task = task
+
+
 class UserSolved(db.Model):
     __tablename__ = 'user_solved'
     id = db.Column(db.Integer, primary_key = True)

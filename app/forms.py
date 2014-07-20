@@ -1,6 +1,7 @@
 from flask_wtf import Form
 from wtforms import TextField, SubmitField, validators, PasswordField, HiddenField, BooleanField, IntegerField
 from models import User, Team, Task
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 class SignupForm(Form):
     username = TextField('Username',  [
@@ -152,3 +153,14 @@ class SubmitFlagForm(Form):
             self.task_id.errors.append('The submitted task is invalid.')
         else:
             return True
+
+def task_query():
+    return Task.query.all()
+
+class CreateHintForm(Form):
+    description = TextField('Description')
+    is_open = BooleanField('Is Open')
+    task = QuerySelectField(query_factory=task_query, get_label='name')
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    <form class="well" role="form" action="" method="POST">
+        <h2>Edit Hint</h2>
+        <br>
+        <label>{{ form.description.label }}</label>
+        <textarea  name="description" type="text" class="form-control" rows="4" cols="50">{{ form.description.data }}</textarea>
+        <br>
+        <label>Task</label>
+        {{ form.task }}
+        <br>
+        <label>Is Open</label>
+        {{ form.is_open }}
+        <br>
+        {{ form.hidden_tag() }}
+        <br>
+        <button class="btn btn-lg btn-primary" type="submit">Edit</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+

@@ -19,6 +19,15 @@
 <br>
 <br>
 <br>
+{% for hint in task.hints %}
+{% if g.user.is_admin() or hint.is_open %}
+{% if g.user.is_admin() %}
+<a class="label label-primary" href="{{ url_for('edit_hint', hint_id=hint.id) }}">Edit</a>
+{% if hint.is_open %}<span class="label label-success">Opened</span>{% else %}<span class="label label-danger">Closed</span>{% endif %}
+{% endif %}
+<b>Hint:</b> {{ hint.description|safe }}<br>
+{% endif %}
+{% endfor %}
 <div class="row">
   <div class="col-md-12">
     {% if g.user in task.solved_users %}
