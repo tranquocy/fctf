@@ -19,6 +19,9 @@
 <br>
 <br>
 <br>
+{% if g.user.is_admin() %}
+<a class="label label-info" href="{{ url_for('create_hint') }}">New Hint</a><br><br>
+{% endif %}
 {% for hint in task.hints %}
 {% if g.user.is_admin() or hint.is_open %}
 {% if g.user.is_admin() %}

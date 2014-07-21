@@ -20,7 +20,11 @@
           <tr>
             <td><img src="{{ log.user.getAvatar(24) }}"/> <a href="{{ url_for('profile', user_id=log.user.id) }}">{{ log.user.name }}</a></td>
             <td>{{ log.user.team.name }}</td>
+            {% if log.task %}
             <td><a href="{{ url_for('task', task_id=log.task.id)}}">{{ log.task.name }}</td>
+            {% else %}
+            <td>&lt;deleted task&gt;</td>
+            {%  endif %}
             <td>{{ log.flag }}</td>
             <td>{{ log.created_at }}</td>
           </tr>
@@ -29,9 +33,9 @@
       </table>
   </div>
   <ul class="pager">
-    <li>{% if logs.has_prev %}<a href="{{ url_for('log_submit', page = logs.prev_num) }}"><< Newer logs</a>{% else %}<< Newer logs{% endif %}</li>
+    <li>{% if logs.has_prev %}<a href="{{ url_for('log_submit', page = logs.prev_num) }}">&lt;&lt; Newer logs</a>{% else %}&lt;&lt; Newer logs{% endif %}</li>
     <li><a href="#">Page: {{ logs.page }}</a></li>
-    <li>{% if logs.has_next %}<a href="{{ url_for('log_submit', page = logs.next_num) }}">Older logs >></a>{% else %}Older logs >>{% endif %}</li>
+    <li>{% if logs.has_next %}<a href="{{ url_for('log_submit', page = logs.next_num) }}">Older logs &gt;&gt;</a>{% else %}Older logs &gt;&gt;{% endif %}</li>
   </ul>
 </div>
 {% endblock %}
