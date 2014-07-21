@@ -36,6 +36,7 @@
                   <li {% if request.path == url_for('index') %}class="active"{% endif %}><a href="{{ url_for('index') }}">Home</a></li>
                   <li {% if request.path == url_for('all_task') %}class="active"{% endif %}><a href="{{ url_for('all_task') }}">Tasks</a></li>
                   <li {% if request.path == url_for('all_team') %}class="active"{% endif %}><a href="{{ url_for('all_team') }}">Teams</a></li>
+                  <li {% if request.path == url_for('scoreboard') %}class="active"{% endif %}><a href="{{ url_for('scoreboard') }}">Scoreboard</a></li>
                   {% if g.user.is_admin() %}
                   <li {% if request.path == url_for('admin') %}class="active"{% endif %}><a href="{{ url_for('admin') }}">Admin</a></li>
                   {% endif %}

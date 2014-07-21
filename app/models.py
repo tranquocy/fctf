@@ -5,6 +5,7 @@ import datetime
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import exc
+from sqlalchemy.sql import func
 from werkzeug.exceptions import abort
 
 ROLE_USER = 0
@@ -150,6 +151,22 @@ class UserSolved(db.Model):
         self.task_id = task.id
         self.point = task.point
         self.created_at = datetime.datetime.now()
+
+    @staticmethod
+    def get_users_score():
+        raw_data = UserSolved.query.with_entities(func.sum(UserSolved.point), \
+            UserSolved.user_id).group_by(UserSolved.user_id).all()
+        return [(get_object_or_404(User, User.id == user_id), total_score) for total_score, user_id in raw_data]
+
+
+    @staticmethod
+    def get_teams_score():
+        raw_data = UserSolved.query.with_entities(func.sum(UserSolved.point), \
+            UserSolved.team_id).group_by(UserSolved.team_id).all()
+        return [(get_object_or_404(Team, Team.id == team_id), total_score) \
+            for total_score, team_id in raw_data if team_id
+        ]
+
 
 class SubmitLogs(db.Model):
     __tablename__ = 'submit_logs'

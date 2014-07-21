@@ -72,4 +72,12 @@
     {% endif %}
   </div>
 </div>
+<div class="row">
+  <div class="col-md-12">
+    <h3>Achievements</h3>
+    {% for task in user.solved_tasks %}
+    {% if g.user.id == user.id %}You{% else %}{{ user.name }}{% endif %} solved task {% if task %}<a href="{{ url_for('task', task_id=task.id)}}">{{ task.name }}</a>{% else %}&lt;deleted task&gt;{% endif %}<br>
+    {% endfor %}
+  </di>
+</div>
 {% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row clearfix">
+<div class="row">
+  <div class="col-md-6">
+      <h1>Teams</h1>
+      <br>
+      <table class="table table-borderd">
+        <thead>
+          <tr>
+            <td>Name</td>
+            <td>Score</td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for team, total_score in teams_data %}
+          <tr>
+            <td><a href="{{ url_for('team', team_id=team.id)}}">{{ team.name }}</td>
+            <td>
+              <div class="progress">
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="{{ max_team_score }}" style="width: {{ total_score/max_team_score * 100 }}%;">
+                {{ total_score }}
+                </div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
+  <div class="col-md-6">
+      <h1>Users</h1>
+      <br>
+      <table class="table table-borderd">
+        <thead>
+          <tr>
+            <td>Name</td>
+            <td>Score</td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user, total_score in users_data %}
+          <tr>
+            <td><img src="{{ user.getAvatar(24) }}"/> <a href="{{ url_for('profile', user_id=user.id) }}">{{ user.name }}</a></td>
+            <td>
+              <div class="progress">
+                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ total_score }}" aria-valuemin="0" aria-valuemax="{{ max_user_score }}" style="width: {{ total_score/max_user_score * 100 }}%;">
+                {{ total_score }}
+                </div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
+</div>
+{% endblock %}
