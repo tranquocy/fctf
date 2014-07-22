@@ -141,8 +141,9 @@ class SubmitFlagForm(Form):
     task_id = HiddenField('task_id')
     submit = SubmitField('Submit')
 
-    def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
+    def __init__(self, task_id):
+        Form.__init__(self)
+        self.task_id.data = task_id
 
     def validate(self):
         if not Form.validate(self):

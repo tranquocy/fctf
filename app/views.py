@@ -188,7 +188,7 @@ def all_task():
 @login_required
 def task(task_id = None):
     task = get_object_or_404(Task, Task.id == task_id)
-    form = SubmitFlagForm()
+    form = SubmitFlagForm(task.id)
     if form.validate_on_submit():
         log_data = SubmitLogs(g.user, task, form.flag.data)
         db.session.add(log_data)

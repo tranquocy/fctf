@@ -33,7 +33,7 @@
           <br>
           <form role="form" action="" method="POST">
             <input name="team_id" type="hidden" value="{{ user.team.id }}">
-            {{ leave_team_form.hidden_tag() }}
+            {{ leave_team_form.csrf_token }}
             <br>
             <button class="btn btn-primary" type="submit">Leave Team</button>
           </form>

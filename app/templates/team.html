@@ -16,7 +16,7 @@
           {% endfor %}
           </td>
         </tr>
-        {% if g.user in team.members %}
+        {% if g.user in team.members or g.user.is_admin() %}
         <tr>
           <td><h6>Invite Code:</h6></td>
           <td>{{ team.invite_code }}</td>

@@ -42,7 +42,6 @@
     <form role="form" action="" method="POST">
       <label>{{ form.flag.label }}</label>
       <input name="flag" type="text" size="50" required autofocus>
-      <input name="task_id" type="hidden" value="{{ task.id }}">
       {{ form.hidden_tag() }}
       <br>
       <button class="btn btn-primary" type="submit">Submit</button>
