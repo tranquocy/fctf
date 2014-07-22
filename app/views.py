@@ -302,9 +302,13 @@ def admin():
 @login_required
 def scoreboard():
     users_data = sorted(UserSolved.get_users_score(), key=lambda data: data[1], reverse=True)
-    max_user_score = max(users_data, key=lambda data: data[1])[1]
+    max_user_score = 0
+    if len(users_data):
+        max_user_score = max(users_data, key=lambda data: data[1])[1]
     teams_data = sorted(UserSolved.get_teams_score(), key=lambda data: data[1], reverse=True)
-    max_team_score = max(teams_data, key=lambda data: data[1])[1]
+    max_team_score = 0
+    if len(teams_data):
+        max_team_score = max(teams_data, key=lambda data: data[1])[1]
     return render_template('scoreboard.html',
         users_data=users_data, teams_data=teams_data,
         max_user_score=max_user_score, max_team_score=max_team_score
