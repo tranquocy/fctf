@@ -159,15 +159,6 @@ class UserSolved(db.Model):
         return [(get_object_or_404(User, User.id == user_id), total_score) for total_score, user_id in raw_data]
 
 
-    @staticmethod
-    def get_teams_score():
-        raw_data = UserSolved.query.with_entities(func.sum(UserSolved.point), \
-            UserSolved.team_id).group_by(UserSolved.team_id).all()
-        return [(get_object_or_404(Team, Team.id == team_id), total_score) \
-            for total_score, team_id in raw_data if team_id
-        ]
-
-
 class SubmitLogs(db.Model):
     __tablename__ = 'submit_logs'
     id = db.Column(db.Integer, primary_key = True)
