@@ -305,7 +305,6 @@ def scoreboard():
     max_user_score = 0
     if len(users_data):
         max_user_score = max(users_data, key=lambda data: data[1])[1]
-    teams_data = sorted(UserSolved.get_teams_score(), key=lambda data: data[1], reverse=True)
     teams = Team.query.all()
     teams_data = []
     for team in teams:
