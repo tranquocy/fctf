@@ -312,6 +312,7 @@ def scoreboard():
         for user in team.members:
             score += sum([task.point for task in user.solved_tasks])
         teams_data.append((team, score))
+    teams_data = sorted(teams_data, key=lambda data: data[1], reverse=True)
     max_team_score = 0
     if len(teams_data):
         max_team_score = max(teams_data, key=lambda data: data[1])[1]
