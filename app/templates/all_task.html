@@ -8,7 +8,7 @@
     <br>
     {% for task in tasks %}
     {% if task.is_open %}
-    <a class="btn btn-{{ 'success' if g.user.is_solved_task(task) else 'default' }} btn-large" href="{{ url_for('task', task_id=task.id)}}">
+    <a class="btn btn-{{ 'success' if g.user.is_solved_task(task) else 'default' }} btn-large task-item" href="{{ url_for('task', task_id=task.id)}}">
     	{{ task.name }}&nbsp;&nbsp;&nbsp;<span class="label label-primary">{{ task.point }}pt</span>
     </a>
     {% endif %}
