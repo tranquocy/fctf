@@ -199,19 +199,18 @@ def task(task_id = None):
         task = Task.query.get(form.task_id.data)
         if form.flag.data == task.flag:
             if UserSolved.query.filter_by(user_id = g.user.id, task_id = task.id).first():
-                flash('Your already solved this task.', category='success')
+                flash('Correct flag but you already solved this task.', category='success')
                 return redirect(url_for('task', task_id=task.id))
-            elif g.user.team and UserSolved.query.filter_by(team_id = g.user.team.id, task_id = task.id).first():
-                flash('Your team-mate already solved this task.', category='success')
-                return redirect(url_for('task', task_id=task.id))
+            elif g.user.team and task in g.user.team.solved_tasks():
+                flash('Correct flag but your team-mate already solved this task.', category='success')
             else:
-                solved_data = UserSolved(g.user, task)
-                db.session.add(solved_data)
-                db.session.commit()
                 flash('Correct Flag. Congrats!', category='success')
-                return redirect(url_for('task', task_id=task.id))
+            solved_data = UserSolved(g.user, task)
+            db.session.add(solved_data)
+            db.session.commit()
+            return redirect(url_for('task', task_id=task.id))
         else:
-            flash('Wrong Flag. Bad luck!', category='danger')
+            flash('Wrong Flag. Bad luck. Please try harder!', category='danger')
     return render_template('task.html', task=task, form=form)
 
 
@@ -310,11 +309,9 @@ def scoreboard():
         max_user_score = max(users_data, key=lambda data: data[1])[1]
     teams = Team.query.all()
     teams_data = []
+
     for team in teams:
-        score = 0
-        for user in team.members:
-            score += sum([task.point for task in user.solved_tasks])
-        teams_data.append((team, score))
+        teams_data.append((team, team.get_total_score()))
     teams_data = sorted(teams_data, key=lambda data: data[1], reverse=True)
     max_team_score = 0
     if len(teams_data):

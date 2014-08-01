@@ -64,10 +64,12 @@ class User(db.Model):
     def is_solved_task(self, task):
         if self in task.solved_users:
             return True
-        if self.team and self.team in task.solved_teams:
+        if self.team and task in self.team.solved_tasks():
             return True
-
         return False
+
+    def get_total_score(self):
+        return sum(task.point for task in self.solved_tasks)
 
     def is_admin(self):
         return self.role == ROLE_ADMIN
@@ -83,7 +85,6 @@ class Team(db.Model):
     description = db.Column(db.Text)
     invite_code = db.Column(db.String(16), unique = True, nullable = False)
     members = db.relationship('User', backref = 'team', lazy = 'dynamic')
-    solved_tasks = db.relationship('Task', secondary='user_solved', backref='solved_teams')
 
     def __repr__(self):
         return '<Team %r>' % (self.name)
@@ -97,6 +98,15 @@ class Team(db.Model):
     def genInviteCode():
         charset = string.ascii_letters + string.digits
         return ''.join(random.choice(charset) for _ in range(32))
+
+    def get_total_score(self):
+        return sum(task.point for task in self.solved_tasks())
+
+    def solved_tasks(self):
+        tasks = []
+        for user in self.members:
+            tasks += user.solved_tasks
+        return set(tasks)
 
 
 class Task(db.Model):
@@ -118,7 +128,6 @@ class Task(db.Model):
         self.point = point
         self.flag = flag
         self.is_open = is_open
-
 
 class Hint(db.Model):
     __tablename__ = 'hints'
