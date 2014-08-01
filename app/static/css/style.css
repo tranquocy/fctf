@@ -57,3 +57,8 @@ body {
 .task-item {
   margin: 2px 0px;
 }
+
+.admin-solved-user {
+  width: 30%;
+  line-height: 32px;
+}

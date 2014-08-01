@@ -6,6 +6,7 @@ from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeam
 from wtforms.ext.sqlalchemy.orm import model_form
 from flask_wtf import Form
 from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404
+from sqlalchemy import desc
 
 def admin_required(f):
     @wraps(f)
@@ -197,11 +198,11 @@ def task(task_id = None):
         db.session.commit()
         task = Task.query.get(form.task_id.data)
         if form.flag.data == task.flag:
-            if g.user.team and UserSolved.query.filter_by(team_id = g.user.team.id, task_id = task.id).first():
-                flash('Your team-mate already solved this task.', category='success')
-                return redirect(url_for('task', task_id=task.id))
-            elif UserSolved.query.filter_by(user_id = g.user.id, task_id = task.id).first():
+            if UserSolved.query.filter_by(user_id = g.user.id, task_id = task.id).first():
                 flash('Your already solved this task.', category='success')
+                return redirect(url_for('task', task_id=task.id))
+            elif g.user.team and UserSolved.query.filter_by(team_id = g.user.team.id, task_id = task.id).first():
+                flash('Your team-mate already solved this task.', category='success')
                 return redirect(url_for('task', task_id=task.id))
             else:
                 solved_data = UserSolved(g.user, task)
@@ -328,7 +329,8 @@ def scoreboard():
 @login_required
 @admin_required
 def log_submit(page = 1):
-    logs = SubmitLogs.query.paginate(page, per_page=100, error_out=True)
+    logs = SubmitLogs.query.order_by(desc(SubmitLogs.created_at)).\
+            paginate(page, per_page=100, error_out=True)
     return render_template('log_submit.html', logs=logs)
 
 
