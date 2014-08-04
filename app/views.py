@@ -196,7 +196,6 @@ def task(task_id = None):
         log_data = SubmitLogs(g.user, task, form.flag.data)
         db.session.add(log_data)
         db.session.commit()
-        task = Task.query.get(form.task_id.data)
         if form.flag.data == task.flag:
             if UserSolved.query.filter_by(user_id = g.user.id, task_id = task.id).first():
                 flash('Correct flag but you already solved this task.', category='success')
