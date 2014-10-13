@@ -122,6 +122,9 @@ class Task(db.Model):
     def __repr__(self):
         return '<Task %r>' % (self.name)
 
+    def __str__(self):
+        return self.name
+
     def __init__(self, name='', description='', flag='', point = 0, is_open=False):
         self.name = name
         self.description = description

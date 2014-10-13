@@ -232,7 +232,11 @@ def toggle_task(task_id = None, toggle = ''):
 @admin_required
 def edit_task(task_id = None):
     model = get_object_or_404(Task, Task.id == task_id)
-    TaskForm = model_form(Task, db_session=db.session, base_class=Form)
+    TaskForm = model_form(Task,
+        db_session=db.session,
+        base_class=Form,
+        only=('name', 'description', 'point', 'flag', 'is_open')
+    )
     form = TaskForm(request.form, model)
 
     if form.validate_on_submit():
@@ -249,7 +253,6 @@ def edit_task(task_id = None):
 @admin_required
 def confirm_delete_task(task_id = None):
     task = get_object_or_404(Task, Task.id == task_id)
-    print task
     if request.method == 'POST':
         db.session.delete(task)
         db.session.commit()
@@ -277,7 +280,11 @@ def create_hint():
 @admin_required
 def edit_hint(hint_id = None):
     model = get_object_or_404(Hint, Hint.id == hint_id)
-    HintForm = model_form(Hint, db_session=db.session, base_class=Form)
+    HintForm = model_form(Hint,
+        db_session=db.session,
+        base_class=Form,
+        only=('description', 'is_open', 'task')
+    )
     form = HintForm(request.form, model)
 
     if form.validate_on_submit():
