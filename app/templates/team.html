@@ -16,13 +16,16 @@
           {% endfor %}
           </td>
         </tr>
-        {% if g.user in team.members or g.user.is_admin() %}
+      {% if g.user in team.members or g.user.is_admin() %}
         <tr>
           <td><h6>Invite Code:</h6></td>
           <td>{{ team.invite_code }}</td>
         </tr>
-        {% endif %}
       </table>
+      <a class="btn btn-lg btn-primary" href="{{ url_for('edit_team', team_id=team.id) }}">Edit</a>
+      {% else %}
+      </table>
+      {% endif %}
   </div>
 </div>
 {% endblock %}

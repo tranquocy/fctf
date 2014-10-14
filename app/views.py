@@ -137,6 +137,28 @@ def create_team():
     return render_template('create_team.html', form=form)
 
 
+@app.route('/team/<int:team_id>/edit', methods = ['GET', 'POST'])
+@login_required
+def edit_team(team_id = None):
+    model = get_object_or_404(Team, Team.id == team_id)
+    if g.user not in model.members and not g.user.is_admin():
+        return redirect(url_for('index'))
+    TeamForm = model_form(Team,
+        db_session=db.session,
+        base_class=Form,
+        only=('name', 'description')
+    )
+    form = TeamForm(request.form, model)
+
+    if form.validate_on_submit():
+        form.populate_obj(model)
+        db.session.add(model)
+        db.session.commit()
+        flash('Team updated', category='success')
+        return redirect(url_for('team', team_id=model.id))
+    return render_template('edit_team.html', team=model, form=form)
+
+
 @app.route('/task/create', methods = ['GET', 'POST'])
 @login_required
 @admin_required
