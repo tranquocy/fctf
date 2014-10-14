@@ -146,7 +146,7 @@ def edit_team(team_id = None):
     TeamForm = model_form(Team,
         db_session=db.session,
         base_class=Form,
-        only=('name', 'description')
+        only=('description')
     )
     form = TeamForm(request.form, model)
 
