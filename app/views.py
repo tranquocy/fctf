@@ -29,11 +29,18 @@ def load_user(userid):
 @app.route('/')
 @app.route('/index')
 def index():
+    activities = UserSolved.query.order_by(desc(UserSolved.created_at)).limit(30).all()
     return render_template(
         'index.html',
-        user=g.user
+        activities = activities,
+        user = g.user
     )
 
+@app.route('/about')
+def about():
+    return render_template(
+        'about.html',
+    )
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():

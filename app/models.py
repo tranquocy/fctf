@@ -35,7 +35,7 @@ class User(db.Model):
         self.name = username
         self.email = email.lower()
         self.set_password(password)
-         
+
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
@@ -156,6 +156,8 @@ class UserSolved(db.Model):
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     point = db.Column(db.Integer)
     created_at = db.Column(db.DateTime)
+    user = db.relationship("User", uselist=False, backref="solved_data")
+    task = db.relationship("Task", uselist=False, backref="solved_data")
 
     def __init__(self, user, task):
         self.user_id = user.id

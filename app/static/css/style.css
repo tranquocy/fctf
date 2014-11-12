@@ -62,3 +62,7 @@ body {
   width: 30%;
   line-height: 32px;
 }
+
+.activities tr {
+  line-height: 40px;
+}
