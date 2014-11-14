@@ -58,7 +58,7 @@ class User(db.Model):
         return '<User %r>' % (self.username)
 
     def getAvatar(self, size = 160):
-        email_hash = hashlib.md5(self.email).hexdigest()
+        email_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
         return "http://www.gravatar.com/avatar/%s?d=mm&s=%d" % (email_hash, size)
 
     def is_solved_task(self, task):
