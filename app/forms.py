@@ -1,3 +1,5 @@
+from app import app
+from flask import g
 from flask_wtf import Form
 from wtforms import TextField, SubmitField, validators, PasswordField, HiddenField, BooleanField, IntegerField
 from models import User, Team, Task
@@ -51,7 +53,7 @@ class LoginForm(Form):
     def validate(self):
         if not Form.validate(self):
             return False
-    
+
         user = User.query.filter_by(username = self.username.data).first()
         if user and user.check_password(self.password.data):
             return True
@@ -99,6 +101,12 @@ class JoinTeamForm(Form):
         if not team:
             self.invite_code.errors.append('The invite code is invalid.')
             return False
+        elif g.user in team.members:
+            self.invite_code.errors.append('You already in team.')
+            return False
+        elif team.members.count() >= app.config['MAX_MEMBER']:
+            self.invite_code.errors.append('Team "%s" is full. Please select another team.' % team.name)
+            return False
         else:
             return True
 
@@ -114,7 +122,7 @@ class LeaveTeamForm(Form):
             return False
 
         team = Team.query.get(self.team_id.data)
-        if not team:
+        if not team or g.user not in team.members:
             return False
         else:
             return True

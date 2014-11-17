@@ -84,25 +84,27 @@ def profile(user_id = None):
     if user_id is None or user_id == g.user.id:
         join_team_form = JoinTeamForm()
         leave_team_form = LeaveTeamForm()
-        if join_team_form.validate_on_submit() and not g.user.team:
-            team = Team.query.filter_by(invite_code = join_team_form.invite_code.data).first()
-            g.user.team = team
-            db.session.add(g.user)
-            db.session.commit()
-            flash("You've joined team <strong>%s</strong> !" % team.name, category='success')
-        if leave_team_form.validate_on_submit() and g.user.team:
-            team = Team.query.get(leave_team_form.team_id.data)
-            if g.user.team == team:
-                g.user.team = None
+        if not app.config['LOCK_TEAM']:
+            if join_team_form.invite_code.data and join_team_form.validate_on_submit() and not g.user.team:
+                team = Team.query.filter_by(invite_code = join_team_form.invite_code.data).first()
+                g.user.team = team
                 db.session.add(g.user)
                 db.session.commit()
-                flash("You've left team <strong>%s</strong> !" % team.name, category='success')
+                flash("You've joined team <strong>%s</strong> !" % team.name, category='success')
+            if leave_team_form.team_id.data and leave_team_form.validate_on_submit() and g.user.team:
+                team = Team.query.get(leave_team_form.team_id.data)
+                if g.user.team == team:
+                    g.user.team = None
+                    db.session.add(g.user)
+                    db.session.commit()
+                    flash("You've left team <strong>%s</strong> !" % team.name, category='success')
 
         return render_template(
             'profile.html',
             user=g.user,
-            join_team_form=join_team_form,
-            leave_team_form=leave_team_form
+            join_team_form = join_team_form,
+            leave_team_form = leave_team_form,
+            locked_team = app.config['LOCK_TEAM']
         )
     else:
         user = get_object_or_404(User, User.id == user_id)

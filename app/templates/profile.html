@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
+{% for message in join_team_form.invite_code.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+{% for message in leave_team_form.team_id.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
 <div class="row clearfix">
 
 <div class="row">
@@ -48,7 +54,7 @@
         {% endif %}
       </div>
     </div>
-    {% if g.user.id == user.id and not user.team %}
+    {% if g.user.id == user.id and not user.team and not locked_team %}
     <div class="panel panel-info">
       <div class="panel-heading">
         <h3 class="panel-title">Create Team</h3>
