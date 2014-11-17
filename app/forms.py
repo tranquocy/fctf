@@ -33,8 +33,12 @@ class SignupForm(Form):
         if user:
             self.username.errors.append('That username is already taken.')
             return False
-        else:
-            return True
+        user_email = User.query.filter_by(email = self.email.data).first()
+        if user_email:
+            self.username.errors.append('That email is already taken.')
+            return False
+
+        return True
 
 class LoginForm(Form):
     username = TextField('Username',  [

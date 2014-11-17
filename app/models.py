@@ -25,7 +25,7 @@ class User(db.Model):
     username = db.Column(db.String(30), unique = True, nullable = False)
     password = db.Column(db.String(100))
     name = db.Column(db.String(50))
-    email = db.Column(db.String(45))
+    email = db.Column(db.String(45), unique = True, nullable = False)
     role = db.Column(db.SmallInteger, default = ROLE_USER)
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     solved_tasks = db.relationship('Task', secondary='user_solved', backref='solved_users')
