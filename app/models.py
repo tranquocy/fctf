@@ -170,7 +170,7 @@ class UserSolved(db.Model):
     def get_users_score():
         raw_data = UserSolved.query.with_entities(func.sum(UserSolved.point), \
             UserSolved.user_id).group_by(UserSolved.user_id).all()
-        return [(get_object_or_404(User, User.id == user_id), total_score) for total_score, user_id in raw_data]
+        return [(get_object_or_404(User, User.id == user_id), total_score) for total_score, user_id in raw_data if total_score > 0]
 
 
 class SubmitLogs(db.Model):

@@ -348,7 +348,8 @@ def scoreboard():
     teams_data = []
 
     for team in teams:
-        teams_data.append((team, team.get_total_score()))
+	if team.get_total_score():
+            teams_data.append((team, team.get_total_score()))
     teams_data = sorted(teams_data, key=lambda data: data[1], reverse=True)
     max_team_score = 0
     if len(teams_data):
