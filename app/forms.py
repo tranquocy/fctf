@@ -4,6 +4,8 @@ from flask_wtf import Form
 from wtforms import TextField, SubmitField, validators, PasswordField, HiddenField, BooleanField, IntegerField
 from models import User, Team, Task
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms_alchemy import model_form_factory
+ModelForm = model_form_factory(Form)
 
 class SignupForm(Form):
     username = TextField('Username',  [
@@ -177,3 +179,13 @@ class CreateHintForm(Form):
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
+
+class TeamForm(ModelForm):
+    class Meta:
+        model = Team
+        only = ['name', 'description']
+
+class UserForm(ModelForm):
+    class Meta:
+        model = User
+        only = ['name', 'email']

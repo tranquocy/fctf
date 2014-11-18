@@ -2,8 +2,7 @@ from functools import wraps
 from flask import render_template, flash, redirect, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, CreateHintForm
-from wtforms.ext.sqlalchemy.orm import model_form
+from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, CreateHintForm, TeamForm, UserForm
 from flask_wtf import Form
 from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404
 from sqlalchemy import desc
@@ -114,11 +113,8 @@ def profile(user_id = None):
 @app.route('/profile/edit', methods = ['GET', 'POST'])
 @login_required
 def edit_profile():
-    UserForm = model_form(User, db_session=db.session,
-        base_class=Form, only=['email', 'name']
-    )
     model = User.query.get(g.user.id)
-    form = UserForm(request.form, model)
+    form = UserForm(obj=model)
 
     if form.validate_on_submit():
         form.populate_obj(model)
@@ -152,12 +148,7 @@ def edit_team(team_id = None):
     model = get_object_or_404(Team, Team.id == team_id)
     if g.user not in model.members and not g.user.is_admin():
         return redirect(url_for('index'))
-    TeamForm = model_form(Team,
-        db_session=db.session,
-        base_class=Form,
-        only=('description')
-    )
-    form = TeamForm(request.form, model)
+    form = TeamForm(obj=model)
 
     if form.validate_on_submit():
         form.populate_obj(model)

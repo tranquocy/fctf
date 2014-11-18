@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
+{% if join_team_form %}
 {% for message in join_team_form.invite_code.errors %}
 <div class="alert alert-danger">{{ message }}</div>
 {% endfor %}
+{% endif %}
+{% if join_team_form %}
 {% for message in leave_team_form.team_id.errors %}
 <div class="alert alert-danger">{{ message }}</div>
 {% endfor %}
+{% endif %}
 <div class="row clearfix">
 
 <div class="row">

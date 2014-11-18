@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
+{% for message in form.name.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
 {% for message in form.description.errors %}
 <div class="alert alert-danger">{{ message }}</div>
 {% endfor %}
@@ -7,6 +10,9 @@
   <div class="col-md-6">
     <form class="well" role="form" action="" method="POST">
         <h2>Edit Team</h2>
+        <label>{{ form.name.label }}</label>
+        <input name="name" type="text" class="form-control" required autofocus value="{{ form.name.data }}">
+        <br>
         <label>{{ form.description.label }}</label>
         <textarea id="description" name="description" type="text" class="form-control" rows="10" cols="50">{{ form.description.data }}</textarea>
         <br>
