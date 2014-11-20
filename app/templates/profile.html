@@ -27,7 +27,7 @@
           <td><span class="glyphicon glyphicon-envelope"></span> {{ user.email }}</td>
         </tr>
       </table>
-      {% if g.user.id == user.id or g.user.is_admin %}
+      {% if g.user.id == user.id or g.user.is_admin() %}
       <a class="btn btn-primary" href="{{ url_for('change_password', user_id=user.id) }}">Change Password</a>
       {% if g.user.id == user.id %}
       <a class="btn btn-primary" href="{{ url_for('edit_profile') }}">Edit Profile</a>
