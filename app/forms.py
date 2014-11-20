@@ -7,6 +7,7 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms_alchemy import model_form_factory
 ModelForm = model_form_factory(Form)
 
+
 class SignupForm(Form):
     username = TextField('Username',  [
         validators.Required('Please enter your username.'),
@@ -31,16 +32,36 @@ class SignupForm(Form):
         if not Form.validate(self):
             return False
 
-        user = User.query.filter_by(username = self.username.data).first()
+        user = User.query.filter_by(username=self.username.data).first()
         if user:
             self.username.errors.append('That username is already taken.')
             return False
-        user_email = User.query.filter_by(email = self.email.data).first()
+        user_email = User.query.filter_by(email=self.email.data).first()
         if user_email:
             self.username.errors.append('That email is already taken.')
             return False
 
         return True
+
+
+class ChangePasswordForm(Form):
+    new_password = PasswordField('Password', [
+        validators.Required('Please enter new password.'),
+        validators.Length(min=6, message='Passwords is at least 6 characters.'),
+        validators.EqualTo('new_confirm', message='Passwords must match')
+    ])
+    new_confirm = PasswordField('Repeat Password')
+    submit = SubmitField('Change password')
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+
+    def validate(self):
+        if not Form.validate(self):
+            return False
+
+        return True
+
 
 class LoginForm(Form):
     username = TextField('Username',  [
@@ -67,6 +88,7 @@ class LoginForm(Form):
             self.password.errors.append('Invalid e-mail or password')
             return False
 
+
 class CreateTeamForm(Form):
     name = TextField('Name',  [
         validators.Required('Please enter your team name.'),
@@ -82,12 +104,13 @@ class CreateTeamForm(Form):
         if not Form.validate(self):
             return False
 
-        team = Team.query.filter_by(name = self.name.data).first()
+        team = Team.query.filter_by(name=self.name.data).first()
         if team:
             self.name.errors.append('That team name is already taken.')
             return False
         else:
             return True
+
 
 class JoinTeamForm(Form):
     invite_code = TextField('Invite Code', [
@@ -116,6 +139,7 @@ class JoinTeamForm(Form):
         else:
             return True
 
+
 class LeaveTeamForm(Form):
     team_id = HiddenField('team_id')
     submit = SubmitField('Join Team')
@@ -133,6 +157,7 @@ class LeaveTeamForm(Form):
         else:
             return True
 
+
 class CreateTaskForm(Form):
     name = TextField('Name',  [
         validators.Required('Please enter task name.'),
@@ -146,6 +171,7 @@ class CreateTaskForm(Form):
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
+
 
 class SubmitFlagForm(Form):
     flag = TextField('Flag',  [
@@ -169,8 +195,10 @@ class SubmitFlagForm(Form):
         else:
             return True
 
+
 def task_query():
     return Task.query.all()
+
 
 class CreateHintForm(Form):
     description = TextField('Description')
@@ -180,10 +208,12 @@ class CreateHintForm(Form):
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
 
+
 class TeamForm(ModelForm):
     class Meta:
         model = Team
         only = ['name', 'description']
+
 
 class UserForm(ModelForm):
     class Meta:

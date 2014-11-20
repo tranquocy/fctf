@@ -2,7 +2,7 @@ from functools import wraps
 from flask import render_template, flash, redirect, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, CreateHintForm, TeamForm, UserForm
+from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, CreateHintForm, TeamForm, UserForm, ChangePasswordForm
 from flask_wtf import Form
 from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404
 from sqlalchemy import desc
@@ -21,8 +21,8 @@ def before_request():
 
 
 @lm.user_loader
-def load_user(userid):
-    return User.query.get(int(userid))
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 @app.route('/')
@@ -123,6 +123,23 @@ def edit_profile():
         flash('Profile updated', category='success')
         return redirect(url_for('profile'))
     return render_template('edit_profile.html', user=g.user, form=form)
+
+
+@app.route('/change_password/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def change_password(user_id=None):
+    if g.user.is_admin():
+        user = get_object_or_404(User, User.id == user_id)
+    else:
+        user = User.query.get(g.user.id)
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.new_password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Password changed successfully.', category='success')
+        return redirect(url_for('profile', user_id=user.id))
+    return render_template('change_password.html', user=user, form=form)
 
 
 @app.route('/team/create', methods = ['GET', 'POST'])
