@@ -15,7 +15,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for team in teams %}
+          {% for team in teams if team.members.count() %}
           <tr>
             <td><a href="{{ url_for('team', team_id=team.id)}}">{{ team.name }}</td>
             <td>{{ team.description }}</td>
