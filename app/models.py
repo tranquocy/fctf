@@ -3,6 +3,7 @@ import string
 import random
 import datetime
 from app import db
+from flask import url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import exc
 from sqlalchemy.sql import func
@@ -10,6 +11,7 @@ from werkzeug.exceptions import abort
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
+
 
 def get_object_or_404(model, *criterion):
     """ Snippet byVitaliy Shishorin, http://flask.pocoo.org/snippets/115/"""
@@ -21,12 +23,12 @@ def get_object_or_404(model, *criterion):
 
 class User(db.Model):
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(30), unique = True, nullable = False)
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(100))
     name = db.Column(db.String(50))
-    email = db.Column(db.String(45), unique = True, nullable = False)
-    role = db.Column(db.SmallInteger, default = ROLE_USER)
+    email = db.Column(db.String(45), unique=True, nullable=False)
+    role = db.Column(db.SmallInteger, default=ROLE_USER)
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     solved_tasks = db.relationship('Task', secondary='user_solved', backref='solved_users')
 
@@ -57,9 +59,13 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.username)
 
-    def getAvatar(self, size = 160):
+    def get_avatar_url(self, size=160):
         email_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
-        return "http://www.gravatar.com/avatar/%s?d=mm&s=%d" % (email_hash, size)
+        return u'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % (email_hash, size)
+
+    def get_avatar_img(self, size=160):
+        return u'<img src="{0:s}" alt="{1:s}" title="{2:s}"/></img>'.format(self.get_avatar_url(size), self.name,
+                                                                            self.name)
 
     def is_solved_task(self, task):
         if self in task.solved_users:
@@ -77,14 +83,22 @@ class User(db.Model):
     def is_normal_user(self):
         return self.role == ROLE_USER
 
+    def get_profile_link(self, with_avatar=True):
+        class_name = 'text-danger' if self.is_admin() else 'text-default'
+        profile_link = url_for('profile', user_id=self.id)
+        avatar = self.get_avatar_img(24) if with_avatar else ''
+        return u'<a href="{0:s}">{1:s}&nbsp;<span class="{2:s}">{3:s}</span></a>'.format(profile_link, avatar,
+                                                                                         class_name,
+                                                                                         self.name)
+
 
 class Team(db.Model):
     __tablename__ = 'teams'
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(30), unique = True, nullable = False)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True, nullable=False)
     description = db.Column(db.Text)
-    invite_code = db.Column(db.String(16), unique = True, nullable = False)
-    members = db.relationship('User', backref = 'team', lazy = 'dynamic')
+    invite_code = db.Column(db.String(16), unique=True, nullable=False)
+    members = db.relationship('User', backref='team', lazy='dynamic')
 
     def __repr__(self):
         return '<Team %r>' % (self.name)
@@ -111,13 +125,13 @@ class Team(db.Model):
 
 class Task(db.Model):
     __tablename__ = 'tasks'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
     description = db.Column(db.Text)
     point = db.Column(db.Integer, default=0)
     flag = db.Column(db.String(255))
     is_open = db.Column(db.Boolean)
-    hints = db.relationship('Hint', backref = 'task', lazy = 'dynamic')
+    hints = db.relationship('Hint', backref='task', lazy='dynamic')
 
     def __repr__(self):
         return '<Task %r>' % (self.name)
@@ -125,16 +139,17 @@ class Task(db.Model):
     def __str__(self):
         return self.name
 
-    def __init__(self, name='', description='', flag='', point = 0, is_open=False):
+    def __init__(self, name='', description='', flag='', point=0, is_open=False):
         self.name = name
         self.description = description
         self.point = point
         self.flag = flag
         self.is_open = is_open
 
+
 class Hint(db.Model):
     __tablename__ = 'hints'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text)
     is_open = db.Column(db.Boolean)
     task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
@@ -150,7 +165,7 @@ class Hint(db.Model):
 
 class UserSolved(db.Model):
     __tablename__ = 'user_solved'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
@@ -169,20 +184,21 @@ class UserSolved(db.Model):
     @staticmethod
     def get_users_score():
         raw_data = UserSolved.query.with_entities(func.sum(UserSolved.point), \
-            UserSolved.user_id).group_by(UserSolved.user_id).all()
-        return [(get_object_or_404(User, User.id == user_id), total_score) for total_score, user_id in raw_data if total_score > 0]
+                                                  UserSolved.user_id).group_by(UserSolved.user_id).all()
+        return [(get_object_or_404(User, User.id == user_id), total_score) for total_score, user_id in raw_data if
+                total_score > 0]
 
 
 class SubmitLogs(db.Model):
     __tablename__ = 'submit_logs'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     flag = db.Column(db.String(255))
     created_at = db.Column(db.DateTime)
-    user = db.relationship('User', backref=db.backref('log_submit', lazy = 'dynamic'))
-    task = db.relationship('Task', backref=db.backref('log_submit', lazy = 'dynamic'))
+    user = db.relationship('User', backref=db.backref('log_submit', lazy='dynamic'))
+    task = db.relationship('Task', backref=db.backref('log_submit', lazy='dynamic'))
 
     def __init__(self, user, task, flag):
         self.user_id = user.id

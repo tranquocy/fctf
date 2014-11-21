@@ -22,7 +22,7 @@
     {% for activity in activities %}
       <tr>
         <td>{{ activity.created_at.strftime('%Y/%m/%d %H:%M:%S') }}&nbsp;:&nbsp;</td>
-        <td><img src="{{ activity.user.getAvatar(24) }}"/> <a href="{{ url_for('profile', user_id=activity.user.id) }}">{{ activity.user.name }}</a> solved task <a href="{{ url_for('task', task_id=activity.task.id)}}">{{ activity.task.name }}</a> and scored <strong>{{ activity.task.point }} points</strong>.</td>
+        <td>{{ activity.user.get_profile_link()|safe }} solved task <a href="{{ url_for('task', task_id=activity.task.id)}}">{{ activity.task.name }}</a> and scored <strong>{{ activity.task.point }} points</strong>.</td>
       </tr>
     {% endfor %}
     </table>

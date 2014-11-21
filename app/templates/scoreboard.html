@@ -41,7 +41,7 @@
         <tbody>
           {% for user, total_score in users_data %}
           <tr>
-            <td><img src="{{ user.getAvatar(24) }}"/> <a href="{{ url_for('profile', user_id=user.id) }}">{{ user.name }}</a></td>
+            <td>{{ user.get_profile_link()|safe }}</td>
             <td>
               <div class="progress">
                 <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ total_score }}" aria-valuemin="0" aria-valuemax="{{ max_user_score }}" style="width: {{ total_score/max_user_score * 100 }}%;">
