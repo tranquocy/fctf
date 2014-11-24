@@ -1,10 +1,10 @@
 from app import app
 from flask import g
 from flask_wtf import Form
-from wtforms import TextField, SubmitField, validators, PasswordField, HiddenField, BooleanField, IntegerField
-from models import User, Team, Task
+from wtforms import TextField, SubmitField, validators, PasswordField, HiddenField, BooleanField, IntegerField, FormField
+from models import User, Team, Task, Hint
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms_alchemy import model_form_factory
+from wtforms_alchemy import model_form_factory, ModelFieldList, ModelFormField
 ModelForm = model_form_factory(Form)
 
 
@@ -219,3 +219,13 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         only = ['name', 'email']
+
+
+class TaskForm(ModelForm):
+    class Meta:
+        model = Task
+
+
+class HintForm(ModelForm):
+    class Meta:
+        model = Hint

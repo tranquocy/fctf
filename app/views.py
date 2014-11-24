@@ -2,10 +2,11 @@ from functools import wraps
 from flask import render_template, flash, redirect, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, CreateHintForm, TeamForm, UserForm, ChangePasswordForm
-from flask_wtf import Form
+from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, \
+    CreateHintForm, TeamForm, UserForm, ChangePasswordForm, HintForm, TaskForm
 from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404
 from sqlalchemy import desc
+
 
 def admin_required(f):
     @wraps(f)
@@ -13,7 +14,9 @@ def admin_required(f):
         if not g.user or g.user.role != ROLE_ADMIN:
             return redirect(url_for('index'))
         return f(*args, **kwargs)
+
     return decorated_function
+
 
 @app.before_request
 def before_request():
@@ -31,15 +34,17 @@ def index():
     activities = UserSolved.query.order_by(desc(UserSolved.created_at)).limit(30).all()
     return render_template(
         'index.html',
-        activities = activities,
-        user = g.user
+        activities=activities,
+        user=g.user
     )
+
 
 @app.route('/about')
 def about():
     return render_template(
         'about.html',
     )
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -61,7 +66,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         # login and validate the user...
-        user = User.query.filter_by(username = form.username.data).first()
+        user = User.query.filter_by(username=form.username.data).first()
         login_user(user)
         flash('Logged in successfully.', category='success')
         return redirect(request.args.get('next') or url_for('index'))
@@ -76,16 +81,16 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/profile', methods = ['GET', 'POST'])
-@app.route('/profile/<int:user_id>', methods = ['GET', 'POST'])
+@app.route('/profile', methods=['GET', 'POST'])
+@app.route('/profile/<int:user_id>', methods=['GET', 'POST'])
 @login_required
-def profile(user_id = None):
+def profile(user_id=None):
     if user_id is None or user_id == g.user.id:
         join_team_form = JoinTeamForm()
         leave_team_form = LeaveTeamForm()
         if not app.config['LOCK_TEAM']:
             if join_team_form.invite_code.data and join_team_form.validate_on_submit() and not g.user.team:
-                team = Team.query.filter_by(invite_code = join_team_form.invite_code.data).first()
+                team = Team.query.filter_by(invite_code=join_team_form.invite_code.data).first()
                 g.user.team = team
                 db.session.add(g.user)
                 db.session.commit()
@@ -101,16 +106,16 @@ def profile(user_id = None):
         return render_template(
             'profile.html',
             user=g.user,
-            join_team_form = join_team_form,
-            leave_team_form = leave_team_form,
-            locked_team = app.config['LOCK_TEAM']
+            join_team_form=join_team_form,
+            leave_team_form=leave_team_form,
+            locked_team=app.config['LOCK_TEAM']
         )
     else:
         user = get_object_or_404(User, User.id == user_id)
         return render_template('profile.html', user=user)
 
 
-@app.route('/profile/edit', methods = ['GET', 'POST'])
+@app.route('/profile/edit', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
     model = User.query.get(g.user.id)
@@ -142,7 +147,7 @@ def change_password(user_id=None):
     return render_template('change_password.html', user=user, form=form)
 
 
-@app.route('/team/create', methods = ['GET', 'POST'])
+@app.route('/team/create', methods=['GET', 'POST'])
 @login_required
 def create_team():
     if g.user.team:
@@ -159,9 +164,9 @@ def create_team():
     return render_template('create_team.html', form=form)
 
 
-@app.route('/team/<int:team_id>/edit', methods = ['GET', 'POST'])
+@app.route('/team/<int:team_id>/edit', methods=['GET', 'POST'])
 @login_required
-def edit_team(team_id = None):
+def edit_team(team_id=None):
     model = get_object_or_404(Team, Team.id == team_id)
     if g.user not in model.members and not g.user.is_admin():
         return redirect(url_for('index'))
@@ -176,7 +181,7 @@ def edit_team(team_id = None):
     return render_template('edit_team.html', team=model, form=form)
 
 
-@app.route('/task/create', methods = ['GET', 'POST'])
+@app.route('/task/create', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def create_task():
@@ -196,10 +201,10 @@ def create_task():
     return render_template('create_task.html', form=form)
 
 
-@app.route('/team', methods = ['GET', 'POST'])
-@app.route('/team/<int:team_id>', methods = ['GET', 'POST'])
+@app.route('/team', methods=['GET', 'POST'])
+@app.route('/team/<int:team_id>', methods=['GET', 'POST'])
 @login_required
-def team(team_id = None):
+def team(team_id=None):
     if team_id is None:
         if g.user.team:
             return render_template('team.html', team=g.user.team)
@@ -210,23 +215,23 @@ def team(team_id = None):
     return render_template('team.html', team=team)
 
 
-@app.route('/team/all', methods = ['GET', 'POST'])
+@app.route('/team/all', methods=['GET', 'POST'])
 @login_required
 def all_team():
     teams = Team.query.all()
     return render_template('all_team.html', teams=teams)
 
 
-@app.route('/task/all', methods = ['GET', 'POST'])
+@app.route('/task/all', methods=['GET', 'POST'])
 @login_required
 def all_task():
     tasks = Task.query.all()
     return render_template('all_task.html', tasks=tasks)
 
 
-@app.route('/task/<int:task_id>', methods = ['GET', 'POST'])
+@app.route('/task/<int:task_id>', methods=['GET', 'POST'])
 @login_required
-def task(task_id = None):
+def task(task_id=None):
     task = get_object_or_404(Task, Task.id == task_id)
     if not task.is_open and not g.user.is_admin():
         return redirect(url_for('index'))
@@ -236,7 +241,7 @@ def task(task_id = None):
         db.session.add(log_data)
         db.session.commit()
         if form.flag.data == task.flag:
-            if UserSolved.query.filter_by(user_id = g.user.id, task_id = task.id).first():
+            if UserSolved.query.filter_by(user_id=g.user.id, task_id=task.id).first():
                 flash('Correct flag but you already solved this task.', category='success')
                 return redirect(url_for('task', task_id=task.id))
             elif g.user.team and task in g.user.team.solved_tasks():
@@ -252,10 +257,10 @@ def task(task_id = None):
     return render_template('task.html', task=task, form=form)
 
 
-@app.route('/task/<int:task_id>/<string:toggle>', methods = ['GET', 'POST'])
+@app.route('/task/<int:task_id>/<string:toggle>', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def toggle_task(task_id = None, toggle = ''):
+def toggle_task(task_id=None, toggle=''):
     task = get_object_or_404(Task, Task.id == task_id)
     if toggle not in ['open', 'close']:
         return redirect(url_for('index'))
@@ -266,17 +271,12 @@ def toggle_task(task_id = None, toggle = ''):
         return redirect(url_for('admin'))
 
 
-@app.route('/task/<int:task_id>/edit', methods = ['GET', 'POST'])
+@app.route('/task/<int:task_id>/edit', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def edit_task(task_id = None):
+def edit_task(task_id=None):
     model = get_object_or_404(Task, Task.id == task_id)
-    TaskForm = model_form(Task,
-        db_session=db.session,
-        base_class=Form,
-        only=('name', 'description', 'point', 'flag', 'is_open')
-    )
-    form = TaskForm(request.form, model)
+    form = TaskForm(obj=model)
 
     if form.validate_on_submit():
         form.populate_obj(model)
@@ -287,10 +287,10 @@ def edit_task(task_id = None):
     return render_template('edit_task.html', task=model, form=form)
 
 
-@app.route('/task/<int:task_id>/delete', methods = ['GET', 'POST'])
+@app.route('/task/<int:task_id>/delete', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def confirm_delete_task(task_id = None):
+def confirm_delete_task(task_id=None):
     task = get_object_or_404(Task, Task.id == task_id)
     if request.method == 'POST':
         db.session.delete(task)
@@ -300,7 +300,7 @@ def confirm_delete_task(task_id = None):
     return render_template('confirm_delete_task.html', task=task)
 
 
-@app.route('/hint/create', methods = ['GET', 'POST'])
+@app.route('/hint/create', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def create_hint():
@@ -314,17 +314,12 @@ def create_hint():
     return render_template('create_hint.html', form=form)
 
 
-@app.route('/hint/<int:hint_id>/edit', methods = ['GET', 'POST'])
+@app.route('/hint/<int:hint_id>/edit', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def edit_hint(hint_id = None):
+def edit_hint(hint_id=None):
     model = get_object_or_404(Hint, Hint.id == hint_id)
-    HintForm = model_form(Hint,
-        db_session=db.session,
-        base_class=Form,
-        only=('description', 'is_open', 'task')
-    )
-    form = HintForm(request.form, model)
+    form = HintForm(obj=model)
 
     if form.validate_on_submit():
         form.populate_obj(model)
@@ -335,7 +330,7 @@ def edit_hint(hint_id = None):
     return render_template('edit_hint.html', task=model, form=form)
 
 
-@app.route('/admin', methods = ['GET', 'POST'])
+@app.route('/admin', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def admin():
@@ -345,7 +340,7 @@ def admin():
     return render_template('admin.html', teams=teams, users=users, tasks=tasks)
 
 
-@app.route('/scoreboard', methods = ['GET', 'POST'])
+@app.route('/scoreboard', methods=['GET', 'POST'])
 @login_required
 def scoreboard():
     users_data = sorted(UserSolved.get_users_score(), key=lambda data: data[1], reverse=True)
@@ -356,24 +351,24 @@ def scoreboard():
     teams_data = []
 
     for team in teams:
-	if team.get_total_score():
+        if team.get_total_score():
             teams_data.append((team, team.get_total_score()))
     teams_data = sorted(teams_data, key=lambda data: data[1], reverse=True)
     max_team_score = 0
     if len(teams_data):
         max_team_score = max(teams_data, key=lambda data: data[1])[1]
     return render_template('scoreboard.html',
-        users_data=users_data, teams_data=teams_data,
-        max_user_score=max_user_score, max_team_score=max_team_score
+                           users_data=users_data, teams_data=teams_data,
+                           max_user_score=max_user_score, max_team_score=max_team_score
     )
 
 
-@app.route('/admin/log_submit/<int:page>', methods = ['GET', 'POST'])
+@app.route('/admin/log_submit/<int:page>', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def log_submit(page = 1):
-    logs = SubmitLogs.query.order_by(desc(SubmitLogs.created_at)).\
-            paginate(page, per_page=100, error_out=True)
+def log_submit(page=1):
+    logs = SubmitLogs.query.order_by(desc(SubmitLogs.created_at)). \
+        paginate(page, per_page=100, error_out=True)
     return render_template('log_submit.html', logs=logs)
 
 
