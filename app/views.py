@@ -6,6 +6,7 @@ from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeam
     CreateHintForm, TeamForm, UserForm, ChangePasswordForm, HintForm, TaskForm
 from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404
 from sqlalchemy import desc
+from flask.ext.admin.contrib.sqla import ModelView
 
 
 def admin_required(f):
@@ -375,3 +376,21 @@ def log_submit(page=1):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+# admin pages
+class UserView(ModelView):
+    # Disable model creation
+    can_create = False
+
+    # Override displayed fields
+    column_list = ('username', 'name', 'email', 'team', 'role')
+    column_filters = ('username', 'name', 'email', 'team')
+
+    form_excluded_columns = ('solved_tasks', 'solved_data', 'password', 'log_submit')
+
+    def __init__(self, session, **kwargs):
+        # You can pass name and other parameters if you want to
+        super(UserView, self).__init__(User, session, **kwargs)
+
+    def is_accessible(self):
+        return g.user.is_authenticated() and g.user.is_admin()

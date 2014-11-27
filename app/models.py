@@ -103,6 +103,9 @@ class Team(db.Model):
     def __repr__(self):
         return '<Team %r>' % (self.name)
 
+    def __str__(self):
+        return self.name
+
     def __init__(self, name, description):
         self.name = name
         self.description = description
