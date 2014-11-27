@@ -81,11 +81,11 @@ class LoginForm(Form):
         if not Form.validate(self):
             return False
 
-        user = User.query.filter_by(username = self.username.data).first()
+        user = User.query.filter_by(username=self.username.data).first()
         if user and user.check_password(self.password.data):
             return True
         else:
-            self.password.errors.append('Invalid e-mail or password')
+            self.password.errors.append('Invalid username or password')
             return False
 
 
