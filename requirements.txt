@@ -13,3 +13,4 @@ flup==1.0.2
 MySQL-python==1.2.5
 WTForms-Alchemy==0.13.0
 flask-admin==1.0.8
+pycrypto==2.6.1

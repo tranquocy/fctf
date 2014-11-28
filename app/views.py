@@ -1,7 +1,9 @@
+import json
+from Crypto.Cipher import AES
 from functools import wraps
-from flask import render_template, flash, redirect, url_for, request, g
+from flask import render_template, flash, redirect, url_for, request, g, make_response
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from app import app, db, lm
+from app import app, db, lm, EncodeAES, DecodeAES
 from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, \
     CreateHintForm, TeamForm, UserForm, ChangePasswordForm, HintForm, TaskForm
 from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404
@@ -22,6 +24,25 @@ def admin_required(f):
 @app.before_request
 def before_request():
     g.user = current_user
+    g.cookie = request.cookies.get('data')
+
+
+def create_encrypted_cookie():
+    data = {'user': g.user.username, 'user_id': g.user.id}
+    if g.user.team:
+        data['team'] = g.user.team.name
+    cipher = AES.new(app.config['AES_KEY'])
+    return EncodeAES(cipher, json.dumps(data))
+
+@app.after_request
+def set_encrypted_cookie(response):
+    if g.user.is_authenticated():
+        if not g.cookie or g.cookie != create_encrypted_cookie():
+            g.cookie = create_encrypted_cookie()
+            response.set_cookie('data', g.cookie)
+    elif g.cookie:
+        response.delete_cookie('data')
+    return response
 
 
 @lm.user_loader
@@ -79,6 +100,8 @@ def login():
 def logout():
     logout_user()
     flash('Logged out successfully.', category='success')
+    resp = make_response(redirect(url_for('index')))
+    resp.delete_cookie('data')
     return redirect(url_for('index'))
 
 
