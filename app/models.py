@@ -59,6 +59,9 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.username)
 
+    def __str__(self):
+        return self.username
+
     def get_avatar_url(self, size=160):
         email_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
         return u'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % (email_hash, size)

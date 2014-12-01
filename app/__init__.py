@@ -34,3 +34,4 @@ from app import views, models
 
 admin = Admin(app, url='/db')
 admin.add_view(views.UserView(db.session, name='Users'))
+admin.add_view(views.SubmitLogView(db.session, name='Submit Logs'))

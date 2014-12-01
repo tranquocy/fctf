@@ -400,6 +400,7 @@ def log_submit(page=1):
 def page_not_found(e):
     return render_template('404.html'), 404
 
+
 # admin pages
 class UserView(ModelView):
     # Disable model creation
@@ -414,6 +415,25 @@ class UserView(ModelView):
     def __init__(self, session, **kwargs):
         # You can pass name and other parameters if you want to
         super(UserView, self).__init__(User, session, **kwargs)
+
+    def is_accessible(self):
+        return g.user.is_authenticated() and g.user.is_admin()
+
+
+class SubmitLogView(ModelView):
+    # Disable model creation
+    can_create = False
+    can_edit = False
+
+    # Override displayed fields
+    column_list = ('user', 'flag', 'task', 'user.team', 'created_at')
+    column_filters = ('user', 'task', 'created_at')
+
+    column_default_sort = ('created_at', True)
+
+    def __init__(self, session, **kwargs):
+        # You can pass name and other parameters if you want to
+        super(SubmitLogView, self).__init__(SubmitLogs, session, **kwargs)
 
     def is_accessible(self):
         return g.user.is_authenticated() and g.user.is_admin()
