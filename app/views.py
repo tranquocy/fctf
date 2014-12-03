@@ -1,7 +1,7 @@
 import json
 from Crypto.Cipher import AES
 from functools import wraps
-from flask import render_template, flash, redirect, url_for, request, g, make_response
+from flask import render_template, flash, redirect, url_for, request, g, make_response, jsonify
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, EncodeAES, DecodeAES
 from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, \
@@ -437,3 +437,19 @@ class SubmitLogView(ModelView):
 
     def is_accessible(self):
         return g.user.is_authenticated() and g.user.is_admin()
+
+
+# API
+@app.route('/api/v1/get_result', methods=['GET'])
+def get_result():
+    resp = {'success': 0}
+    task = Task.query.get(request.args.get('task_id', ''))
+    team = Team.query.get(request.args.get('team_id', ''))
+    user = User.query.get(request.args.get('user_id', ''))
+    if task and team:
+        resp['solved'] = (task in team.solved_tasks())
+        resp['success'] = 1
+    elif task and user:
+        resp['solved'] = (task in user.solved_tasks)
+        resp['success'] = 1
+    return jsonify(resp)
