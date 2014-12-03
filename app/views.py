@@ -1,7 +1,7 @@
 import json
 from Crypto.Cipher import AES
 from functools import wraps
-from flask import render_template, flash, redirect, url_for, request, g, make_response
+from flask import render_template, flash, redirect, url_for, request, g, make_response, send_from_directory, abort
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, EncodeAES, DecodeAES
 from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, \
@@ -402,6 +402,13 @@ def log_submit(page=1):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+
+@app.route('/uploads/<path:filename>')
+def download_file(filename):
+    if '..' in filename or filename.startswith('/'):
+        abort(404)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 
 # admin pages

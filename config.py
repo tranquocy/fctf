@@ -13,3 +13,4 @@ MAX_MEMBER = 5
 LOCK_TEAM = False
 LOCK_PROFILE = False
 
+UPLOAD_FOLDER = os.path.join(basedir, 'app', 'static', 'files')
