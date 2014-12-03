@@ -11,4 +11,5 @@ AES_KEY = 'alskd8q@%pohasdasdaIUA131asdlkas'
 
 MAX_MEMBER = 5
 LOCK_TEAM = False
+LOCK_PROFILE = False
 

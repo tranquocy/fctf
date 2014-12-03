@@ -132,7 +132,8 @@ def profile(user_id=None):
             user=g.user,
             join_team_form=join_team_form,
             leave_team_form=leave_team_form,
-            locked_team=app.config['LOCK_TEAM']
+            locked_team=app.config['LOCK_TEAM'],
+            locked_profile=app.config['LOCK_PROFILE']
         )
     else:
         user = get_object_or_404(User, User.id == user_id)
@@ -142,6 +143,8 @@ def profile(user_id=None):
 @app.route('/profile/edit', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
+    if app.config['LOCK_PROFILE']:
+        return redirect(url_for('index'))
     model = User.query.get(g.user.id)
     form = UserForm(obj=model)
 
