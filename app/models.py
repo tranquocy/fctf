@@ -102,6 +102,7 @@ class Team(db.Model):
     description = db.Column(db.Text)
     invite_code = db.Column(db.String(16), unique=True, nullable=False)
     members = db.relationship('User', backref='team', lazy='dynamic')
+    team_only_tasks = db.relationship('Task', secondary='task_for_teams', backref='for_teams')
 
     def __repr__(self):
         return '<Team %r>' % (self.name)
@@ -145,12 +146,33 @@ class Task(db.Model):
     def __str__(self):
         return self.name
 
+    def is_team_only(self):
+        return self.task_for_team_data
+
     def __init__(self, name='', description='', flag='', point=0, is_open=False):
         self.name = name
         self.description = description
         self.point = point
         self.flag = flag
         self.is_open = is_open
+
+    def can_access_by(self, user):
+        if user.is_admin():
+            return True
+        if self.is_team_only():
+            return user.team in self.for_teams and self.is_open
+        else:
+            return self.is_open
+
+
+class TaskForTeam(db.Model):
+    __tablename__ = 'task_for_teams'
+    id = db.Column(db.Integer, primary_key=True)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
+    created_at = db.Column(db.DateTime)
+    task = db.relationship("Task", uselist=False, backref="task_for_team_data")
+    team = db.relationship("Team", uselist=False, backref="task_for_team_data")
 
 
 class Hint(db.Model):

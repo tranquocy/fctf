@@ -6,7 +6,7 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from app import app, db, lm, EncodeAES, DecodeAES
 from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, \
     CreateHintForm, TeamForm, UserForm, ChangePasswordForm, HintForm, TaskForm
-from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404
+from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404, TaskForTeam
 from sqlalchemy import desc
 from flask.ext.admin.contrib.sqla import ModelView
 
@@ -260,8 +260,10 @@ def all_task():
 @login_required
 def task(task_id=None):
     task = get_object_or_404(Task, Task.id == task_id)
-    if not task.is_open and not g.user.is_admin():
-        return redirect(url_for('index'))
+    if not task.can_access_by(g.user):
+        if task.is_team_only():
+            flash('This task is for selected team only', category='danger')
+        return redirect(url_for('all_task'))
     form = SubmitFlagForm(task.id)
     if form.validate_on_submit():
         log_data = SubmitLogs(g.user, task, form.flag.data)
@@ -444,6 +446,20 @@ class SubmitLogView(ModelView):
     def __init__(self, session, **kwargs):
         # You can pass name and other parameters if you want to
         super(SubmitLogView, self).__init__(SubmitLogs, session, **kwargs)
+
+    def is_accessible(self):
+        return g.user.is_authenticated() and g.user.is_admin()
+
+
+class TaskForTeamView(ModelView):
+
+    # Override displayed fields
+    column_list = ('task', 'team', 'created_at')
+    column_filters = ('task', 'team')
+
+    def __init__(self, session, **kwargs):
+        # You can pass name and other parameters if you want to
+        super(TaskForTeamView, self).__init__(TaskForTeam, session, **kwargs)
 
     def is_accessible(self):
         return g.user.is_authenticated() and g.user.is_admin()
