@@ -6,11 +6,11 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from app import app, db, lm, EncodeAES, DecodeAES
 from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, \
     CreateHintForm, TeamForm, UserForm, ChangePasswordForm, HintForm, TaskForm
-from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404, TaskForTeam
+from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404, TaskForTeam, Category
 from sqlalchemy import desc
 from flask.ext.admin.contrib.sqla import ModelView
 from hashlib import md5
-
+import ss_data
 
 def admin_required(f):
     @wraps(f)
@@ -26,11 +26,6 @@ def admin_required(f):
 def before_request():
     g.user = current_user
     g.cookie = request.cookies.get('ss_sign')
-
-
-def create_encrypted_cookie():
-    raw = '_'.join([str(g.user.id), app.config['AES_KEY']])
-    return md5(raw).hexdigest()
 
 
 def set_all_cookie(response, sign_cookie):
@@ -53,8 +48,8 @@ def delete_all_cookie(response):
 @app.after_request
 def set_encrypted_cookie(response):
     if g.user.is_authenticated():
-        if not g.cookie or g.cookie != create_encrypted_cookie():
-            g.cookie = create_encrypted_cookie()
+        if not g.cookie or g.cookie != compute_sign_hash([str(g.user.id)]):
+            g.cookie = compute_sign_hash([str(g.user.id)])
             set_all_cookie(response, g.cookie)
     elif g.cookie:
         delete_all_cookie(response)
@@ -243,7 +238,8 @@ def create_task():
             description=form.description.data,
             point=form.point.data,
             flag=form.flag.data,
-            is_open=form.is_open.data
+            is_open=form.is_open.data,
+            category=form.category.data,
         )
         db.session.add(new_task)
         db.session.commit()
@@ -488,12 +484,33 @@ class TaskForTeamView(ModelView):
     def is_accessible(self):
         return g.user.is_authenticated() and g.user.is_admin()
 
+
+class CategoryView(ModelView):
+
+    # Override displayed fields
+    column_list = ('id', 'name', 'description')
+    column_filters = ('name', 'description')
+
+    form_excluded_columns = ('tasks')
+
+    def __init__(self, session, **kwargs):
+        # You can pass name and other parameters if you want to
+        super(CategoryView, self).__init__(Category, session, **kwargs)
+
+    def is_accessible(self):
+        return g.user.is_authenticated() and g.user.is_admin()
+
+
+def compute_sign_hash(values):
+    values.append(app.config['AES_KEY'])
+    raw = '_'.join(values)
+    return md5(raw).hexdigest()
+
+
 # API
 @app.route('/api/v1/get_result', methods=['GET'])
 def get_result():
     resp = {'success': 0}
-    task = Task.query.get(request.args.get('task_id', ''))
-    team = Team.query.get(request.args.get('team_id', ''))
     user = User.query.get(request.args.get('user_id', ''))
     if task and team:
         resp['solved'] = (task in team.solved_tasks())

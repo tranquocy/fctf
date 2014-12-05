@@ -2,7 +2,7 @@ from app import app
 from flask import g
 from flask_wtf import Form
 from wtforms import TextField, SubmitField, validators, PasswordField, HiddenField, BooleanField, IntegerField, FormField
-from models import User, Team, Task, Hint
+from models import User, Team, Task, Hint, Category
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms_alchemy import model_form_factory, ModelFieldList, ModelFormField
 ModelForm = model_form_factory(Form)
@@ -158,11 +158,16 @@ class LeaveTeamForm(Form):
             return True
 
 
+def category_query():
+    return Category.query.all()
+
+
 class CreateTaskForm(Form):
     name = TextField('Name',  [
         validators.Required('Please enter task name.'),
         validators.Length(max=255, message='Task name is at most 255 characters.'),
     ])
+    category = QuerySelectField(query_factory=category_query, get_label='name')
     point = IntegerField('Point')
     description = TextField('Description')
     flag = TextField('Flag')
@@ -224,6 +229,8 @@ class UserForm(ModelForm):
 class TaskForm(ModelForm):
     class Meta:
         model = Task
+
+    category = QuerySelectField(query_factory=category_query, get_label='name')
 
 
 class HintForm(ModelForm):

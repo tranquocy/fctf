@@ -139,6 +139,7 @@ class Task(db.Model):
     flag = db.Column(db.String(255))
     is_open = db.Column(db.Boolean)
     hints = db.relationship('Hint', backref='task', lazy='dynamic')
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
 
     def __repr__(self):
         return '<Task %r>' % (self.name)
@@ -149,12 +150,13 @@ class Task(db.Model):
     def is_team_only(self):
         return self.task_for_team_data
 
-    def __init__(self, name='', description='', flag='', point=0, is_open=False):
+    def __init__(self, name='', description='', flag='', point=0, is_open=False, category=None):
         self.name = name
         self.description = description
         self.point = point
         self.flag = flag
         self.is_open = is_open
+        self.category = category
 
     def can_access_by(self, user):
         if user.is_admin():
@@ -234,3 +236,17 @@ class SubmitLogs(db.Model):
         self.task_id = task.id
         self.flag = flag
         self.created_at = datetime.datetime.now()
+
+
+class Category(db.Model):
+    __tablename__ = 'categories'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    description = db.Column(db.Text)
+    tasks = db.relationship('Task', backref='category', lazy='dynamic')
+
+    def __repr__(self):
+        return '<Category %r>' % self.name
+
+    def __str__(self):
+        return self.name

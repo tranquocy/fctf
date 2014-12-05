@@ -10,6 +10,7 @@
 <div class="row">
   <div class="col-md-12">
       <h1>{{ task.name }} ({{ task.point }}pt)</h1>
+      <h6><span class="label label-danger">{{ task.category.name }}</span></h6>
       <br>
       <div>
       {{ task.description|safe }}

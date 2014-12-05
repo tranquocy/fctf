@@ -9,7 +9,7 @@
     {% for task in tasks %}
     {% if task.can_access_by(g.user) %}
     <a class="btn btn-{{ 'success' if g.user.is_solved_task(task) else 'default' }} btn-large task-item" href="{{ url_for('task', task_id=task.id)}}">
-    	{{ task.name }}&nbsp;&nbsp;&nbsp;<span class="label label-primary">{{ task.point }}pt</span>
+        <span class="label label-danger">{{ task.category.name }}</span>&nbsp;&nbsp;{{ task.name }}&nbsp;&nbsp;&nbsp;<span class="label label-primary">{{ task.point }}pt</span>
     </a>
     {% endif %}
     {% endfor %}

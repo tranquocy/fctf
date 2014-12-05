@@ -12,6 +12,7 @@
         <thead>
           <tr>
             <td>Name</td>
+            <td>Category</td>
             <td>Action</td>
             <td>Status</td>
             <td>Point</td>
@@ -22,6 +23,7 @@
           {% for task in tasks %}
           <tr>
             <td><a href="{{ url_for('task', task_id=task.id)}}">{{ task.name }}</td>
+            <td>{{ task.category }}</td>
             <td>
               <a class="label label-primary" href="{{ url_for('edit_task', task_id=task.id) }}">Edit</a>
               <a class="label label-danger" href="{{ url_for('confirm_delete_task', task_id=task.id) }}">Delete</a>
