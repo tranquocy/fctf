@@ -166,6 +166,11 @@ class Task(db.Model):
         else:
             return self.is_open
 
+    def can_access_by_team(self, team):
+        if not self.is_team_only():
+            return True
+        else:
+            return team in self.for_teams
 
 class TaskForTeam(db.Model):
     __tablename__ = 'task_for_teams'

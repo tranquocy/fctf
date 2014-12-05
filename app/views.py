@@ -10,7 +10,8 @@ from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, g
 from sqlalchemy import desc
 from flask.ext.admin.contrib.sqla import ModelView
 from hashlib import md5
-import ss_data
+import time
+import math
 
 def admin_required(f):
     @wraps(f)
@@ -512,10 +513,33 @@ def compute_sign_hash(values):
 def get_result():
     resp = {'success': 0}
     user = User.query.get(request.args.get('user_id', ''))
-    if task and team:
-        resp['solved'] = (task in team.solved_tasks())
+    code = request.args.get('code', '')
+    task_type = request.args.get('type', '').lower()
+    category = Category.query.filter(Category.description == task_type).first()
+    if category and user and compute_sign_hash([str(user.id), task_type]) == code:
+        if user.team:
+            resp['solved'] = [t in user.team.solved_tasks() for t in category.tasks if t.can_access_by_team(user.team)]
+        else:
+            resp['solved'] = [t in user.solved_tasks for t in category.tasks if t.can_access_by(user)]
         resp['success'] = 1
-    elif task and user:
-        resp['solved'] = (task in user.solved_tasks)
-        resp['success'] = 1
+    else:
+        pass
+    return jsonify(resp)
+
+@app.route('/api/v1/post_result', methods=['GET'])
+def post_result():
+    resp = {'success': 0}
+    user = User.query.get(request.args.get('user_id', ''))
+    task = Task.query.get(request.args.get('task_id', ''))
+    timestamp = request.args.get('time', '')
+    code = request.args.get('code', '')
+    if task and user and timestamp and compute_sign_hash([str(user.id), str(task.id), timestamp]) == code:
+        if (user.team and task not in user.team.solved_tasks()) or task not in user.solved_tasks:
+            log_data = SubmitLogs(user, task, '########[API-CENSORED]########')
+            db.session.add(log_data)
+            solved_data = UserSolved(user, task)
+            db.session.add(solved_data)
+            db.session.commit()
+            resp['success'] = 1
+
     return jsonify(resp)
