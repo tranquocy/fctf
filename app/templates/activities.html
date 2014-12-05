@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row clearfix">
+  <div class="col-md-12 column">
+    <h2>Activities</h2>
+    <table class="activities">
+    {% for activity in activities %}
+      <tr>
+        <td>{{ activity.created_at.strftime('%Y/%m/%d %H:%M:%S') }}&nbsp;:&nbsp;</td>
+        <td>{{ activity.user.get_profile_link()|safe }} solved task <a href="{{ url_for('task', task_id=activity.task.id)}}">{{ activity.task.name }}</a> and scored <strong>{{ activity.task.point }} points</strong>.</td>
+      </tr>
+    {% endfor %}
+    </table>
+</div>
+{% endblock %}

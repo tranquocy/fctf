@@ -34,6 +34,7 @@
                 {% if g.user.is_authenticated() %}
                 <ul class="nav navbar-nav">
                   <li {% if request.path == url_for('index') %}class="active"{% endif %}><a href="{{ url_for('index') }}">Home</a></li>
+                  <li {% if request.path == url_for('show_activities') %}class="active"{% endif %}><a href="{{ url_for('show_activities') }}">Activities</a></li>
                   <li {% if request.path == url_for('all_task') %}class="active"{% endif %}><a href="{{ url_for('all_task') }}">Tasks</a></li>
                   <li {% if request.path == url_for('all_team') %}class="active"{% endif %}><a href="{{ url_for('all_team') }}">Teams</a></li>
                   <li {% if request.path == url_for('scoreboard') %}class="active"{% endif %}><a href="{{ url_for('scoreboard') }}">Scoreboard</a></li>

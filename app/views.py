@@ -66,14 +66,22 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+@app.route('/activities')
+@login_required
+def show_activities():
+    activities = UserSolved.query.order_by(desc(UserSolved.created_at)).limit(50).all()
+    return render_template(
+        'activities.html',
+        activities=activities,
+        user=g.user
+    )
+
+
 @app.route('/')
 @app.route('/index')
 def index():
-    activities = UserSolved.query.order_by(desc(UserSolved.created_at)).limit(30).all()
     return render_template(
         'index.html',
-        activities=activities,
-        user=g.user
     )
 
 
