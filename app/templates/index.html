@@ -1,4 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% if config['GAME_STARTED'] or (g.user.is_authenticated() and g.user.is_admin()) %}
 <embed width="800px" height="100%" style="z-index:99" src="/static/swf/iamback.swf">
+{% endif %}
 {% endblock %}
