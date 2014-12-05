@@ -1,7 +1,7 @@
 import json
 from Crypto.Cipher import AES
 from functools import wraps
-from flask import render_template, flash, redirect, url_for, request, g, make_response, send_from_directory, abort
+from flask import render_template, flash, redirect, url_for, request, g, make_response, send_from_directory, abort, jsonify
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, EncodeAES, DecodeAES
 from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, \
@@ -9,6 +9,7 @@ from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeam
 from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404, TaskForTeam
 from sqlalchemy import desc
 from flask.ext.admin.contrib.sqla import ModelView
+from hashlib import md5
 
 
 def admin_required(f):
@@ -24,24 +25,39 @@ def admin_required(f):
 @app.before_request
 def before_request():
     g.user = current_user
-    g.cookie = request.cookies.get('data')
+    g.cookie = request.cookies.get('ss_sign')
 
 
 def create_encrypted_cookie():
-    data = {'user': g.user.username, 'user_id': g.user.id}
+    raw = '_'.join([str(g.user.id), app.config['AES_KEY']])
+    return md5(raw).hexdigest()
+
+
+def set_all_cookie(response, sign_cookie):
+    response.set_cookie('ss_sign', sign_cookie)
+    response.set_cookie('ss_user_id', str(g.user.id))
+    response.set_cookie('ss_user_name', g.user.name)
     if g.user.team:
-        data['team'] = g.user.team.name
-    cipher = AES.new(app.config['AES_KEY'])
-    return EncodeAES(cipher, json.dumps(data))
+        response.set_cookie('ss_team_name', g.user.team.name)
+    else:
+        response.set_cookie('ss_team_name', g.user.name)
+
+
+def delete_all_cookie(response):
+    response.delete_cookie('ss_sign')
+    response.delete_cookie('ss_user_id')
+    response.delete_cookie('ss_user_name')
+    response.delete_cookie('ss_team_name')
+
 
 @app.after_request
 def set_encrypted_cookie(response):
     if g.user.is_authenticated():
         if not g.cookie or g.cookie != create_encrypted_cookie():
             g.cookie = create_encrypted_cookie()
-            response.set_cookie('data', g.cookie)
+            set_all_cookie(response, g.cookie)
     elif g.cookie:
-        response.delete_cookie('data')
+        delete_all_cookie(response)
     return response
 
 
@@ -101,7 +117,7 @@ def logout():
     logout_user()
     flash('Logged out successfully.', category='success')
     resp = make_response(redirect(url_for('index')))
-    resp.delete_cookie('data')
+    resp.delete_cookie('ss_sign')
     return redirect(url_for('index'))
 
 
@@ -463,3 +479,18 @@ class TaskForTeamView(ModelView):
 
     def is_accessible(self):
         return g.user.is_authenticated() and g.user.is_admin()
+
+# API
+@app.route('/api/v1/get_result', methods=['GET'])
+def get_result():
+    resp = {'success': 0}
+    task = Task.query.get(request.args.get('task_id', ''))
+    team = Team.query.get(request.args.get('team_id', ''))
+    user = User.query.get(request.args.get('user_id', ''))
+    if task and team:
+        resp['solved'] = (task in team.solved_tasks())
+        resp['success'] = 1
+    elif task and user:
+        resp['solved'] = (task in user.solved_tasks)
+        resp['success'] = 1
+    return jsonify(resp)
