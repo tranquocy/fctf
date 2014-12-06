@@ -78,7 +78,7 @@ class User(db.Model):
         return False
 
     def get_total_score(self):
-        return sum(task.point for task in self.solved_tasks)
+        return sum(data.point for data in self.solved_data)
 
     def is_admin(self):
         return self.role == ROLE_ADMIN
