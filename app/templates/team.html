@@ -27,5 +27,16 @@
       </table>
       {% endif %}
   </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h3>Achievements</h3>
+          <ul>
+          {% for task in team.solved_tasks() %}
+            <li>{% if task %}<a href="{{ url_for('task', task_id=task.id)}}"><small><span class="label label-danger">{{ task.category.name }}</span></small> {{ task.name }}</a>{% else %}&lt;deleted task&gt;{% endif %}</li>
+          {% endfor %}
+          </ul>
+      </div>
+  </div>
+</div>
 </div>
 {% endblock %}
