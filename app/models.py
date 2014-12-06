@@ -121,7 +121,11 @@ class Team(db.Model):
         return ''.join(random.choice(charset) for _ in range(32))
 
     def get_total_score(self):
-        return sum(task.point for task in self.solved_tasks())
+        total = 0
+        for task in self.solved_tasks():
+            results = UserSolved.query.filter(UserSolved.task==task).all()
+            total += max([data.point for data in results if data.user in task.solved_users])
+        return total
 
     def solved_tasks(self):
         tasks = []
