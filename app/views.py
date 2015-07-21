@@ -273,8 +273,8 @@ def all_team():
 @app.route('/task/all', methods=['GET', 'POST'])
 @login_required
 def all_task():
-    tasks = Task.query.all()
-    return render_template('all_task.html', tasks=tasks)
+    categories = Category.query.all()
+    return render_template('all_task.html', categories=categories)
 
 
 @app.route('/task/<int:task_id>', methods=['GET', 'POST'])

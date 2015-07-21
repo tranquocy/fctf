@@ -6,12 +6,17 @@
   <div class="col-md-12">
     <h1>All Tasks</h1>
     <br>
-    {% for task in tasks %}
-    {% if task.can_access_by(g.user) %}
-    <a class="btn btn-{{ 'success' if g.user.is_solved_task(task) else 'default' }} btn-large task-item" href="{{ url_for('task', task_id=task.id)}}">
-        <span class="label label-danger">{{ task.category.name }}</span>&nbsp;&nbsp;{{ task.name }}&nbsp;&nbsp;&nbsp;<span class="label label-primary">{{ task.point }}pt</span>
-    </a>
-    {% endif %}
+    {% for category in categories %}
+    <h3>{{ category.name }}</h3>
+    <ul>
+        {% for task in category.tasks %}
+            {% if task.can_access_by(g.user) %}
+        <li><a class="btn btn-{{ 'success' if g.user.is_solved_task(task) else 'default' }} btn-large task-item" href="{{ url_for('task', task_id=task.id)}}">
+            <span class="label label-danger">{{ task.category.name }}</span>&nbsp;&nbsp;{{ task.name }}&nbsp;&nbsp;&nbsp;<span class="label label-primary">{{ task.point }}pt</span>
+        </a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
     {% endfor %}
   </div>
 </div>
