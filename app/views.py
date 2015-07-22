@@ -5,13 +5,14 @@ from flask import render_template, flash, redirect, url_for, request, g, make_re
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, EncodeAES, DecodeAES
 from forms import LoginForm, SignupForm, CreateTeamForm, JoinTeamForm, LeaveTeamForm, CreateTaskForm, SubmitFlagForm, \
-    CreateHintForm, TeamForm, UserForm, ChangePasswordForm, HintForm, TaskForm
-from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404, TaskForTeam, Category
+    CreateHintForm, TeamForm, UserForm, ChangePasswordForm, HintForm, TaskForm, SendForgotPasswordForm, ResetPasswordForm
+from models import User, Team, Task, Hint, UserSolved, SubmitLogs, ROLE_ADMIN, get_object_or_404, TaskForTeam, Category, UserForgotPassword
 from sqlalchemy import desc
 from flask.ext.admin.contrib.sqla import ModelView
 from hashlib import md5
 import time
 import math
+from utils import generate_token, send_email
 
 def admin_required(f):
     @wraps(f)
@@ -192,6 +193,53 @@ def change_password(user_id=None):
         flash('Password changed successfully.', category='success')
         return redirect(url_for('profile', user_id=user.id))
     return render_template('change_password.html', user=user, form=form)
+
+
+@app.route('/password/forgot', methods=['GET', 'POST'])
+def forgot_password():
+    form = SendForgotPasswordForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        user_forgot_password = UserForgotPassword.query.filter_by(user_id=user.id).first()
+        if not user_forgot_password:
+            user_forgot_password = UserForgotPassword(user)
+        else:
+            user_forgot_password.refresh()
+        db.session.add(user_forgot_password)
+        db.session.commit()
+
+        token = user_forgot_password.token.encode('base64').strip().replace('=', '_')
+        send_email(
+            'Framgia CTF - Reset Password',
+            app.config['MAIL_SENDERS']['admin'],
+            [user.email],
+            'reset_password',
+            dict(token=token)
+        )
+        flash('Reset password mail sent.', category='success')
+        return render_template('reset_password_sent.html', user=user)
+
+    return render_template('forgot_password.html', form=form)
+
+
+@app.route('/password/reset/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    try:
+        token = token.replace('_', '=').decode('base64')
+    except Exception, e:
+        abort(404)
+    user_forgot_password = UserForgotPassword.query.filter_by(token=token).first_or_404()
+
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user_forgot_password.user.set_password(form.new_password.data)
+        user_forgot_password.refresh()
+        db.session.add(user_forgot_password)
+        db.session.commit()
+        flash('Password changed successfully.', category='success')
+        return redirect(url_for('login'))
+
+    return render_template('reset_password.html', form=form)
 
 
 @app.route('/team/create', methods=['GET', 'POST'])

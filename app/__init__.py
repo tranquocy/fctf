@@ -3,6 +3,7 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from flask.ext.admin import Admin
+from flask_mail import Mail
 import base64
 
 # the block size for the cipher object; must be 16, 24, or 32 for AES
@@ -29,6 +30,8 @@ db = SQLAlchemy(app)
 lm = LoginManager()
 lm.init_app(app)
 lm.login_view = 'login'
+
+mail = Mail(app)
 
 from app import views, models
 

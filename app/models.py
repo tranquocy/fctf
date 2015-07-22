@@ -8,6 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import exc
 from sqlalchemy.sql import func
 from werkzeug.exceptions import abort
+from utils import generate_token
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
@@ -259,3 +260,25 @@ class Category(db.Model):
 
     def __str__(self):
         return self.name
+
+
+class UserForgotPassword(db.Model):
+
+    __tablename__ = 'user_forgot_passwords'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
+    token = db.Column(db.String(40))
+    expire_at = db.Column(db.DateTime, default=datetime.datetime.now() + datetime.timedelta(minutes=30))
+
+    user = db.relationship('User', backref=db.backref('forgot_password', lazy='dynamic', cascade='all'))
+
+    def __init__(self, user):
+        self.user = user
+        self.token = generate_token()
+
+    def refresh(self):
+        self.token = generate_token()
+        self.expire_at = datetime.datetime.now() + datetime.timedelta(minutes=30)
+
+    def is_expired(self):
+        return datetime.datetime.now() >= self.expire_at
