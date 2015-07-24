@@ -239,7 +239,7 @@ def reset_password(token):
         flash('Password changed successfully.', category='success')
         return redirect(url_for('login'))
 
-    return render_template('reset_password.html', form=form)
+    return render_template('reset_password.html', form=form, username=user_forgot_password.user.username)
 
 
 @app.route('/team/create', methods=['GET', 'POST'])
