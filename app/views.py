@@ -492,7 +492,7 @@ class UserView(ModelView):
     column_list = ('username', 'name', 'email', 'team', 'role')
     column_filters = ('username', 'name', 'email', 'team')
 
-    form_excluded_columns = ('solved_tasks', 'solved_data', 'password', 'log_submit')
+    form_excluded_columns = ('solved_tasks', 'solved_data', 'password', 'log_submit', 'forgot_password')
 
     def __init__(self, session, **kwargs):
         # You can pass name and other parameters if you want to
