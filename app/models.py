@@ -119,7 +119,7 @@ class Team(db.Model):
     @staticmethod
     def genInviteCode():
         charset = string.ascii_letters + string.digits
-        return ''.join(random.choice(charset) for _ in range(32))
+        return ''.join(random.choice(charset) for _ in range(16))
 
     def get_total_score(self):
         total = 0

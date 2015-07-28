@@ -13,6 +13,7 @@ from hashlib import md5
 import time
 import math
 from utils import generate_token, send_email
+from flask_admin.model.template import macro
 
 def admin_required(f):
     @wraps(f)
@@ -496,6 +497,25 @@ class UserView(ModelView):
     def __init__(self, session, **kwargs):
         # You can pass name and other parameters if you want to
         super(UserView, self).__init__(User, session, **kwargs)
+
+    def is_accessible(self):
+        return g.user.is_authenticated() and g.user.is_admin()
+
+
+class TeamView(ModelView):
+    # Override displayed fields
+    column_list = ('name', 'description', 'invite_code', 'members')
+    column_filters = ('name', 'description', 'invite_code', 'members')
+
+    form_excluded_columns = ('task_for_team_data', 'team_only_tasks')
+
+    column_formatters = dict(members=macro('render_members'))
+
+    list_template = 'admin/team_list.html'
+
+    def __init__(self, session, **kwargs):
+        # You can pass name and other parameters if you want to
+        super(TeamView, self).__init__(Team, session, **kwargs)
 
     def is_accessible(self):
         return g.user.is_authenticated() and g.user.is_admin()

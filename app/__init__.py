@@ -37,6 +37,7 @@ from app import views, models
 
 admin = Admin(app, url='/db')
 admin.add_view(views.UserView(db.session, name='Users'))
+admin.add_view(views.TeamView(db.session, name='Teams'))
 admin.add_view(views.SubmitLogView(db.session, name='Submit Logs'))
 admin.add_view(views.TaskForTeamView(db.session, name='Task For Teams'))
 admin.add_view(views.CategoryView(db.session, name='Category'))

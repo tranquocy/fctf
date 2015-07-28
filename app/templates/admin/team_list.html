@@ -1,0 +1,7 @@
+{% extends 'admin/model/list.html' %}
+{{ super() }}
+{% macro render_members(model, column) %}
+{% for member in model.members %}
+&nbsp;{{ member.name }}&nbsp;
+{% endfor %}
+{% endmacro %}
