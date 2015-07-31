@@ -583,6 +583,20 @@ class CategoryView(ModelView):
         return g.user.is_authenticated() and g.user.is_admin()
 
 
+class UserSolvedView(ModelView):
+
+    # Override displayed fields
+    column_list = ('id', 'user_id', 'user.name', 'task_id', 'task.name', 'user.team.name', 'created_at')
+    column_filters = ('user_id', 'task_id', 'created_at')
+
+    def __init__(self, session, **kwargs):
+        # You can pass name and other parameters if you want to
+        super(UserSolvedView, self).__init__(UserSolved, session, **kwargs)
+
+    def is_accessible(self):
+        return g.user.is_authenticated() and g.user.is_admin()
+
+
 def compute_sign_hash(values):
     values.append(app.config['AES_KEY'])
     raw = '_'.join(values)
