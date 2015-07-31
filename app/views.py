@@ -483,6 +483,19 @@ def download_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 
+@app.route('/game', methods=['GET', 'POST'])
+@login_required
+def game():
+    if app.config['GAME_STARTED'] or (g.user.is_authenticated() and g.user.is_admin()):
+        if g.user.team:
+            return render_template('game.html')
+        else:
+            flash('You have to join a team to see this page', category='danger')
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+
 # admin pages
 class UserView(ModelView):
     # Disable model creation
@@ -528,7 +541,7 @@ class SubmitLogView(ModelView):
 
     # Override displayed fields
     column_list = ('user', 'flag', 'task', 'user.team', 'created_at')
-    column_filters = ('user', 'task', 'created_at')
+    column_filters = ('user', 'task', 'flag', 'created_at')
 
     column_default_sort = ('created_at', True)
 
@@ -611,3 +624,19 @@ def post_result():
             resp['success'] = 1
 
     return jsonify(resp)
+
+@app.route('/api/v1/pre_check', methods=['GET'])
+def anti_cheat():
+    resp = {'success': 1}
+    try:
+        user = User.query.get(request.args.get('user_id', ''))
+        task = Task.query.get(request.args.get('task_id', ''))
+        if task and user:
+            log_data = SubmitLogs(user, task, '##########[CHEATED?]##########')
+            db.session.add(log_data)
+            db.session.commit()
+
+    except Exception, e:
+        print e
+    finally:
+        return jsonify(resp)

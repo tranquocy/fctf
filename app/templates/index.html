@@ -9,9 +9,11 @@
       <p>
         This is site for CTF Contest, organized by <strong>Problem? Team</strong> from <strong>Framgia Vietnam</strong>
       </p>
+      {% if config['GAME_STARTED'] or (g.user.is_authenticated() and g.user.is_admin()) %}
       <p>
-        <a class="btn btn-primary btn-large" href="{{ url_for('signup') }}">Sign Up</a>
+        <a target="_blank" class="btn btn-primary btn-large" href="{{ url_for('game') }}">Start !</a>
       </p>
+      {% endif %}
     </div>
   </div>
 </div>
