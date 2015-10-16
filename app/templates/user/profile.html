@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+{% if join_team_form %}
+{% for message in join_team_form.invite_code.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+{% endif %}
+{% if join_team_form %}
+{% for message in leave_team_form.team_id.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+{% endif %}
+<div class="row clearfix">
+
+<div class="row">
+  <div class="col-md-8">
+      <p><img src="{{ user.get_avatar_url()|safe }}" width="160" height="160"/></p>
+      <h1>{{ user.name }}</h1>
+      <br>
+      <table class="table table-striped">
+        <tr>
+          <td><h6>Username:</h6></td>
+          <td><span class="glyphicon glyphicon-user"></span> {{ user.username }}</td>
+        </tr>
+        <tr>
+          <td><h6>Email:</h6></td>
+          <td><span class="glyphicon glyphicon-envelope"></span> {{ user.email }}</td>
+        </tr>
+      </table>
+      {% if g.user.id == user.id or g.user.is_admin() %}
+      <a class="btn btn-primary" href="{{ url_for('user.change_password', user_id=user.id) }}">Change Password</a>
+      {% if g.user.id == user.id and not locked_profile%}
+      <a class="btn btn-primary" href="{{ url_for('user.edit_profile') }}">Edit Profile</a>
+      {% endif %}
+      {% endif %}
+  </div>
+  <div class="col-md-4">
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <h3 class="panel-title">Team</h3>
+      </div>
+      <div class="panel-body">
+        {% if user.team %}
+          <a href="{{ url_for('team.show_team', team_id=user.team.id) }}">{{ user.team.name }}</a>
+          {% if g.user.id == user.id %}
+          <br>
+          <br>
+          <form role="form" action="" method="POST">
+            <input name="team_id" type="hidden" value="{{ user.team.id }}">
+            {{ leave_team_form.csrf_token }}
+            <br>
+            <button class="btn btn-primary" type="submit">Leave Team</button>
+          </form>
+          {% endif %}
+        {% else %}
+          {% if g.user.id == user.id %}
+          You're not belong to any team.
+          {% else %}
+          This user doesn't belong to any team.
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+    {% if g.user.id == user.id and not user.team and not locked_team %}
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Create Team</h3>
+      </div>
+      <div class="panel-body">
+        <a class="btn btn-primary" href="{{ url_for('team.create_team')}} ">Create Team</a>
+      </div>
+    </div>
+    <div class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title">Join Team</h3>
+      </div>
+      <div class="panel-body">
+        <form role="form" action="" method="POST">
+            <label>{{ join_team_form.invite_code.label }}</label>
+            <input name="invite_code" type="text" class="form-control" required autofocus>
+            {{ join_team_form.hidden_tag() }}
+            <br>
+            <button class="btn btn-primary" type="submit">Join Team</button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <h3>Achievements</h3>
+    {% for task in user.solved_tasks %}
+    {% if g.user.id == user.id %}You{% else %}{{ user.name }}{% endif %} solved task {% if task %}<a href="{{ url_for('task.show_task', task_id=task.id)}}">{{ task.name }}</a>{% else %}&lt;deleted task&gt;{% endif %}<br>
+    {% endfor %}
+  </di>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% block content %}
+{% for message in form.username.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+{% for message in form.password.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+<form class="form-signin" role="form" action="" method="POST">
+    <h2 class="form-signin-heading">Please login</h2>
+    <input name="username" type="text" class="form-control" placeholder="Username" required autofocus>
+    <input name="password" type="password" class="form-control" placeholder="Password" required>
+    {{ form.hidden_tag() }}
+    <br>
+    <p>
+        <a href="{{ url_for('user.forgot_password') }}">Forgot Password ?</a>
+    </p>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+</form>
+{% endblock %}

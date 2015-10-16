@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row clearfix">
+
+<div class="row">
+  <div class="col-md-12">
+      <h1>All Teams</h1>
+      <br>
+      <table class="table table-borderd">
+        <thead>
+          <tr>
+            <td>Name</td>
+            <td>Description</td>
+            <td>Number of members</td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for team in teams if team.members.count() %}
+          <tr>
+            <td><a href="{{ url_for('team.show_team', team_id=team.id)}}">{{ team.name }}</td>
+            <td>{{ team.description }}</td>
+            <td>{{ team.members.count() }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
+</div>
+{% endblock %}
