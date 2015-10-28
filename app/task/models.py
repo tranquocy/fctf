@@ -1,3 +1,5 @@
+from sqlalchemy.orm import backref
+
 from app import db
 import app.hint.models
 import app.team.models
@@ -10,7 +12,7 @@ class Task(db.Model):
     point = db.Column(db.Integer, default=0)
     flag = db.Column(db.String(255))
     is_open = db.Column(db.Boolean)
-    hints = db.relationship(app.hint.models.Hint, backref='task', lazy='dynamic')
+    hints = db.relationship(app.hint.models.Hint, backref=backref('task'), lazy='dynamic')
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
 
     def __repr__(self):
@@ -51,7 +53,7 @@ class TaskForTeam(db.Model):
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
     created_at = db.Column(db.DateTime)
-    task = db.relationship(Task, uselist=False, backref="task_for_team_data")
+    task = db.relationship(Task, uselist=False, backref=backref("task_for_team_data", cascade="all, delete-orphan"))
     team = db.relationship(app.team.models.Team, uselist=False, backref="task_for_team_data")
 
 
