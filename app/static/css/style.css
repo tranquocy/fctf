@@ -56,6 +56,34 @@ body {
 
 .task-item {
   margin: 2px 0px;
+  width: 120px;
+  height: 120px;
+}
+
+.task-inner {
+  height: 100%;
+  width: 100%;
+  text-align: center;
+}
+
+.task-container {
+  width: 372px;
+  vertical-align: super;
+}
+.task-inner td {
+  word-wrap:break-word;
+}
+
+.ctf-bg {
+  background-color: rgb(255, 138, 128);
+}
+
+.logic-bg {
+  background-color: rgb(255, 255, 141);
+}
+
+.code-bg {
+  background-color: rgb(204, 255, 144);
 }
 
 .admin-solved-user {
