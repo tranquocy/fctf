@@ -1,8 +1,10 @@
 import string
 import random
+from sqlalchemy.sql import text
 
 from app import db
 import app.user.models
+from app.common.utils import compute_color_value, ordinal
 
 class Team(db.Model):
     __tablename__ = 'teams'
@@ -29,15 +31,38 @@ class Team(db.Model):
         charset = string.ascii_letters + string.digits
         return ''.join(random.choice(charset) for _ in range(16))
 
+    @staticmethod
+    def get_team_points():
+        results = db.session.execute(text("select team_id, sum(point) as total_point from (select team_id, task_id, max(point) as point from user_solved group by team_id, task_id) a group by team_id order by total_point desc"))
+        teams_data = []
+        for team_id, point in results:
+            if team_id:
+                team = Team.query.get(team_id)
+                teams_data.append((team, point))
+
+        return teams_data
+
     def get_total_score(self):
-        total = 0
-        for task in self.solved_tasks():
-            results = app.user.models.UserSolved.query.filter(app.user.models.UserSolved.task == task).all()
-            total += max([data.point for data in results if data.user in task.solved_users])
-        return total
+        sql = text("select sum(point) from (select max(point) as point from (select task_id, point from user_solved where team_id = :team_id) a group by task_id) b")
+        result = db.session.execute(sql, {'team_id': self.id})
+
+        for point in result:
+            return int(point[0])
+
+    def get_place(self):
+        place = 1
+        for team, point in Team.get_team_points():
+            if self == team:
+                return ordinal(place)
+            place += 1
+
+        return ordinal(999)
 
     def solved_tasks(self):
         tasks = []
         for user in self.members:
             tasks += user.solved_tasks
         return set(tasks)
+
+    def color_hash(self):
+        return compute_color_value(str(self.id) + self.name.encode('utf-8'))

@@ -1,17 +1,71 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row clearfix">
-  <div class="col-md-12 column">
+  <div class="col-md-10 col-md-offset-1">
     <div class="jumbotron">
-      <h1>
-        Hello !
-      </h1>
-      <p>
-        This is site for CTF Contest, organized by <strong>Problem? Team</strong> from <strong>Framgia Vietnam</strong>
-      </p>
-      <p>
-        <a class="btn btn-primary btn-large" href="{{ url_for('user.signup') }}">Sign Up</a>
-      </p>
+      <div id="carousel-ctf" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+          <li data-target="#carousel-ctf" data-slide-to="0" class="active"></li>
+          <li class="" data-target="#carousel-ctf" data-slide-to="1"></li>
+          <li class="" data-target="#carousel-ctf" data-slide-to="2"></li>
+          <li class="" data-target="#carousel-ctf" data-slide-to="3"></li>
+          <li class="" data-target="#carousel-ctf" data-slide-to="4"></li>
+        </ol>
+        <div class="carousel-inner">
+          <div class="item active">
+            <img src="{{ url_for('static', filename='img/slider1.jpg') }}">
+            <div class="carousel-caption">
+              <h3>The Final Countdown</h3>
+              <p>The most epic CTF ever !</p>
+            </div>
+          </div>
+          <div class="item">
+            <img src="{{ url_for('static', filename='img/slider2.jpg') }}">
+            <div class="carousel-caption">
+              <h3>Tick Tock Tick Tock</h3>
+              <p>Can you escape ?</p>
+            </div>
+          </div>
+          <div class="item">
+            <img src="{{ url_for('static', filename='img/slider3.jpg') }}">
+            <div class="carousel-caption">
+              <h3>We're Framgia-ers !</h3>
+              <p>We will never give up</p>
+            </div>
+          </div>
+          <div class="item">
+            <img src="{{ url_for('static', filename='img/slider4.jpg') }}">
+            <div class="carousel-caption">
+              <h3>Teamwork</h3>
+              <p>Let's have fun !</p>
+            </div>
+          </div>
+          <div class="item">
+            <img src="{{ url_for('static', filename='img/slider5.jpg') }}">
+            <div class="carousel-caption">
+              <h3>Game Over</h3>
+              <p>We're winners ! We're champions !</p>
+            </div>
+          </div>
+        </div>
+        <a class="left carousel-control" href="#carousel-ctf" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" href="#carousel-ctf" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+      </div>
+      <div class="jumbotron-contents">
+        <h1>
+          Hello !
+        </h1>
+        <p>
+          This is site for CTF Contest, organized by <strong>Problem? Team</strong> from <strong>Framgia Vietnam</strong>
+        </p>
+        <p>
+          <a class="btn btn-primary btn-large" href="{{ url_for('user.signup') }}">Sign Up</a>
+        </p>
+      </div>
     </div>
   </div>
 </div>

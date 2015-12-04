@@ -94,3 +94,11 @@ body {
 .activities tr {
   line-height: 40px;
 }
+
+.timeline dl dd .events .events-object {
+  margin-bottom: 10px;
+}
+
+.see-more {
+  background-color: #FFCE54 !important;
+}

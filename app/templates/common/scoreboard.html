@@ -2,19 +2,66 @@
 {% block content %}
 <div class="row clearfix">
 <div class="row">
+  <h1 class="text-center">Top 10 Team Ranking</h1>
+  <div id="top10"></div>
+  <script>
+  var chart = c3.generate({
+          bindto: '#top10',
+          data: {
+              xFormat: '%Y-%m-%d %H:%M:%S',
+              xs: {
+                {% for team, xs in xs_data %}
+                  '{{ team.name }}': 'x{{ team.id }}',
+                {% endfor %}
+              },
+              columns: [
+                  {% for team, points in data %}
+                  ['{{ team.name }}', {{ points }}],
+                  {% endfor %}
+                  {% for team, xs in xs_data %}
+                  ['x{{ team.id }}', {{ xs|safe }}],
+                  {% endfor %}
+              ],
+              type: "step",
+              colors: {
+                  {% for team, points in data %}
+                  '{{ team.name }}': '{{ team.color_hash() }}',
+                  {% endfor %}
+              },
+          },
+          axis: {
+              x: {
+                  type: 'timeseries',
+                  tick: {
+                      format: '%H:%M'
+                  }
+              },
+              y: {
+                  label: {
+                      text: 'Score'
+                  }
+              }
+          },
+          zoom : {
+            enabled: true
+          }
+      });
+  </script>
   <div class="col-md-6">
       <h1>Teams</h1>
       <br>
-      <table class="table table-borderd">
+      <table class="table table-bordered">
         <thead>
           <tr>
-            <td>Name</td>
-            <td>Score</td>
+            <th>#</th>
+            <th>Name</th>
+            <th>Score</th>
           </tr>
         </thead>
         <tbody>
           {% for team, total_score in teams_data %}
           <tr>
+            <td>{{ loop.index }}</td>
             <td><a href="{{ url_for('team.show_team', team_id=team.id)}}">{{ team.name }}</td>
             <td>
               <div class="progress">
@@ -31,16 +78,18 @@
   <div class="col-md-6">
       <h1>Users</h1>
       <br>
-      <table class="table table-borderd">
+      <table class="table table-bordered">
         <thead>
           <tr>
-            <td>Name</td>
-            <td>Score</td>
+            <th>#</th>
+            <th>Name</th>
+            <th>Score</th>
           </tr>
         </thead>
         <tbody>
           {% for user, total_score in users_data %}
           <tr>
+            <td>{{ loop.index }}</td>
             <td>{{ user.get_profile_link()|safe }}</td>
             <td>
               <div class="progress">
@@ -55,4 +104,11 @@
       </table>
   </div>
 </div>
+{% endblock %}
+{% block js %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.9/d3.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
+{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css">
 {% endblock %}

@@ -1,58 +1,60 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row clearfix">
-{% for message in form.flag.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-{% for message in form.task_id.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-<div class="row">
-  <div class="col-md-12">
-      <h1>{{ task.name }} ({{ task.point }}pt)</h1>
-      <h6><span class="label label-danger">{{ task.category.name }}</span></h6>
-      <br>
-      <div>
-      {{ task.description|safe }}
-      </div>
-  </div>
-</div>
-<br>
-<br>
-<br>
-{% if g.user.is_admin() %}
-<a class="label label-info" href="{{ url_for('hint.create_hint') }}">New Hint</a><br><br>
-{% endif %}
-{% for hint in task.hints %}
-{% if g.user.is_admin() or hint.is_open %}
-{% if g.user.is_admin() %}
-<a class="label label-primary" href="{{ url_for('hint.edit_hint', hint_id=hint.id) }}">Edit</a>
-{% if hint.is_open %}<span class="label label-success">Opened</span>{% else %}<span class="label label-danger">Closed</span>{% endif %}
-{% endif %}
-<b>Hint:</b> {{ hint.description|safe }}<br>
-{% endif %}
-{% endfor %}
-<div class="row">
-  <div class="col-md-12">
-    <span class="text-info">{{ task.solved_users|length }} users solved this task : </span>
-    <div>
-    {% for user in task.solved_users %}
-      {{ user.get_profile_link()|safe }}&nbsp;
-    {% endfor %}
+<div class="col-md-10 col-md-offset-1">
+  {% for message in form.flag.errors %}
+  <div class="alert alert-danger">{{ message }}</div>
+  {% endfor %}
+  {% for message in form.task_id.errors %}
+  <div class="alert alert-danger">{{ message }}</div>
+  {% endfor %}
+  <div class="row">
+    <div class="col-md-12">
+        <h1>{{ task.name }} ({{ task.point }}pt)</h1>
+        <h6><span class="label label-danger">{{ task.category.name }}</span></h6>
+        <br>
+        <div>
+        {{ task.description|safe }}
+        </div>
     </div>
-    {% if g.user in task.solved_users %}
-    <br><span class="text-success">You solved this task</span>
-    {% elif g.user.team and task in g.user.team.solved_tasks() %}
-    <br><span class="text-success">Your team solved this task</span>
-    {% endif %}
-    <br>
-    <form role="form" action="" method="POST">
-      <label>{{ form.flag.label }}</label>
-      <input name="flag" type="text" size="50" required autofocus>
-      {{ form.hidden_tag() }}
+  </div>
+  <br>
+  <br>
+  <br>
+  {% if g.user.is_admin() %}
+  <a class="label label-info" href="{{ url_for('hint.create_hint') }}">New Hint</a><br><br>
+  {% endif %}
+  {% for hint in task.hints %}
+  {% if g.user.is_admin() or hint.is_open %}
+  {% if g.user.is_admin() %}
+  <a class="label label-primary" href="{{ url_for('hint.edit_hint', hint_id=hint.id) }}">Edit</a>
+  {% if hint.is_open %}<span class="label label-success">Opened</span>{% else %}<span class="label label-danger">Closed</span>{% endif %}
+  {% endif %}
+  <b>Hint:</b> {{ hint.description|safe }}<br>
+  {% endif %}
+  {% endfor %}
+  <div class="row">
+    <div class="col-md-12">
+      <span class="text-info">{{ task.solved_users|length }} users solved this task : </span>
+      <div>
+      {% for user in task.solved_users %}
+        {{ user.get_profile_link()|safe }}&nbsp;
+      {% endfor %}
+      </div>
+      {% if g.user in task.solved_users %}
+      <br><span class="text-success">You solved this task</span>
+      {% elif g.user.team and task in g.user.team.solved_tasks() %}
+      <br><span class="text-success">Your team solved this task</span>
+      {% endif %}
       <br>
-      <button class="btn btn-primary" type="submit">Submit</button>
-    </form>
-  <div>
+      <form role="form" action="" method="POST">
+        <label>{{ form.flag.label }}</label>
+        <input name="flag" type="text" size="50" required autofocus>
+        {{ form.hidden_tag() }}
+        <br>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    <div>
+  </div>
 </div>
 {% endblock %}

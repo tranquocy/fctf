@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, g, send_from_directory, abort, jsonify
+from flask import Blueprint, render_template, request, g, send_from_directory, abort, jsonify, url_for
 from flask_login import current_user, login_required
-from sqlalchemy import desc
+from sqlalchemy import desc, asc
 
 from app import app, db, lm
 from app.common.utils import compute_sign_hash, set_all_cookie, delete_all_cookie, admin_required
@@ -34,12 +34,32 @@ def load_user(user_id):
 @app.route('/activities')
 @login_required
 def show_activities():
-    activities = UserSolved.query.order_by(desc(UserSolved.created_at)).limit(50).all()
+    activities = UserSolved.query.order_by(desc(UserSolved.created_at)).limit(20).all()
     return render_template(
         'common/activities.html',
         activities=activities,
         user=g.user
     )
+
+@app.route('/activities/more', methods=['POST'])
+@login_required
+def more_activities():
+    last_side = request.form.get('side', 'left')
+    last_id = request.form.get('id')
+    activities = UserSolved.query.filter(UserSolved.id < last_id).order_by(desc(UserSolved.created_at)).limit(20).all()
+    resp = []
+    for activity in activities:
+        last_side = 'right' if last_side == 'left' else 'left'
+        resp.append({
+            'class': 'pos-%s clearfix' % last_side,
+            'id': activity.id,
+            'time': activity.created_at.strftime('%b %d %H:%M'),
+            'avatar': activity.user.get_avatar_url(64),
+            'header': u"{0:s} {1:s}".format(activity.user.get_profile_link(False), "(%s)" % activity.user.team.name if activity.user.team else ''),
+            'footer': u' solved task <a href="{0:s}">{1:s}</a> and scored <strong>{2:s} points</strong>'.format(url_for('task.show_task', task_id=activity.task.id), activity.task.name, str(activity.task.point))
+        })
+
+    return jsonify(result=resp)
 
 
 @app.route('/')
@@ -73,20 +93,52 @@ def scoreboard():
     max_user_score = 0
     if len(users_data):
         max_user_score = max(users_data, key=lambda data: data[1])[1]
-    teams = Team.query.all()
-    teams_data = []
 
-    for team in teams:
-        if team.get_total_score():
-            teams_data.append((team, team.get_total_score()))
-    teams_data = sorted(teams_data, key=lambda data: data[1], reverse=True)
+    teams_data = sorted(Team.get_team_points(), key=lambda data: data[1], reverse=True)
     max_team_score = 0
     if len(teams_data):
         max_team_score = max(teams_data, key=lambda data: data[1])[1]
+
+    all_team_data = []
+    xs_data = []
+    for team, _ in teams_data[:10]:
+        periods = UserSolved.query.filter_by(team_id=team.id).group_by(UserSolved.task_id).order_by(asc(UserSolved.created_at)).all()
+        sum_point = 0
+        period_data = []
+        x_data = []
+        for period in periods:
+            sum_point += period.point
+            period_data.append(sum_point)
+            x_data.append("'%s'" % str(period.created_at))
+        all_team_data.append((team, ", ".join(map(str, period_data))))
+        xs_data.append((team, ", ".join(x_data)))
+    
     return render_template('common/scoreboard.html',
                            users_data=users_data, teams_data=teams_data,
-                           max_user_score=max_user_score, max_team_score=max_team_score
+                           max_user_score=max_user_score, max_team_score=max_team_score,
+                           data=all_team_data, xs_data=xs_data
     )
+
+
+@app.route('/graph', methods=['GET', 'POST'])
+@login_required
+def graph():
+    teams_data = sorted(Team.get_team_points(), key=lambda data: data[1], reverse=True)
+
+    all_team_data = []
+    x_data = []
+    for team, _ in teams_data[:10]:
+        periods = UserSolved.query.filter_by(team_id=team.id).group_by(UserSolved.task_id).order_by(asc(UserSolved.created_at)).all()
+        sum_point = 0
+        period_data = []
+        for period in periods:
+            sum_point += period.point
+            x_data.append("'%s'" % str(period.created_at))
+            period_data.append(sum_point)
+        all_team_data.append({team: ", ".join(map(str, period_data))})
+    x.data = list(set(x_data))
+    
+    return render_template('common/graph.html', data=all_team_data, x_data=x_data)
 
 
 @app.route('/admin/log_submit/<int:page>', methods=['GET', 'POST'])

@@ -12,7 +12,7 @@
 {% endif %}
 <div class="row clearfix">
 
-<div class="row">
+<div class="col-md-10 col-md-offset-1">
   <div class="col-md-8">
       <p><img src="{{ user.get_avatar_url()|safe }}" width="160" height="160"/></p>
       <h1>{{ user.name }}</h1>
@@ -88,11 +88,22 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-10 col-md-offset-1">
     <h3>Achievements</h3>
-    {% for task in user.solved_tasks %}
-    {% if g.user.id == user.id %}You{% else %}{{ user.name }}{% endif %} solved task {% if task %}<a href="{{ url_for('task.show_task', task_id=task.id)}}">{{ task.name }}</a>{% else %}&lt;deleted task&gt;{% endif %}<br>
-    {% endfor %}
+    <table class="table table-bordered">
+          <tr>
+              <th>Task</th>
+              <th>Category</th>
+              <th>Point</th>
+          </tr>
+        {% for task in user.solved_tasks %}
+          <tr>
+            <td><a href="{{ url_for('task.show_task', task_id=task.id)}}">{{ task.name }}</a></td>
+            <td>{{ task.category.name }}</td>
+            <td>{{ task.point }}</td>
+          </tr>
+        {% endfor %}
+    </table>
   </di>
 </div>
 {% endblock %}

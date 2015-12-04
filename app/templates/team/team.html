@@ -3,10 +3,16 @@
 <div class="row clearfix">
 
 <div class="row">
-  <div class="col-md-8">
-      <h1>{{ team.name }}</h1>
-      <h6>{{ team.description }}</h6>
-      <br>
+  <div class="col-md-10 col-md-offset-1">
+      <h1 class="text-center">{{ team.name }}</h1>
+      <h2 class="text-center">{{ team.get_place() }} <small>place</small></h2>
+      <h2 class="text-center">{{ team.get_total_score() }} <small>points</small></h2>
+      <div class="col-md-12">
+        <div id="breakdown-graph" style="max-height: 320px; position: relative; float: left; width: 50%;"></div>
+        <div id="category-graph" style="max-height: 320px; position: relative; float: left; width: 50%;"></div>
+        <div id="score-graph" style="clear: both;"></div>
+      </div>
+      <h5 class="text-center">{{ team.description }}</h5>
       <table class="table table-striped">
         <tr>
           <td><h6>Members:</h6></td>
@@ -26,17 +32,96 @@
       {% else %}
       </table>
       {% endif %}
-  </div>
-    <div class="row">
-      <div class="col-md-12">
-        <h3>Achievements</h3>
-          <ul>
-          {% for task in team.solved_tasks() %}
-            <li>{% if task %}<a href="{{ url_for('task.show_task', task_id=task.id)}}"><small><span class="label label-danger">{{ task.category.name }}</span></small> {{ task.name }}</a>{% else %}&lt;deleted task&gt;{% endif %}</li>
-          {% endfor %}
-          </ul>
-      </div>
+    <script>
+      var chart = c3.generate({
+          bindto: '#category-graph',
+          data: {
+              columns: [
+              {% for user, point in contributions.items() %}
+                  ['{{ user }}', {{ point }}],
+              {% endfor %}
+              ],
+              type : 'donut',
+          },
+          donut: {
+            title: "Members Contribution"
+          }
+      });
+      var chart = c3.generate({
+          bindto: '#breakdown-graph',
+          data: {
+              columns: [
+                  ['Solved', {{ team.solved_tasks()|length }}],
+                  ['Remaining', {{ total_tasks - team.solved_tasks()|length }}],
+              ],
+              type : 'donut',
+          },
+          donut: {
+            title: "Solved vs Remaining"
+          }
+      });
+      var chart = c3.generate({
+          bindto: '#score-graph',
+          data: {
+              x: 'x',
+              xFormat: '%Y-%m-%d %H:%M:%S',
+              columns: [
+                  ['{{ team.name }}', {{ y_data }}],
+                  ['x', {{ x_data|safe }} ]
+              ],
+              types: {
+                  '{{ team.name }}': 'area-step',
+              },
+              colors: {
+                  '{{ team.name }}': '{{ team.color_hash() }}',
+              },
+              labels: true
+          },
+          axis: {
+              x: {
+                  type: 'timeseries',
+                  tick: {
+                      format: '%H:%M'
+                  }
+              },
+              y: {
+                  label: {
+                      text: 'Score'
+                  }
+              }
+          },
+          zoom : {
+            enabled: true
+          }
+      });
+    </script>
+      <h3 class="text-center">Achievements</h3>
+        <table class="table table-bordered">
+          <tr>
+              <th>Task</th>
+              <th>Category</th>
+              <th>Point</th>
+              <th>User</th>
+              <th>Time</th>
+          </tr>
+        {% for achievement in achievements %}
+          <tr>
+            <td><a href="{{ url_for('task.show_task', task_id=achievement.task.id)}}">{{ achievement.task.name }}</a></td>
+            <td>{{ achievement.task.category.name }}</td>
+            <td>{{ achievement.point }}</td>
+            <td>{{ achievement.user.get_profile_link()|safe }}</td>
+            <td>{{ achievement.created_at }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
   </div>
 </div>
-</div>
+{% endblock %}
+{% block js %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.9/d3.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
+{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css">
 {% endblock %}

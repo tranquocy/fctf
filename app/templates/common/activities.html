@@ -1,15 +1,77 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="row clearfix">
-  <div class="col-md-12 column">
-    <h2>Activities</h2>
-    <table class="activities">
-    {% for activity in activities %}
-      <tr>
-        <td>{{ activity.created_at.strftime('%Y/%m/%d %H:%M:%S') }}&nbsp;:&nbsp;</td>
-        <td>{{ activity.user.get_profile_link()|safe }} {% if activity.user.team %}({{ activity.user.team.name }}){% endif %} solved task <a href="{{ url_for('task.show_task', task_id=activity.task.id)}}">{{ activity.task.name }}</a> and scored <strong>{{ activity.point }} points</strong>.</td>
-      </tr>
-    {% endfor %}
-    </table>
+{% extends "base.html" %} {% block content %}
+<div style="display: none" id="one-activity-dom">
+  <dd class="">
+      <div class="circ"></div>
+      <div class="time"></div>
+      <div class="events">
+          <div class="pull-left">
+              <img class="events-object img-rounded" src="">
+          </div>
+          <div class="events-body">
+              <h4 class="events-heading"></h4>
+              <p></p>
+          </div>
+      </div>
+  </dd>
 </div>
+<div class="row clearfix">
+    <div class="col-md-12 column">
+        <h2>Activities</h2>
+        <div class="timeline">
+            <dl>
+                <dt>Now</dt>
+                {% for activity in activities %}
+                <dd data-id={{ activity.id }} class="pos-{{ loop.cycle('left', 'right') }} clearfix">
+                    <div class="circ"></div>
+                    <div class="time">{{ activity.created_at.strftime('%b %d %H:%M') }}</div>
+                    <div class="events">
+                        <div class="pull-left">
+                            <img class="events-object img-rounded" src="{{ activity.user.get_avatar_url(64)}}">
+                        </div>
+                        <div class="events-body">
+                            <h4 class="events-heading">{{ activity.user.get_profile_link(False)|safe }} {% if activity.user.team %}({{ activity.user.team.name }}){% endif %}</h4>
+                            <p> solved task <a href="{{ url_for('task.show_task', task_id=activity.task.id)}}">{{ activity.task.name }}</a> and scored <strong>{{ activity.point }} points</strong></p>
+                        </div>
+                    </div>
+                </dd>
+                {% endfor %}
+                <dt>Start</dt>
+            </dl>
+        </div>
+    </div>
+</div>
+<script>
+  $("body").css("background-color", "#f1f2f6");
+  var loadAgain = true;
+  $(window).scroll(function() {
+      if (loadAgain && $(window).scrollTop() / $(document).height() >= 0.7) {
+          loadAgain = false;
+          var lastSide = "right";
+          if ($("dd").last().attr("class").indexOf("right") == -1) {
+            lastSide = "left";
+          }
+          var lastId = $("dd").last().data("id");
+          console.log(lastId, lastSide);
+          $.post("activities/more", {side: lastSide, id: lastId}).done(function(data) {
+              $.each(data['result'], function(index, value) {
+                 var html = create_activity(value);
+                 $("dd").last().after(html);
+              });
+              loadAgain = true;
+          });
+      }
+  });
+
+  function create_activity(data){
+    var dom = $("#one-activity-dom");
+    dom.find(".time").text(data['time']);
+    dom.find(".time").text(data['time']);
+    dom.find(".img-rounded").attr('src', data['avatar']);
+    dom.find("dd").attr('data-id', data['id']);
+    dom.find("dd").attr('class', data['class']);
+    dom.find(".events-heading").html(data['header']);
+    dom.find("p").html(data['footer']);
+    return dom.html();
+  }
+</script>
 {% endblock %}
