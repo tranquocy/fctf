@@ -120,27 +120,6 @@ def scoreboard():
     )
 
 
-@app.route('/graph', methods=['GET', 'POST'])
-@login_required
-def graph():
-    teams_data = sorted(Team.get_team_points(), key=lambda data: data[1], reverse=True)
-
-    all_team_data = []
-    x_data = []
-    for team, _ in teams_data[:10]:
-        periods = UserSolved.query.filter_by(team_id=team.id).group_by(UserSolved.task_id).order_by(asc(UserSolved.created_at)).all()
-        sum_point = 0
-        period_data = []
-        for period in periods:
-            sum_point += period.point
-            x_data.append("'%s'" % str(period.created_at))
-            period_data.append(sum_point)
-        all_team_data.append({team: ", ".join(map(str, period_data))})
-    x.data = list(set(x_data))
-    
-    return render_template('common/graph.html', data=all_team_data, x_data=x_data)
-
-
 @app.route('/admin/log_submit/<int:page>', methods=['GET', 'POST'])
 @login_required
 @admin_required
