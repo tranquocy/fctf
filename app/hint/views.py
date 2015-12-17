@@ -21,7 +21,7 @@ def create_hint():
         db.session.commit()
         flash('Hint created successfully.', category='success')
         return redirect(url_for('task.show_task', task_id=form.task.data.id))
-    return render_template('task/create_hint.html', form=form)
+    return render_template('hint/create_hint.html', form=form)
 
 
 @hint_module.route('/<int:hint_id>/edit', methods=['GET', 'POST'])
@@ -37,4 +37,4 @@ def edit_hint(hint_id=None):
         db.session.commit()
         flash('Hint updated', category='success')
         return redirect(url_for('task.show_task', task_id=model.task.id))
-    return render_template('task/edit_hint.html', task=model, form=form)
+    return render_template('hint/edit_hint.html', task=model, form=form)
