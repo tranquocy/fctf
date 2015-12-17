@@ -47,7 +47,7 @@ class Team(db.Model):
         result = db.session.execute(sql, {'team_id': self.id})
 
         for point in result:
-            return int(point[0])
+            return point[0] if point[0] else 0
 
     def get_place(self):
         place = 1
