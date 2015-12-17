@@ -35,3 +35,5 @@ MAIL_SENDERS = {
     'admin': ('Admin Team', 'admin@ctf.framgia.vn'),
     'support': ('Support Team', 'support@ctf.framgia.vn')
 }
+
+ADMINS = ['nguyen.anh.tien@framgia.com']
