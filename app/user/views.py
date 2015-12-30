@@ -44,7 +44,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         # login and validate the user...
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(email=form.email.data).first()
         login_user(user)
         flash('Logged in successfully.', category='success')
         return redirect(request.args.get('next') or url_for('index'))

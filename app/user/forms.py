@@ -69,9 +69,9 @@ class ChangePasswordForm(Form):
 
 
 class LoginForm(Form):
-    username = TextField('Username',  [
-        validators.Required('Please enter your username.'),
-        validators.Length(max=30, message='Username is at most 30 characters.'),
+    email = TextField('email',  [
+        validators.Required('Please enter your email.'),
+        validators.Length(max=45, message='Email is at most 45 characters.'),
     ])
     password = PasswordField('Password', [
         validators.Required('Please enter a password.'),
@@ -86,7 +86,7 @@ class LoginForm(Form):
         if not Form.validate(self):
             return False
 
-        user = User.query.filter_by(username = self.username.data).first()
+        user = User.query.filter_by(email=self.email.data).first()
         if user:
             if not user.check_password(self.password.data):
                 self.password.errors.append('Wrong password')
