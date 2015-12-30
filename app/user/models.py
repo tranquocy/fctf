@@ -9,6 +9,7 @@ from app import db
 from app.common.utils import generate_token
 from app.user import constants as USER
 import app.task.models
+import app.team.models
 
 
 class User(db.Model):
@@ -101,6 +102,7 @@ class UserSolved(db.Model):
     created_at = db.Column(db.DateTime)
     user = db.relationship(User, uselist=False, backref="solved_data")
     task = db.relationship('app.task.models.Task', uselist=False, backref=backref("solved_data", cascade="all, delete-orphan"))
+    team = db.relationship('app.team.models.Team', uselist=False, backref=backref("solved_data", cascade="all, delete-orphan"))
 
     def __init__(self, user, task):
         self.user_id = user.id
@@ -172,6 +174,7 @@ class SubmitLogs(db.Model):
     created_at = db.Column(db.DateTime)
     user = db.relationship(User, backref=db.backref('log_submit', lazy='dynamic'))
     task = db.relationship('app.task.models.Task', backref=db.backref('log_submit', cascade="all, delete-orphan", lazy='dynamic'))
+    team = db.relationship('app.team.models.Team', backref=db.backref('log_submit', cascade="all, delete-orphan", lazy='dynamic'))
 
     def __init__(self, user, task, flag):
         self.user_id = user.id
