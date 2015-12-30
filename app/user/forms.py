@@ -86,11 +86,18 @@ class LoginForm(Form):
         if not Form.validate(self):
             return False
 
-        user = User.query.filter_by(username=self.username.data).first()
-        if user and user.check_password(self.password.data):
-            return True
+        user = User.query.filter_by(username = self.username.data).first()
+        if user:
+            if not user.check_password(self.password.data):
+                self.password.errors.append('Wrong password')
+                return False
+            elif not user.is_active():
+                self.password.errors.append('User is not activated. Please click "Resend Confirmation Email" to activate your account')
+                return False
+            else:
+                return True
         else:
-            self.password.errors.append('Invalid username or password')
+            self.password.errors.append('Invalid e-mail or password')
             return False
 
 
@@ -155,5 +162,28 @@ class SubmitFlagForm(Form):
         task = Task.query.get(self.task_id.data)
         if not task or not task.is_open:
             self.task_id.errors.append('The submitted task is invalid.')
+        else:
+            return True
+
+
+class ResendMailForm(Form):
+    email = TextField('Email',  [
+        validators.Length(max=40, message='email is at most 40 characters.'),
+        validators.Required('Please enter your email address.'),
+        validators.Email('Please enter a valid email address.')
+    ])
+    submit = SubmitField('Resend Activation Email')
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+
+    def validate(self):
+        if not Form.validate(self):
+            return False
+
+        user = User.query.filter_by(email=self.email.data).first()
+        if not user:
+            self.email.errors.append('This email is not registered yet')
+            return False
         else:
             return True

@@ -20,6 +20,7 @@ class User(db.Model):
     name = db.Column(db.String(50))
     email = db.Column(db.String(45), unique=True, nullable=False)
     role = db.Column(db.SmallInteger, default=USER.ROLE_USER)
+    is_actived = db.Column(db.SmallInteger, default=USER.UNACTIVATED)
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     solved_tasks = db.relationship(app.task.models.Task, secondary='user_solved', backref='solved_users')
 
@@ -39,7 +40,10 @@ class User(db.Model):
         return True
 
     def is_active(self):
-        return True
+        return self.is_actived == USER.ACTIVATED
+
+    def activate(self):
+        self.is_actived = USER.ACTIVATED
 
     def is_anonymous(self):
         return False
@@ -130,6 +134,28 @@ class UserForgotPassword(db.Model):
     def refresh(self):
         self.token = generate_token()
         self.expire_at = datetime.datetime.now() + datetime.timedelta(minutes=30)
+
+    def is_expired(self):
+        return datetime.datetime.now() >= self.expire_at
+
+
+class UserMailActivation(db.Model):
+
+    __tablename__ = 'user_mail_activations'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    token = db.Column(db.String(40))
+    expire_at = db.Column(db.DateTime, default=datetime.datetime.now() + datetime.timedelta(days=1))
+
+    user = db.relationship('User', backref=db.backref('mail_activation', lazy='dynamic', cascade='all'))
+
+    def __init__(self, user):
+        self.user = user
+        self.token = generate_token()
+
+    def refresh(self):
+        self.token = generate_token()
+        self.expire_at = datetime.datetime.now() + datetime.timedelta(days=1)
 
     def is_expired(self):
         return datetime.datetime.now() >= self.expire_at

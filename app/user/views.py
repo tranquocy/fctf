@@ -4,11 +4,11 @@ from flask_admin.contrib.sqla import ModelView
 
 from app import app, db
 from app.user.models import UserSolved
-from app.user.forms import LoginForm, SignupForm, UserForm, ChangePasswordForm, SendForgotPasswordForm, ResetPasswordForm
+from app.user.forms import LoginForm, SignupForm, UserForm, ChangePasswordForm, SendForgotPasswordForm, ResetPasswordForm, ResendMailForm
 from app.team.forms import JoinTeamForm, LeaveTeamForm
-from app.user.models import User, UserForgotPassword, SubmitLogs
+from app.user.models import User, UserForgotPassword, SubmitLogs, UserMailActivation
 from app.team.models import Team
-from app.common.utils import send_email
+from app.common.utils import send_email, generate_token
 
 user_module = Blueprint('user', __name__)
 
@@ -18,11 +18,22 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         new_user = User(form.username.data, form.email.data, form.password.data)
+        mail_activation = UserMailActivation(new_user)
+
         db.session.add(new_user)
+        db.session.add(mail_activation)
         db.session.commit()
-        login_user(new_user)
-        flash('Signed up successfully.', category='success')
-        return redirect(url_for('user.profile'))
+
+        send_email(
+            'Framgia CTF - Account Confirmation',
+            app.config['MAIL_SENDERS']['admin'],
+            [new_user.email],
+            'confirm_activation',
+            dict(token=mail_activation.token)
+        )
+
+        return render_template('user/confirm_mail_sent.html', user=new_user)
+
     return render_template('user/signup.html', form=form)
 
 
@@ -166,15 +177,60 @@ def reset_password(token):
     return render_template('user/reset_password.html', form=form, username=user_forgot_password.user.username)
 
 
+@user_module.route('/mail/confirm/<token>')
+def confirm_activation(token):
+    mail_activation = UserMailActivation.query.filter_by(token=token).first_or_404()
+
+    if mail_activation.user.is_active():
+        result = 'activated'
+    elif mail_activation.is_expired():
+        result = 'expired'
+    else:
+        mail_activation.user.activate()
+        mail_activation.token = generate_token()
+        db.session.add(mail_activation)
+        db.session.commit()
+        result = 'success'
+
+    return render_template('user/confirm_mail_result.html', result=result, user=mail_activation.user)
+
+
+@user_module.route('/mail/resend', methods=['GET', 'POST'])
+def resend_confirm():
+    form = ResendMailForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        mail_activation = UserMailActivation.query.filter_by(user_id=user.id).first()
+        if not mail_activation:
+            mail_activation = UserMailActivation(user)
+        else:
+            mail_activation.refresh()
+        db.session.add(mail_activation)
+        db.session.commit()
+
+        send_email(
+            'Framgia CTF - Resend Confirmation',
+            app.config['MAIL_SENDERS']['admin'],
+            [user.email],
+            'confirm_activation',
+            dict(token=mail_activation.token)
+        )
+        flash('Confirmation mail resent.', category='success')
+
+        return render_template('user/confirm_mail_sent.html', user=user)
+
+    return render_template('user/confirm_mail_resend.html', form=form)
+
+
 class UserView(ModelView):
     # Disable model creation
     can_create = False
 
     # Override displayed fields
-    column_list = ('username', 'name', 'email', 'team', 'role')
+    column_list = ('username', 'name', 'email', 'team', 'role', 'is_actived')
     column_filters = ('username', 'name', 'email', 'team')
 
-    form_excluded_columns = ('solved_tasks', 'solved_data', 'password', 'log_submit', 'forgot_password')
+    form_excluded_columns = ('solved_tasks', 'solved_data', 'password', 'log_submit', 'forgot_password', 'mail_activation')
 
     def __init__(self, session, **kwargs):
         # You can pass name and other parameters if you want to

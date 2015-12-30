@@ -13,10 +13,10 @@
 <div class="alert alert-danger">{{ message }}</div>
 {% endfor %}
 <form class="form-signup" role="form" action="{{ url_for('user.signup') }}" method="POST">
-    <h2 class="form-signup-heading">Please sign up</h2>
-    <input name="username" type="text" class="form-control" placeholder="Username" required autofocus>
-    <input name="email" type="email" class="form-control" placeholder="Email address" required>
-    <input name="password" type="password" class="form-control" placeholder="Password" required>
+    <h3 class="form-signup-heading">Please sign up</h3>
+    <input name="username" type="text" class="form-control" placeholder="Username" required autofocus><br>
+    <input name="email" type="email" class="form-control" placeholder="Email address" required><br>
+    <input name="password" type="password" class="form-control" placeholder="Password" required><br>
     <input name="confirm" type="password" class="form-control" placeholder="Password Confirm" required>
     {{ form.hidden_tag() }}
     <br>

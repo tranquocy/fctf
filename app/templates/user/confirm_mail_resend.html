@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+{% for message in form.email.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+<form class="form-signin" role="form" action="" method="POST">
+    <h4>Resend Confirmation Mail</h4>
+    Please enter your email
+    <input name="email" type="text" class="form-control" placeholder="Email" required autofocus>
+    {{ form.hidden_tag() }}
+    <br>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Resend</button>
+</form>
+{% endblock %}

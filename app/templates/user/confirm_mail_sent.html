@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-9">
+    <h4>Dear, {{ user.username }}!</h4>
+    <p>We sent you an email at address <strong>{{ user.email }}</strong> to confirm your registration.</p><p>Please check it and enjoy Framgia CTF. Thank you!</p>
+  </div>
+</div>
+{% endblock %}
