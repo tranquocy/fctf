@@ -15,6 +15,9 @@ user_module = Blueprint('user', __name__)
 
 @user_module.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if g.user is not None and g.user.is_authenticated():
+        return redirect(url_for('index'))
+
     form = SignupForm()
     if form.validate_on_submit():
         new_user = User(form.username.data, form.email.data, form.password.data)
