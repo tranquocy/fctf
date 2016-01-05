@@ -27,15 +27,17 @@ def signup():
         db.session.add(mail_activation)
         db.session.commit()
 
-        send_email(
+        result, message = send_email(
             'Framgia CTF - Account Confirmation',
             app.config['MAIL_SENDERS']['admin'],
             [new_user.email],
             'confirm_activation',
             dict(token=mail_activation.token)
         )
-
-        return render_template('user/confirm_mail_sent.html', user=new_user)
+        if not result:
+            form.email.errors.append('Error: ' + message)
+        else:
+            return render_template('user/confirm_mail_sent.html', user=new_user)
 
     return render_template('user/signup.html', form=form)
 
@@ -147,15 +149,18 @@ def forgot_password():
         db.session.commit()
 
         token = user_forgot_password.token.encode('base64').strip().replace('=', '_')
-        send_email(
+        result, message = send_email(
             'Framgia CTF - Reset Password',
             app.config['MAIL_SENDERS']['admin'],
             [user.email],
             'reset_password',
             dict(token=token)
         )
-        flash('Reset password mail sent.', category='success')
-        return render_template('user/reset_password_sent.html', user=user)
+        if not result:
+            form.email.errors.append('Error: ' + message)
+        else:
+            flash('Reset password mail sent.', category='success')
+            return render_template('user/reset_password_sent.html', user=user)
 
     return render_template('user/forgot_password.html', form=form)
 
@@ -211,16 +216,19 @@ def resend_confirm():
         db.session.add(mail_activation)
         db.session.commit()
 
-        send_email(
+        result, message = send_email(
             'Framgia CTF - Resend Confirmation',
             app.config['MAIL_SENDERS']['admin'],
             [user.email],
             'confirm_activation',
             dict(token=mail_activation.token)
         )
-        flash('Confirmation mail resent.', category='success')
+        if not result:
+            form.email.errors.append('Error: ' + message)
+        else:
+            flash('Confirmation mail resent.', category='success')
 
-        return render_template('user/confirm_mail_sent.html', user=user)
+            return render_template('user/confirm_mail_sent.html', user=user)
 
     return render_template('user/confirm_mail_resend.html', form=form)
 

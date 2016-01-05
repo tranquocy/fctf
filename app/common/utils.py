@@ -3,6 +3,7 @@ import hashlib
 import string
 import random
 import os
+import smtplib
 from functools import wraps
 
 from flask import render_template, redirect, url_for, g
@@ -31,12 +32,19 @@ def generate_token():
 
 
 def send_email(subject, sender, recipients, template_name, args):
-    msg = Message(subject, sender=sender, recipients=recipients)
-    txt_template = os.path.join(app.config['MAIL_TEMPLATE_FOLDER'], '%s.txt' % template_name)
-    html_template = os.path.join(app.config['MAIL_TEMPLATE_FOLDER'], '%s.html' % template_name)
-    msg.body = render_template(txt_template, **args)
-    msg.html = render_template(html_template, **args)
-    mail.send(msg)
+    try:
+        msg = Message(subject, sender=sender, recipients=recipients)
+        txt_template = os.path.join(app.config['MAIL_TEMPLATE_FOLDER'], '%s.txt' % template_name)
+        html_template = os.path.join(app.config['MAIL_TEMPLATE_FOLDER'], '%s.html' % template_name)
+        msg.body = render_template(txt_template, **args)
+        msg.html = render_template(html_template, **args)
+        mail.send(msg)
+
+        return (True, 'OK')
+    except smtplib.SMTPRecipientsRefused:
+        return (False, 'Email address does not exist')
+    except Exception, e:
+        return (False, 'Unknown error. Please try again later')
 
 
 def set_all_cookie(response, sign_cookie):
