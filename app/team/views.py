@@ -66,7 +66,7 @@ def all_team():
 @login_required
 def create_team():
     if g.user.team:
-        return redirect(url_for('tea,.show_team', team_id=g.user.team.id))
+        return redirect(url_for('team.show_team', team_id=g.user.team.id))
     form = CreateTeamForm()
     if form.validate_on_submit():
         new_team = Team(form.name.data, form.description.data)
