@@ -89,7 +89,7 @@ def admin():
 @app.route('/scoreboard', methods=['GET', 'POST'])
 @login_required
 def scoreboard():
-    users_data = sorted(UserSolved.get_users_score(), key=lambda data: data[1], reverse=True)
+    users_data = sorted(UserSolved.get_users_score(), key=lambda data: data[1] or data[0].solved_data[-1].created_at, reverse=True)
     max_user_score = 0
     if len(users_data):
         max_user_score = max(users_data, key=lambda data: data[1])[1]
