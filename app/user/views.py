@@ -77,6 +77,8 @@ def profile(user_id=None):
             if join_team_form.invite_code.data and join_team_form.validate_on_submit() and not g.user.team:
                 team = Team.query.filter_by(invite_code=join_team_form.invite_code.data).first()
                 g.user.team = team
+                for info in g.user.solved_data:
+                    info.team = team
                 db.session.add(g.user)
                 db.session.commit()
                 flash("You've joined team <strong>%s</strong> !" % team.name, category='success')
@@ -84,6 +86,8 @@ def profile(user_id=None):
                 team = Team.query.get(leave_team_form.team_id.data)
                 if g.user.team == team:
                     g.user.team = None
+                    for info in g.user.solved_data:
+                        info.team_id = None
                     db.session.add(g.user)
                     db.session.commit()
                     flash("You've left team <strong>%s</strong> !" % team.name, category='success')
