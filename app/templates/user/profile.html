@@ -95,12 +95,14 @@
               <th>Task</th>
               <th>Category</th>
               <th>Point</th>
+              <th>When</th>
           </tr>
-        {% for task in user.solved_tasks %}
+        {% for info in user.solved_data|sort(attribute='created_at', reverse = True) %}
           <tr>
-            <td><a href="{{ url_for('task.show_task', task_id=task.id)}}">{{ task.name }}</a></td>
-            <td>{{ task.category.name }}</td>
-            <td>{{ task.point }}</td>
+            <td><a href="{{ url_for('task.show_task', task_id=info.task.id) }}">{{ info.task.name }}</a></td>
+            <td>{{ info.task.category.name }}</td>
+            <td>{{ info.task.point }}</td>
+            <td>{{ info.created_at }}</td>
           </tr>
         {% endfor %}
     </table>
