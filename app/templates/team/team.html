@@ -38,10 +38,15 @@
           data: {
               columns: [
               {% for user, point in contributions.items() %}
-                  ['{{ user }}', {{ point }}],
+                  ['{{ user.name }}', {{ point }}],
               {% endfor %}
               ],
               type : 'donut',
+              colors: {
+              {% for user, _ in contributions.items() %}
+                  '{{ user.name }}': '{{ user.color_hash() }}',
+              {% endfor %}
+              },
           },
           donut: {
             title: "Members Contribution"
@@ -55,6 +60,10 @@
                   ['Remaining', {{ total_tasks - team.solved_tasks()|length }}],
               ],
               type : 'donut',
+              colors: {
+                  'Remaining': '#ff8a80',
+                  'Solved': '#8cc152',
+              }
           },
           donut: {
             title: "Solved vs Remaining"

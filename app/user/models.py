@@ -8,6 +8,7 @@ from sqlalchemy.orm import backref
 from app import db
 from app.common.utils import generate_token
 from app.user import constants as USER
+from app.common.utils import compute_color_value
 import app.task.models
 import app.team.models
 
@@ -89,6 +90,9 @@ class User(db.Model):
         return u'<a href="{0:s}">{1:s}&nbsp;<span class="{2:s}">{3:s}</span></a>'.format(profile_link, avatar,
                                                                                          class_name,
                                                                                          self.name)
+
+    def color_hash(self):
+        return compute_color_value(str(self.id) + self.email.encode('utf-8'))
 
 
 class UserSolved(db.Model):

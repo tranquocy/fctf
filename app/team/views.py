@@ -34,9 +34,9 @@ def show_team(team_id=None):
         sum_point += period.point
         x_data.append("'%s'" % str(period.created_at))
         y_data.append(sum_point)
-        if not contributions.has_key(period.user.name):
-            contributions[period.user.name] = 0
-        contributions[period.user.name] += period.point
+        if not contributions.has_key(period.user):
+            contributions[period.user] = 0
+        contributions[period.user] += period.point
 
     y_data = ", ".join(map(str, y_data))
     x_data=", ".join(x_data)
