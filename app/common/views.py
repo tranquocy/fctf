@@ -86,15 +86,32 @@ def admin():
     return render_template('common/admin.html', teams=teams, users=users, tasks=tasks)
 
 
+def user_comparator(a, b):
+    if not a[1] - b[1]:
+        return (b[0].solved_data[-1].created_at - a[0].solved_data[-1].created_at).days
+
+    return int(a[1] - b[1])
+
+
+def team_comparator(a, b):
+    if not a[1] - b[1]:
+        c = UserSolved.query.filter_by(team_id=a[0].id).group_by(UserSolved.task_id).order_by(desc(UserSolved.created_at)).first()
+        d = UserSolved.query.filter_by(team_id=b[0].id).group_by(UserSolved.task_id).order_by(desc(UserSolved.created_at)).first()
+
+        return (d.created_at - c.created_at).days
+
+    return int(a[1] - b[1])
+
+
 @app.route('/scoreboard', methods=['GET', 'POST'])
 @login_required
 def scoreboard():
-    users_data = sorted(UserSolved.get_users_score(), key=lambda data: data[1] or data[0].solved_data[-1].created_at, reverse=True)
+    users_data = sorted(UserSolved.get_users_score(), cmp=user_comparator, reverse=True)
     max_user_score = 0
     if len(users_data):
         max_user_score = max(users_data, key=lambda data: data[1])[1]
 
-    teams_data = sorted(Team.get_team_points(), key=lambda data: data[1], reverse=True)
+    teams_data = sorted(Team.get_team_points(), cmp=team_comparator, reverse=True)
     max_team_score = 0
     if len(teams_data):
         max_team_score = max(teams_data, key=lambda data: data[1])[1]
