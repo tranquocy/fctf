@@ -71,6 +71,8 @@ def create_team():
     if form.validate_on_submit():
         new_team = Team(form.name.data, form.description.data)
         g.user.team = new_team
+        for info in g.user.solved_data:
+            info.team = new_team
         db.session.add(new_team)
         db.session.add(g.user)
         db.session.commit()
