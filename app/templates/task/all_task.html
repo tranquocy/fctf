@@ -14,7 +14,7 @@
                 {% for category in categories %}
                     <td class="task-container">
                     {% for task in category.tasks %}
-                        {% if task.can_access_by(g.user) and task.category.description != 'game' %}
+                        {% if task.can_access_by(g.user) %}
                         <a class="btn {{ 'btn-success' if g.user.is_solved_task(task) else task.category.description + '-bg' }} btn-large task-item" href="{{ url_for('task.show_task', task_id=task.id)}}">
                             <table class="task-inner">
                                 <tr>
