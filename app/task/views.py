@@ -2,12 +2,12 @@ from flask import Blueprint, render_template, flash, redirect, url_for, g, reque
 from flask_login import login_required
 from flask_admin.contrib.sqla import ModelView
 
-from app import db
+from app import app, db
 from app.task.forms import CreateTaskForm, TaskForm
 from app.task.models import Task, Category, TaskForTeam
 from app.user.forms import SubmitFlagForm
 from app.user.models import UserSolved, SubmitLogs
-from app.common.utils import admin_required
+from app.common.utils import admin_required, check_recaptcha_response
 
 task_module = Blueprint('task', __name__)
 
@@ -50,24 +50,33 @@ def show_task(task_id=None):
         return redirect(url_for('task.all_task'))
     form = SubmitFlagForm(task.id)
     if form.validate_on_submit():
-        log_data = SubmitLogs(g.user, task, form.flag.data)
-        db.session.add(log_data)
-        db.session.commit()
-        if form.flag.data == task.flag:
-            if UserSolved.query.filter_by(user_id=g.user.id, task_id=task.id).first():
-                flash('Correct flag but you already solved this task.', category='success')
-                return redirect(url_for('task.show_task', task_id=task.id))
-            elif g.user.team and task in g.user.team.solved_tasks():
-                flash('Correct flag but your team-mate already solved this task.', category='success')
+        recaptcha_response = request.form.get('g-recaptcha-response', None)
+        if recaptcha_response:
+            success, error = check_recaptcha_response(recaptcha_response, request.environ['REMOTE_ADDR'])
+            if success:
+                log_data = SubmitLogs(g.user, task, form.flag.data)
+                db.session.add(log_data)
+                db.session.commit()
+                if form.flag.data == task.flag:
+                    if UserSolved.query.filter_by(user_id=g.user.id, task_id=task.id).first():
+                        flash('Correct flag but you already solved this task.', category='success')
+                        return redirect(url_for('task.show_task', task_id=task.id))
+                    elif g.user.team and task in g.user.team.solved_tasks():
+                        flash('Correct flag but your team-mate already solved this task.', category='success')
+                    else:
+                        flash('Correct Flag. Congrats!', category='success')
+                    solved_data = UserSolved(g.user, task)
+                    db.session.add(solved_data)
+                    db.session.commit()
+                    return redirect(url_for('task.show_task', task_id=task.id))
+                else:
+                    flash('Wrong Flag. Bad luck. Please try harder !', category='danger')
             else:
-                flash('Correct Flag. Congrats!', category='success')
-            solved_data = UserSolved(g.user, task)
-            db.session.add(solved_data)
-            db.session.commit()
-            return redirect(url_for('task.show_task', task_id=task.id))
+                form.recaptcha.errors.append(error)
         else:
-            flash('Wrong Flag. Bad luck. Please try harder!', category='danger')
-    return render_template('task/task.html', task=task, form=form)
+            form.recaptcha.errors.append('Missing reCAPTCHA response')
+
+    return render_template('task/task.html', task=task, form=form, sitekey=app.config['RECAPTCHA_PUBLIC_KEY'])
 
 
 @task_module.route('/<int:task_id>/<string:toggle>', methods=['GET', 'POST'])

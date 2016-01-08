@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block js %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endblock %}
 {% block content %}
 <div class="row clearfix">
 <div class="col-md-10 col-md-offset-1">
@@ -6,6 +9,9 @@
   <div class="alert alert-danger">{{ message }}</div>
   {% endfor %}
   {% for message in form.task_id.errors %}
+  <div class="alert alert-danger">{{ message }}</div>
+  {% endfor %}
+  {% for message in form.recaptcha.errors %}
   <div class="alert alert-danger">{{ message }}</div>
   {% endfor %}
   <div class="row">
@@ -50,6 +56,7 @@
       <form role="form" action="" method="POST">
         <label>{{ form.flag.label }}</label>
         <input name="flag" type="text" size="50" required autofocus>
+        <div class="g-recaptcha" data-sitekey="{{ sitekey }}"></div>
         {{ form.hidden_tag() }}
         <br>
         <button class="btn btn-primary" type="submit">Submit</button>

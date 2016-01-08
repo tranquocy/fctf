@@ -4,6 +4,7 @@ import string
 import random
 import os
 import smtplib
+import requests
 from functools import wraps
 
 from flask import render_template, redirect, url_for, g
@@ -76,3 +77,19 @@ def compute_color_value(value):
 
 def ordinal(n):
     return "%d%s" % (n,"tsnrhtdd"[(n/10%10!=1)*(n%10<4)*n%10::4])
+
+
+def check_recaptcha_response(response, remote_ip):
+    payload = {
+        'secret': app.config['RECAPTCHA_PRIVATE_KEY'],
+        'response': response,
+        'remoteip': remote_ip
+    }
+    verify_request = requests.post(
+        'https://www.google.com/recaptcha/api/siteverify',
+        data=payload
+    )
+    if verify_request.status_code == 200 and verify_request.json()['success']:
+        return (True, 'OK')
+
+    return (False, 'Verify reCAPTCHA response failed')

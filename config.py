@@ -37,3 +37,6 @@ MAIL_SENDERS = {
 }
 
 ADMINS = ['nguyen.anh.tien@framgia.com']
+
+RECAPTCHA_PUBLIC_KEY = 'public_key_here'
+RECAPTCHA_PRIVATE_KEY = 'private_key_here'

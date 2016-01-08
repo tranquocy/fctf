@@ -149,6 +149,7 @@ class SubmitFlagForm(Form):
         validators.Length(max=255, message='Flag is at most 255 characters.'),
     ])
     task_id = HiddenField('task_id')
+    recaptcha = HiddenField()
     submit = SubmitField('Submit')
 
     def __init__(self, task_id):
