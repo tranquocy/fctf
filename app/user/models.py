@@ -1,3 +1,4 @@
+import json
 import hashlib
 import datetime
 from flask import url_for
@@ -8,7 +9,7 @@ from sqlalchemy.orm import backref
 from app import db
 from app.common.utils import generate_token
 from app.user import constants as USER
-from app.common.utils import compute_color_value
+from app.common.utils import compute_color_value, generate_random_string
 import app.task.models
 import app.team.models
 
@@ -186,3 +187,28 @@ class SubmitLogs(db.Model):
         self.task_id = task.id
         self.flag = flag
         self.created_at = datetime.datetime.now()
+
+
+class UserData(db.Model):
+
+    __tablename__ = 'user_data'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    token = db.Column(db.String(64))
+    data = db.Column(db.Text)
+    expire_at = db.Column(db.DateTime, default=datetime.datetime.now() + datetime.timedelta(minutes=30))
+
+    user = db.relationship('User', backref=db.backref('storage', cascade='all', uselist=False))
+
+
+    def __init__(self, user):
+        self.user_id = user.id
+        self.token = generate_random_string(64)
+        self.data = json.dumps({})
+
+    def refresh(self):
+        self.token = generate_random_string(64)        
+        self.expire_at = datetime.datetime.now() + datetime.timedelta(minutes=30)
+
+    def is_expired(self):
+        return datetime.datetime.now() >= self.expire_at
