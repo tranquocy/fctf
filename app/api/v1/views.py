@@ -110,3 +110,30 @@ def set_data():
         pass
 
     return jsonify(resp)
+
+
+@api_v1_module.route('/game/post_result', methods=['POST'])
+def game_post_result():
+    resp = {'success': 0}
+    try:
+        print request.form.get('token', '')
+        storage = UserData.query.filter_by(token=request.form.get('token', '')).first()
+        task = Task.query.get(request.form.get('task_id', 0))
+        if storage and task and task.category.description == 'game':
+            if not storage.is_expired():
+                if (storage.user.team and task not in storage.user.team.solved_tasks()) or task not in storage.user.solved_tasks:
+                    log_data = SubmitLogs(storage.user, task, '########[API-CENSORED]########')
+                    db.session.add(log_data)
+                    solved_data = UserSolved(storage.user, task)
+                    db.session.add(solved_data)
+                    db.session.commit()
+                    resp['success'] = 1
+                    resp['result'] = 'ok'
+            else:
+                resp['success'] = 0
+                resp['error'] = 'Please refresh token'
+    except Exception, e:
+        print e
+        pass
+
+    return jsonify(resp)
