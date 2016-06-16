@@ -68,6 +68,8 @@ def get_token():
             db.session.commit()
         resp['token'] = user.storage.token
         resp['success'] = 1
+    else:
+        resp['error'] = 'Invalid user or password'
 
     return jsonify(resp)
 
@@ -84,6 +86,8 @@ def get_data():
         else:
             resp['success'] = 0
             resp['error'] = 'Please refresh token'
+    else:
+        resp['error'] = 'Invalid token'
 
     return jsonify(resp)
 
@@ -105,8 +109,10 @@ def set_data():
             else:
                 resp['success'] = 0
                 resp['error'] = 'Please refresh token'
+        else:
+            resp['error'] = 'Invalid token'
     except Exception, e:
-        print e
+        resp['error'] = str(e)
         pass
 
     return jsonify(resp)
@@ -129,11 +135,15 @@ def game_post_result():
                     db.session.commit()
                     resp['success'] = 1
                     resp['result'] = 'ok'
+                else:
+                    resp['error'] = 'Invalid task or token'
             else:
                 resp['success'] = 0
                 resp['error'] = 'Please refresh token'
+        else:
+            resp['error'] = 'Invalid task or token'
     except Exception, e:
-        print e
+        resp['error'] = str(e)
         pass
 
     return jsonify(resp)
