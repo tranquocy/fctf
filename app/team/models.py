@@ -43,7 +43,7 @@ class Team(db.Model):
         return teams_data
 
     def get_total_score(self):
-        sql = text("select sum(point) from (select max(point) as point from (select task_id, point from user_solved where team_id = :team_id) a group by task_id) b")
+        sql = text("select sum(point) as total_point from (select team_id, task_id, point from user_solved group by team_id, task_id) a where team_id = :team_id group by team_id order by total_point desc")
         result = db.session.execute(sql, {'team_id': self.id})
 
         for point in result:

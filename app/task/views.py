@@ -8,6 +8,7 @@ from app.task.models import Task, Category, TaskForTeam
 from app.user.forms import SubmitFlagForm
 from app.user.models import UserSolved, SubmitLogs
 from app.common.utils import admin_required, check_recaptcha_response
+from app.common.achievements import try_unlock_achievements
 
 task_module = Blueprint('task', __name__)
 
@@ -68,6 +69,9 @@ def show_task(task_id=None):
                     solved_data = UserSolved(g.user, task)
                     db.session.add(solved_data)
                     db.session.commit()
+
+                    try_unlock_achievements(log_data, solved_data)
+
                     return redirect(url_for('task.show_task', task_id=task.id))
                 else:
                     flash('Wrong Flag. Bad luck. Please try harder !', category='danger')

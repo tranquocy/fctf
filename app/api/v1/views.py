@@ -9,6 +9,7 @@ from app.common.utils import compute_sign_hash, set_all_cookie, delete_all_cooki
 from app.user.models import User, UserSolved, SubmitLogs, UserData
 from app.team.models import Team
 from app.task.models import Task, Category
+from app.common.achievements import try_unlock_achievements
 
 api_v1_module = Blueprint('api_v1', __name__)
 
@@ -133,10 +134,11 @@ def game_post_result():
                     solved_data = UserSolved(storage.user, task)
                     db.session.add(solved_data)
                     db.session.commit()
-                    resp['success'] = 1
-                    resp['result'] = 'ok'
-                else:
-                    resp['error'] = 'Invalid task or token'
+
+                    try_unlock_achievements(log_data, solved_data)
+
+                resp['success'] = 1
+                resp['result'] = 'ok'
             else:
                 resp['success'] = 0
                 resp['error'] = 'Please refresh token'

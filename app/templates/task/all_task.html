@@ -6,12 +6,12 @@
             <h1>All Tasks</h1>
             <table style="margin-left: auto;margin-right: auto;">
                 <tr>
-                {% for category in categories %}
+                {% for category in categories if not category.is_achievement() %}
                     <th style="text-align:center;"><h3>{{ category.name }}</h3></th>
                 {% endfor %}
                 </tr>
                 <tr>
-                {% for category in categories %}
+                {% for category in categories if not category.is_achievement() %}
                     <td class="task-container">
                     {% for task in category.tasks %}
                         {% if task.can_access_by(g.user) %}

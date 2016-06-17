@@ -7,6 +7,7 @@ from app.common.utils import compute_sign_hash, set_all_cookie, delete_all_cooki
 from app.user.models import User, UserSolved, SubmitLogs
 from app.team.models import Team
 from app.task.models import Task, Category
+from app.common.achievements import ACHIEVEMENT_CFGS as AC_CFGS
 
 
 @app.before_request
@@ -50,14 +51,21 @@ def more_activities():
     resp = []
     for activity in activities:
         last_side = 'right' if last_side == 'left' else 'left'
-        resp.append({
+
+        item = {
             'class': 'pos-%s clearfix' % last_side,
             'id': activity.id,
             'time': activity.created_at.strftime('%b %d %H:%M'),
             'avatar': activity.user.get_avatar_url(64),
             'header': u"{0:s} {1:s}".format(activity.user.get_profile_link(False), "(%s)" % activity.user.team.name if activity.user.team else ''),
-            'footer': u' solved task <a href="{0:s}">{1:s}</a> and scored <strong>{2:s} points</strong>'.format(url_for('task.show_task', task_id=activity.task.id), activity.task.name, str(activity.task.point))
-        })
+        }
+
+        if activity.task.category.is_achievement():
+            item['footer'] = u' solved task <a href="{0:s}">{1:s}</a> and scored <strong>{2:s} points</strong>'.format(url_for('task.show_task', task_id=activity.task.id), activity.task.name, str(activity.task.point))
+        else:
+            item['footer'] = u' unlocked an Achievement: <a href="{0:s}">{1:s}</a> and get bonused <strong>{2:s} points</strong>'.format(url_for('task.all_task'), activity.task.name, str(activity.task.point))
+
+        resp.append(resp)
 
     return jsonify(result=resp)
 
@@ -67,6 +75,12 @@ def more_activities():
 def index():
     return render_template(
         'common/index.html',
+    )
+
+@app.route('/start')
+def start():
+    return render_template(
+        'common/start.html',
     )
 
 
@@ -129,11 +143,13 @@ def scoreboard():
             x_data.append("'%s'" % str(period.created_at))
         all_team_data.append((team, ", ".join(map(str, period_data))))
         xs_data.append((team, ", ".join(x_data)))
+
+    achievements = [task for task in Task.query.all() if task.category.is_achievement()]
     
     return render_template('common/scoreboard.html',
                            users_data=users_data, teams_data=teams_data,
                            max_user_score=max_user_score, max_team_score=max_team_score,
-                           data=all_team_data, xs_data=xs_data
+                           data=all_team_data, xs_data=xs_data, achievements=achievements, cfgs=AC_CFGS
     )
 
 

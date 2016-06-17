@@ -1,6 +1,6 @@
 from sqlalchemy.orm import backref
 
-from app import db
+from app import app, db
 import app.hint.models
 import app.team.models
 
@@ -70,3 +70,5 @@ class Category(db.Model):
     def __str__(self):
         return self.name
 
+    def is_achievement(self):
+        return self.description == "ac"

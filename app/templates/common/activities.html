@@ -30,7 +30,11 @@
                         </div>
                         <div class="events-body">
                             <h4 class="events-heading">{{ activity.user.get_profile_link(False)|safe }} {% if activity.user.team %}({{ activity.user.team.name }}){% endif %}</h4>
+                            {% if activity.task.category.is_achievement() %}
+                            <p> unlocked an Achievement: <a href="{{ url_for('task.all_task') }}">{{ activity.task.name }}</a> and get bonused <strong>{{ activity.point }} points</strong></p>
+                            {% else %}
                             <p> solved task <a href="{{ url_for('task.show_task', task_id=activity.task.id)}}">{{ activity.task.name }}</a> and scored <strong>{{ activity.point }} points</strong></p>
+                            {% endif %}
                         </div>
                     </div>
                 </dd>
