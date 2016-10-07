@@ -1,0 +1,14 @@
+//
+// Components :: Alerts
+// --------------------------------------------------
+
+.alert-danger {
+  background-color: $alert-danger-background;
+  color: $alert-danger-color;
+  border: none;
+  font-weight: $font-weight-medium;
+  padding: 7px 13px;
+  font-size: 14px;
+  margin-bottom: 7px;
+  border-radius: 3px;
+}
