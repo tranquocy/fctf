@@ -1,0 +1,11 @@
+//
+// Base :: Reset
+// --------------------------------------------------
+
+body {
+  font-family: $font-family-primary;
+}
+
+button:focus {
+  outline: none !important;
+}

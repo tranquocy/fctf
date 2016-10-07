@@ -1,0 +1,70 @@
+//
+// Layout :: Banner
+// --------------------------------------------------
+
+.banner {
+  margin-top: -56px;
+  border-bottom: 1px solid #ebebeb;
+  position: relative;
+  z-index: 1;
+  padding: 120px 0 200px;
+  background: url(../img/bg-banner.png) no-repeat top center;
+  background-size: cover;
+
+  @include respond-to(phone) {
+    margin-top: 0;
+    padding: 20px 0 200px;
+  }
+
+  @include respond-to(smallphone) {
+    padding: 20px 0 80px;
+  }
+
+  .inner {
+    margin-left: 100px;
+    float: left;
+    text-align: center;
+    max-width: 100%;
+
+    @include respond-to(tablet) {
+      margin-left: 15px;
+    }
+
+    @include respond-to(phone) {
+      margin-left: 0;
+      text-align: left;
+    }
+  }
+
+  .text-img {
+    max-width: 100%;
+    height: auto;
+
+    @include respond-to(smallphone) {
+      width: 80%;
+    }
+  }
+
+  .datetime {
+    margin: 18px 0 0;
+    color: #333333;
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: $font-weight-medium;
+
+    .seperator {
+      font-weight: $font-weight-normal;
+      color: #d6d6d6;
+    }
+  }
+
+  .address {
+    margin-bottom: 0;
+    font-size: 14px;
+    color: #333333;
+  }
+
+  .btn {
+    margin-top: 20px;
+  }
+}
