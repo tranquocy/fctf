@@ -1,0 +1,36 @@
+//
+// Components :: UI Elements
+// --------------------------------------------------
+
+.heading-title {
+  font-family: $font-family-secondary !important;
+  font-size: 22px;
+  font-weight: $font-weight-bold;
+  color: #333333;
+  text-transform: uppercase;
+  position: relative;
+  margin: 0;
+  padding-bottom: 20px;
+
+  &:after {
+    content: "";
+    width: 54px;
+    height: 1px;
+    background-color: $brand-primary;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+  }
+}
+
+.link-inline {
+  color: #0099ff;
+  transition: color .3s ease;
+
+  &:hover {
+    text-decoration: none;
+    color: darken(#0099ff, 10%);
+  }
+}

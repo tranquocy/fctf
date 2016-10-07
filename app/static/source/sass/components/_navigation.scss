@@ -1,0 +1,166 @@
+//
+// Components :: Navigation
+// --------------------------------------------------
+
+.navbar {
+  position: relative;
+  border: none;
+  background-color: #ffffff;
+  margin-bottom: 0;
+  border-bottom: 1px solid #dedede;
+
+  .navbar-brand {
+    padding-left: 30px;
+    padding-right: 30px;
+    position: relative;
+    height: auto;
+    background-color: #fff;
+
+    @include respond-to(phone) {
+      padding: 10px 15px;
+
+      img {
+        width: 80px;
+        height: auto;
+      }
+    }
+
+    &:hover {
+      background-color: #fff;
+    }
+  }
+
+  .navbar-nav {
+    position: relative;
+    margin-top: 40px;
+    margin-left: 45px;
+    padding: 0 22px;
+    background-color: #fff;
+
+    @include respond-to(tablet) {
+      margin-left: 25px;
+    }
+
+    @include respond-to(phone) {
+      margin-left: 0;
+      margin-top: 0;
+      padding: 0;
+      background: #e7e7e7;
+    }
+
+    li {
+      + li {
+        padding-left: 25px;
+
+        @include respond-to(phone) {
+          padding-left: 0;
+        }
+      }
+    }
+
+    > li > a {
+      padding: 5px 0;
+      color: #333;
+      font-size: 14px;
+      font-weight: $font-weight-medium;
+      font-family: $font-family-primary;
+      border-bottom: 1px solid transparent;
+      transition: color .3s ease;
+
+      &:hover {
+        color: $brand-primary;
+      }
+    }
+
+    .active > a,
+    .active > a:hover,
+    .active > a:focus {
+      color: #fc653c;
+      background: none;
+      border-bottom-color: $brand-primary;
+
+      @include respond-to(phone) {
+        border-bottom: none;
+      }
+    }
+
+    > .open > a,
+    > .open > a:hover,
+    > .open > a:focus {
+      color: #555;
+    }
+  }
+
+  .box-profile {
+    margin-top: 45px;
+    padding: 0 9px 0 14px;
+    background: #fff;
+    position: relative;
+    z-index: 5;
+
+    &.for-mobile {
+      display: none;
+    }
+
+    @include respond-to(phone) {
+      position: absolute;
+      right: 62px;
+      top: 0;
+      margin-top: 25px;
+
+      &.for-desktop {
+        display: none;
+      }
+
+      &.for-mobile {
+        display: block;
+      }
+    }
+
+    .avatar-image {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+    }
+
+    .caret {
+      border-top-color: #747677;
+    }
+
+    .dropdown-toggle {
+      cursor: pointer;
+    }
+
+    .dropdown-menu {
+      border-radius: 0;
+      box-shadow: none;
+
+      @include respond-to(phone) {
+        left: auto;
+        right: 0;
+      }
+    }
+  }
+
+  @include respond-to(phone) {
+    .navbar-toggle {
+      margin-top: 22px;
+      border: none;
+      color: #FFF;
+      background-color: #205d64;
+
+      &:hover,
+      &:focus {
+        background-color: #205d64;
+      }
+
+      .icon-bar {
+        background-color: #fff;
+      }
+    }
+
+    .navbar-collapse {
+      background-color: #e5e5e5;
+    }
+  }
+}
