@@ -20,6 +20,18 @@
   }
 
   .navbar-brand {
+    padding-left: 30px;
+    padding-right: 30px;
+
+    img {
+      width: 103px;
+      height: auto;
+
+      @include respond-to(phone) {
+        width: 65px;
+      }
+    }
+
     &:before,
     &:after {
       content: "";
@@ -42,6 +54,15 @@
     &:after {
       right: 0;
     }
+  }
+
+  .navbar-nav {
+    margin-top: 40px;
+  }
+
+  .box-profile {
+    margin-top: 45px;
+    padding: 0 9px 0 14px;
   }
 }
 

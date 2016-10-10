@@ -1,0 +1,52 @@
+//
+// Components :: Tabs
+// --------------------------------------------------
+
+.nav-tabs-customize {
+  background-color: transparent;
+  border-bottom: 1px solid #ccc;
+
+  > li {
+    border-left: none;
+
+    @include respond-to(smallphone) {
+      width: 25% !important;
+    }
+
+    &:first-child a {
+      border-radius: 4px 4px 0 0;
+    }
+
+    &.active a {
+      &,
+      &:hover,
+      &:focus {
+        border: 1px solid #ccc;
+        border-bottom-color: transparent;
+        color: #000;
+      }
+    }
+
+    a {
+      color: #666;
+
+      @include respond-to(smallphone) {
+        @include truncate();
+        padding: 8px;
+        margin-right: 0;
+      }
+
+      &:hover,
+      &:focus {
+        border: 1px solid transparent;
+        border-color: #eee #eee #ddd;
+      }
+    }
+  }
+}
+
+.tab-content-customize {
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+}

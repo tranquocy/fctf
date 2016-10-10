@@ -1,3 +1,55 @@
 //
 // Layout :: Sub-header
 // --------------------------------------------------
+
+.sub-header {
+  background-color: $subheader-background;
+  border-bottom: 1px solid $subheader-border-color;
+
+  .container {
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .flex {
+    flex: 1;
+  }
+
+  .title {
+    margin: 0;
+    color: $black;
+    font-weight: $font-weight-medium;
+    font-size: 20px;
+    line-height: 24px;
+    margin-right: 10px;
+  }
+
+  .subtitle {
+    color: #000000;
+    font-size: 14px;
+  }
+
+  .breadcrumb {
+    margin: 0;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    border: none;
+
+    .item,
+    .link {
+      font-size: 13px;
+    }
+
+    .link {
+      color: $black;
+    }
+
+    > li + li:before {
+      padding: 0 3px;
+      color: #666666;
+    }
+  }
+}
