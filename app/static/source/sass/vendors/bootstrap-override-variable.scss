@@ -1,8 +1,13 @@
-/**
-* Overwrite bootstrap variables here
-*/
-//** Global textual link color.
+//
+// Vendors :: Overwrite bootstrap variables
+// --------------------------------------------------
+
+// Global textual link color.
 $brand-primary: rgba(10,173,138,1);
 $link-color: $brand-primary;
 
+// Font-size
 $font-size-base: 14px;
+
+// Grids
+$grid-gutter-width: 18px;
