@@ -26,10 +26,13 @@
 @import 'components/forms';
 @import 'components/tables';
 @import 'components/alerts';
+@import 'components/tabs';
 
 @import 'pages/home';
 @import 'pages/sign-up';
 @import 'pages/change-password';
 @import 'pages/forgot-password';
 @import 'pages/confirm-mail-resend';
+@import 'pages/scoreboard';
+
 @import 'themes/theme';

@@ -1,137 +1,524 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="row clearfix">
-<div class="col-md-10 col-md-offset-1">
-  <h1 class="text-center">Top 10 Team Ranking</h1>
-  <div id="top10"></div>
-  <script>
-  var chart = c3.generate({
-          bindto: '#top10',
-          data: {
-              xFormat: '%Y-%m-%d %H:%M:%S',
-              xs: {
-                {% for team, xs in xs_data %}
-                  '{{ team.name }}': 'x{{ team.id }}',
-                {% endfor %}
-              },
-              columns: [
-                  {% for team, points in data %}
-                  ['{{ team.name }}', {{ points }}],
-                  {% endfor %}
-                  {% for team, xs in xs_data %}
-                  ['x{{ team.id }}', {{ xs|safe }}],
-                  {% endfor %}
-              ],
-              type: "step",
-              colors: {
-                  {% for team, points in data %}
-                  '{{ team.name }}': '{{ team.color_hash() }}',
-                  {% endfor %}
-              },
-          },
-          axis: {
-              x: {
-                  type: 'timeseries',
-                  tick: {
-                      format: '%m/%d %H:%M'
-                  }
-              },
-              y: {
-                  label: {
-                      text: 'Score'
-                  }
-              }
-          },
-          zoom : {
-            enabled: true
-          }
-      });
-  </script>
-  <div class="row">
-    <h3>Achievements</h3>
-    {% for achievement in achievements %}
-    <div style="float:left">
-        {% if achievement.solved_users|length == 1 %}
-        <span class="fa-stack fa-3x" style="color:{{ cfgs[achievement.id]["color"] }}">
-          <i class="fa fa-circle-thin fa-stack-2x"></i>
-          <i class="fa {{ cfgs[achievement.id]["icon"] }} fa-stack-1x" title="{{ achievement.name }} : {{ achievement.description }}"></i>
-        </span>
-        {% for user in achievement.solved_users %}
-        <p style="text-align:center">
-            <a href="{{ url_for('team.show_team', team_id=user.team.id) }}">{{ user.team.name }}</a>
-        </p>
-        {% endfor %}
-        {% else %}
-        <span class="fa-stack fa-3x" style="color:#CCCCCC">
-          <i class="fa fa-circle-thin fa-stack-2x"></i>
-          <i class="fa fa-question fa-stack-1x" title="???"></i>
-        </span>
-        {% endif %}
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Framgia CTF</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Framgia CodeContest Team">
+  <link rel="shortcut icon" href="../../static/favicon.ico" type="image/x-icon">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="../../static/css/site.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-default navbar">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="base.html">
+          <img src="../../static/img/logo.png" alt="Logo" width="103" height="83">
+        </a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">Activities</a></li>
+          <li><a href="#">Tasks</a></li>
+          <li><a href="#">Teams</a></li>
+          <li><a href="#">Scoreboard</a></li>
+          <li><a href="#">About</a></li>
+        </ul>
+        <div class="navbar-right">
+          <!-- Box profile for desktop -->
+          <div class="dropdown box-profile for-desktop">
+            <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+              <span class="caret"></span>
+            </div>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+              <li><a href="#">Change Password</a></li>
+              <li><a href="#">My Profile</a></li>
+            </ul>
+          </div> <!--/ End Box profile for desktop -->
+        </div>
+      </div>
     </div>
-    {% endfor %}
+    <!-- Box profile for mobile -->
+    <div class="dropdown box-profile for-mobile">
+      <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+        <span class="caret"></span>
+      </div>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li><a href="#">Change Password</a></li>
+        <li><a href="#">My Profile</a></li>
+      </ul>
+    </div> <!--/ End Box profile for mobile -->
+  </nav> <!--/ End Navbar  -->
+
+  <!-- Subheader -->
+  <div class="sub-header">
+    <div class="container">
+      <h4 class="title">Scoreboard</h4>
+      <div class="flex"></div>
+      <ol class="breadcrumb">
+        <li class="item"><a class="link" href="#">Home</a></li>
+        <li class="item active">Scoreboard</li>
+      </ol>
+    </div>
+  </div><!--/ End Subheader -->
+
+  <div class="main-container page-scoreboard">
+    <div class="container">
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs nav-tabs-customize" role="tablist">
+        <li role="presentation" class="active">
+          <a href="#ranking" aria-controls="ranking" role="tab" data-toggle="tab">Top 10 Team Ranking</a>
+        </li>
+        <li role="presentation">
+          <a href="#achievement" aria-controls="achievement" role="tab" data-toggle="tab">Achievements</a>
+        </li>
+        <li role="presentation">
+          <a href="#team" aria-controls="team" role="tab" data-toggle="tab">Teams</a>
+        </li>
+        <li role="presentation">
+          <a href="#user" aria-controls="user" role="tab" data-toggle="tab">Users</a>
+        </li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content tab-content-customize">
+        <div role="tabpanel" class="tab-pane active" id="ranking">
+          Mr. Nguyen Anh Tien will progress..
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="achievement">
+          <div class="list-achievement">
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#1abc9c">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-bolt fa-stack-1x" title="First Blood : solve the first task"></i>
+              </span>
+              <p class="team-name">
+                <a href="/team/103">YaoMing</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#e67e22">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-gamepad fa-stack-1x" title="Real Gamer : solve the first game logic task"></i>
+              </span>
+              <p class="team-name">
+                <a href="/team/121">Domino</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#9b59b6">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-file-code-o fa-stack-1x" title="Code Lover : solve first code task"></i>
+              </span>
+              <p class="team-name">
+                <a href="/team/99">Fake</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#2c3e50">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-flag fa-stack-1x" title="Flag Hunter : solve first CTF task"></i>
+              </span>
+              <p class="team-name">
+                <a href="/team/103">YaoMing</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#d35400">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-video-camera fa-stack-1x" title="Movie Addict : first one to solve the movie related task"></i>
+              </span>
+              <p class="team-name">
+                <a href="/team/121">Domino</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#e74c3c">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-user fa-stack-1x" title="Stubborn One : submit 3 flag in a row"></i>
+              </span>
+              <p class="team-name">
+                <a href="/team/99">Fake</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#8e44ad">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-users fa-stack-1x" title="Hard Core : submit 5 flag in a row"></i>
+              </span>
+              <p class="team-name">
+                <a href="/team/102">Edu Crazy</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#16a085">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-rocket fa-stack-1x" title="Best of Best : solve most valuable task"></i>
+              </span>
+              <p class="team-name">
+                Unknown
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#f1c40f">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-child fa-stack-1x" title="Early Comer : solve a task between 10:00 ~ 10:30 AM"></i>
+              </span>
+              <p class="team-name">
+                  <a href="/team/93">UET-Comeback</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#c0392b">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-sun-o fa-stack-1x" title="Workaholic : solve a task between 12:30 ~ 13:30"></i>
+              </span>
+              <p class="team-name">
+                  <a href="/team/99">Fake</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#27ae60">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-moon-o fa-stack-1x" title="Unstoppable : solve a task between 19:00 ~ 20:00 PM"></i>
+              </span>
+              <p class="team-name">
+                  <a href="/team/124">TNAG.Reborn</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#ad392b">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-plane fa-stack-1x" title="First AI Ever : First AI submit"></i>
+              </span>
+              <p class="team-name">
+                  <a href="/team/103">YaoMing</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#276060">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-rocket fa-stack-1x" title="Second AI : Second AI submit"></i>
+              </span>
+              <p class="team-name">
+                  <a href="/team/99">Fake</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#27aacc">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-lock fa-stack-1x" title="Door Cracker : unlock the real world"></i>
+              </span>
+              <p class="team-name">
+                  <a href="/team/92">V.I.P</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#f1ee0f">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-bullseye fa-stack-1x" title="AI 1st : 1st place"></i>
+              </span>
+              <p class="team-name">
+                  <a href="/team/92">V.I.P</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#ee392b">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-cog fa-stack-1x" title="AI 2nd : 2nd place"></i>
+              </span>
+              <p class="team-name">
+                  <a href="/team/99">Fake</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#27aeee">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-crosshairs fa-stack-1x" title="AI 3rd : 3rd place"></i>
+              </span>
+              <p class="team-name">
+                  <a href="/team/117">Max - Min</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#ad3ddd">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-futbol-o fa-stack-1x" title="AI 4th : 4th place"></i>
+              </span>
+              <p class="team-name">
+                  <a href="/team/124">TNAG.Reborn</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#006fa6">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-certificate fa-stack-1x" title="AI 5th : 5th place"></i>
+              </span>
+              <p class="team-name">
+                  <a href="/team/103">YaoMing</a>
+              </p>
+            </div>
+
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#27eecc">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-cubes fa-stack-1x" title="AI 6th : 6th place"></i>
+              </span>
+              <p class="team-name">
+                  <a href="/team/135">Foo</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane tab-contain-table" id="team">
+          <table class="table table-bordered table-customize table-order table-responsive">
+            <thead>
+              <tr>
+                <th width="50px">#</th>
+                <th width="50%">Name</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-title="#">
+                  <span>1</span>
+                </td>
+                <td data-title="Name">
+                  Fake
+                </td>
+                <td data-title="Score">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%;">
+                      <span class="sr-only">20% Complete</span>
+                    </div>
+                  </div>
+                  <span class="number">2000</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td data-title="#">
+                  <span>2</span>
+                </td>
+                <td data-title="Name">
+                  YaoMing
+                </td>
+                <td data-title="Score">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%;">
+                      <span class="sr-only">80% Complete</span>
+                    </div>
+                  </div>
+                  <span class="number">2000</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td data-title="#">
+                  <span>3</span>
+                </td>
+                <td data-title="Name">
+                  TNAG.Reborn
+                </td>
+                <td data-title="Score">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%;">
+                      <span class="sr-only">40% Complete</span>
+                    </div>
+                  </div>
+                  <span class="number">2000</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td data-title="#">
+                  <span>4</span>
+                </td>
+                <td data-title="Name">
+                  V.I.P
+                </td>
+                <td data-title="Score">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%;">
+                      <span class="sr-only">40% Complete</span>
+                    </div>
+                  </div>
+                  <span class="number">2000</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td data-title="#">
+                  <span>5</span>
+                </td>
+                <td data-title="Name">
+                  Foo
+                </td>
+                <td data-title="Score">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%;">
+                      <span class="sr-only">40% Complete</span>
+                    </div>
+                  </div>
+                  <span class="number">2000</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div role="tabpanel" class="tab-pane tab-contain-table tab-user" id="user">
+          <table class="table table-bordered table-customize table-order table-responsive">
+            <thead>
+              <tr>
+                <th width="50px">#</th>
+                <th width="50%">Name</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-title="#">
+                  <span>1</span>
+                </td>
+                <td data-title="Name">
+                  <a class="avatar-username" href="#">
+                    <img src="http://www.gravatar.com/avatar/87a73782b8b1b6f4024882465c7cabd9?d=mm&amp;s=24" alt="manhhomienbienthuy" title="manhhomienbienthuy">
+                    <span class="text-default">manhhomienbienthuy</span>
+                  </a>
+                </td>
+                <td data-title="Score">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%;">
+                      <span class="sr-only">20% Complete</span>
+                    </div>
+                  </div>
+                  <span class="number">2000</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td data-title="#">
+                  <span>2</span>
+                </td>
+                <td data-title="Name">
+                  <a class="avatar-username" href="#">
+                    <img src="http://www.gravatar.com/avatar/8e8d33c452cf092161261c5205bbfdcd?d=mm&amp;s=24" alt="anhtd" title="anhtd">
+                    <span class="text-default">anhtd</span>
+                  </a>
+                </td>
+                <td data-title="Score">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%;">
+                      <span class="sr-only">80% Complete</span>
+                    </div>
+                  </div>
+                  <span class="number">2000</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td data-title="#">
+                  <span>3</span>
+                </td>
+                <td data-title="Name">
+                  <a class="avatar-username" href="#">
+                    <img src="http://www.gravatar.com/avatar/182719b2b39e5da904d9be350cf6e03a?d=mm&s=24" alt="JimmyTr" title="JimmyTr">
+                    <span class="text-default">JimmyTr</span>
+                  </a>
+                </td>
+                <td data-title="Score">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%;">
+                      <span class="sr-only">40% Complete</span>
+                    </div>
+                  </div>
+                  <span class="number">2000</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td data-title="#">
+                  <span>4</span>
+                </td>
+                <td data-title="Name">
+                  <a class="avatar-username" href="#">
+                    <img src="http://www.gravatar.com/avatar/90b36c196a46f35da8c4fd1244cf15fd?d=mm&amp;s=24" alt="bs90" title="bs90">
+                    <span class="text-danger">bs90</span>
+                  </a>
+                </td>
+                <td data-title="Score">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%;">
+                      <span class="sr-only">40% Complete</span>
+                    </div>
+                  </div>
+                  <span class="number">2000</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td data-title="#">
+                  <span>5</span>
+                </td>
+                <td data-title="Name">
+                  <a class="avatar-username" href="#">
+                    <img src="http://www.gravatar.com/avatar/e2dfd27d91ed0515b6975b09e0e40942?d=mm&amp;s=24" alt="Bắp Cùi" title="Bắp Cùi">
+                    <span class="text-default">Bắp Cùi</span>
+                  </a>
+                </td>
+                <td data-title="Score">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%;">
+                      <span class="sr-only">40% Complete</span>
+                    </div>
+                  </div>
+                  <span class="number">2000</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="col-md-6">
-      <h1>Teams</h1>
-      <br>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for team, total_score in teams_data %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            <td><a href="{{ url_for('team.show_team', team_id=team.id)}}">{{ team.name }}</td>
-            <td>
-              <div class="progress">
-                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="{{ max_team_score }}" style="width: {{ total_score/max_team_score * 100 }}%;">
-                {{ total_score }}
-                </div>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-  </div>
-  <div class="col-md-6">
-      <h1>Users</h1>
-      <br>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for user, total_score in users_data %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ user.get_profile_link()|safe }}</td>
-            <td>
-              <div class="progress">
-                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ total_score }}" aria-valuemin="0" aria-valuemax="{{ max_user_score }}" style="width: {{ total_score/max_user_score * 100 }}%;">
-                {{ total_score }}
-                </div>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-  </div>
-</div>
-{% endblock %}
-{% block js %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.9/d3.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
-{% endblock %}
-{% block css %}
-<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css">
-{% endblock %}
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="../../static/js/jquery-1.11.0.min.js"></script>
+  <script src="../../static/js/site.min.js"></script>
+</body>
+</html>

@@ -10,29 +10,27 @@
   border-bottom: 1px solid #dedede;
 
   .navbar-brand {
-    padding-left: 30px;
-    padding-right: 30px;
     position: relative;
     height: auto;
     background-color: #fff;
 
     @include respond-to(phone) {
       padding: 10px 15px;
-
-      img {
-        width: 80px;
-        height: auto;
-      }
     }
 
     &:hover {
       background-color: #fff;
     }
+
+    img {
+      width: 65px;
+      height: auto;
+    }
   }
 
   .navbar-nav {
     position: relative;
-    margin-top: 40px;
+    margin-top: 25px;
     margin-left: 45px;
     padding: 0 22px;
     background-color: #fff;
@@ -92,8 +90,8 @@
   }
 
   .box-profile {
-    margin-top: 45px;
-    padding: 0 9px 0 14px;
+    margin-top: 29px;
+    padding: 0;
     background: #fff;
     position: relative;
     z-index: 5;

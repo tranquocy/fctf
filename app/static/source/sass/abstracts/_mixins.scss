@@ -25,3 +25,10 @@
     }
   }
 }
+
+// Truncate text 1 line
+@mixin truncate() {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
