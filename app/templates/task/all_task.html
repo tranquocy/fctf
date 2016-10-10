@@ -1,37 +1,196 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="row clearfix">
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1 col-centered">
-            <h1>All Tasks</h1>
-            <table style="margin-left: auto;margin-right: auto;">
-                <tr>
-                {% for category in categories if not category.is_achievement() %}
-                    <th style="text-align:center;"><h3>{{ category.name }}</h3></th>
-                {% endfor %}
-                </tr>
-                <tr>
-                {% for category in categories if not category.is_achievement() %}
-                    <td class="task-container">
-                    {% for task in category.tasks %}
-                        {% if task.can_access_by(g.user) %}
-                        <a class="btn {{ 'btn-success' if g.user.is_solved_task(task) else task.category.description + '-bg' }} btn-large task-item" href="{{ url_for('task.show_task', task_id=task.id)}}">
-                            <table class="task-inner">
-                                <tr>
-                                    <td>{{ task.name }}</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="label label-primary">{{ task.point }} pt</span></td>
-                                </tr>
-                            </table>
-                        </a>
-                        {% endif %}
-                    {% endfor %}
-                    </td>
-                {% endfor %}
-                </tr>
-            </table>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Framgia CTF</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Framgia CodeContest Team">
+  <link rel="shortcut icon" href="../../static/favicon.ico" type="image/x-icon">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="../../static/css/site.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-default navbar">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="base.html">
+          <img src="../../static/img/logo.png" alt="Logo" width="103" height="83">
+        </a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">Activities</a></li>
+          <li><a href="#">Tasks</a></li>
+          <li><a href="#">Teams</a></li>
+          <li><a href="#">Scoreboard</a></li>
+          <li><a href="#">About</a></li>
+        </ul>
+        <div class="navbar-right">
+          <!-- Box profile for desktop -->
+          <div class="dropdown box-profile for-desktop">
+            <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+              <span class="caret"></span>
+            </div>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+              <li><a href="#">Change Password</a></li>
+              <li><a href="#">My Profile</a></li>
+            </ul>
+          </div> <!--/ End Box profile for desktop -->
         </div>
+      </div>
     </div>
-</div>
-{% endblock %}
+    <!-- Box profile for mobile -->
+    <div class="dropdown box-profile for-mobile">
+      <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+        <span class="caret"></span>
+      </div>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li><a href="#">Change Password</a></li>
+        <li><a href="#">My Profile</a></li>
+      </ul>
+    </div> <!--/ End Box profile for mobile -->
+  </nav> <!--/ End Navbar  -->
+
+  <!-- Subheader -->
+  <div class="sub-header">
+    <div class="container">
+      <h4 class="title">Tasks</h4>
+      <div class="flex"></div>
+      <ol class="breadcrumb">
+        <li class="item"><a class="link" href="#">Home</a></li>
+        <li class="item active">Tasks</li>
+      </ol>
+    </div>
+  </div><!--/ End Subheader -->
+
+  <div class="main-container page-task">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 block-task">
+          <h3 class="heading">Code Contest</h3>
+          <ul class="list-task">
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">BigC Big Sale</span>
+                <span class="label label-primary">150 pt</span>
+              </a>
+            </li>
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">Quang Binh’s Fishes</span>
+                <span class="label label-primary">200 pt</span>
+              </a>
+            </li>
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">Framgia’s Tree</span>
+                <span class="label label-primary">250 pt</span>
+              </a>
+            </li>
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">God Number</span>
+                <span class="label label-primary">350 pt</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-md-4 block-task">
+          <h3 class="heading">C.T.F</h3>
+          <ul class="list-task">
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">Funny Code</span>
+                <span class="label label-primary">150 pt</span>
+              </a>
+            </li>
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">Hidden Flag</span>
+                <span class="label label-primary">200 pt</span>
+              </a>
+            </li>
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">The Message</span>
+                <span class="label label-primary">250 pt</span>
+              </a>
+            </li>
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">The Encryptor</span>
+                <span class="label label-primary">350 pt</span>
+              </a>
+            </li>
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">The Wire</span>
+                <span class="label label-primary">350 pt</span>
+              </a>
+            </li>
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">Dont You Know About JS?</span>
+                <span class="label label-primary">350 pt</span>
+              </a>
+            </li>
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">Pairs</span>
+                <span class="label label-primary">350 pt</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-md-4 block-task">
+          <h3 class="heading">Logic Game</h3>
+          <ul class="list-task">
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">BigC Big Sale</span>
+                <span class="label label-primary">150 pt</span>
+              </a>
+            </li>
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">Quang Binh’s Fishes</span>
+                <span class="label label-primary">200 pt</span>
+              </a>
+            </li>
+            <li class="item-task">
+              <a href="3">
+                <span class="task-name">Framgia’s Tree</span>
+                <span class="label label-primary">250 pt</span>
+              </a>
+            </li>
+            <li class="item-task">
+              <a href="#">
+                <span class="task-name">God Number</span>
+                <span class="label label-primary">350 pt</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="../../static/js/jquery-1.11.0.min.js"></script>
+  <script src="../../static/js/site.min.js"></script>
+</body>
+</html>
