@@ -1,111 +1,141 @@
-{% extends "base.html" %}
-{% block content %}
-{% if join_team_form %}
-{% for message in join_team_form.invite_code.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-{% endif %}
-{% if join_team_form %}
-{% for message in leave_team_form.team_id.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-{% endif %}
-<div class="row clearfix">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Framgia CTF</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Framgia CodeContest Team">
+  <link rel="shortcut icon" href="../../static/favicon.ico" type="image/x-icon">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="../../static/css/site.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-default navbar">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="base.html">
+          <img src="../../static/img/logo.png" alt="Logo" width="103" height="83">
+        </a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">Activities</a></li>
+          <li><a href="#">Tasks</a></li>
+          <li><a href="#">Teams</a></li>
+          <li><a href="#">Scoreboard</a></li>
+          <li><a href="#">About</a></li>
+        </ul>
+        <div class="navbar-right">
+          <!-- Box profile for desktop -->
+          <div class="dropdown box-profile for-desktop">
+            <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+              <span class="caret"></span>
+            </div>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+              <li><a href="#">Change Password</a></li>
+              <li><a href="#">My Profile</a></li>
+            </ul>
+          </div> <!--/ End Box profile for desktop -->
+        </div>
+      </div>
+    </div>
+    <!-- Box profile for mobile -->
+    <div class="dropdown box-profile for-mobile">
+      <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+        <span class="caret"></span>
+      </div>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li><a href="#">Change Password</a></li>
+        <li><a href="#">My Profile</a></li>
+      </ul>
+    </div> <!--/ End Box profile for mobile -->
+  </nav> <!--/ End Navbar  -->
 
-<div class="col-md-10 col-md-offset-1">
-  <div class="col-md-8">
-      <p><img src="{{ user.get_avatar_url()|safe }}" width="160" height="160"/></p>
-      <h1>{{ user.name }}</h1>
-      <br>
-      <table class="table table-striped">
-        <tr>
-          <td><h6>Username:</h6></td>
-          <td><span class="glyphicon glyphicon-user"></span> {{ user.username }}</td>
-        </tr>
-        <tr>
-          <td><h6>Email:</h6></td>
-          <td><span class="glyphicon glyphicon-envelope"></span> {{ user.email }}</td>
-        </tr>
-      </table>
-      {% if g.user.id == user.id or g.user.is_admin() %}
-      <a class="btn btn-primary" href="{{ url_for('user.change_password', user_id=user.id) }}">Change Password</a>
-      {% if g.user.id == user.id and not locked_profile%}
-      <a class="btn btn-primary" href="{{ url_for('user.edit_profile') }}">Edit Profile</a>
-      {% endif %}
-      {% endif %}
-  </div>
-  <div class="col-md-4">
-    <div class="panel panel-success">
-      <div class="panel-heading">
-        <h3 class="panel-title">Team</h3>
+  <!-- Subheader -->
+  <div class="sub-header">
+    <div class="container">
+      <h4 class="title">Profile</h4>
+      <div class="flex"></div>
+      <ol class="breadcrumb">
+        <li class="item"><a class="link" href="#">Home</a></li>
+        <li class="item active">Profile</li>
+      </ol>
+    </div>
+  </div><!--/ End Subheader -->
+
+  <div class="main-container page-profile">
+    <div class="container">
+      <!-- <div class="alert alert-danger">Message Alert</div> -->
+      <div class="box-user">
+        <p><img class="avatar" src="../../static/img/avatar.jpg" width="160" height="160"/></p>
+        <h2 class="name">ha.huu.tin</h2>
+        <a class="link-inline" href="#">ha.huu.tin@framgia.com</a>
+        <div class="wrap-button">
+          <a class="btn btn-default" href="#">Change Password</a>
+          <a class="btn btn-default" href="#">Edit Profile</a>
+        </div>
       </div>
-      <div class="panel-body">
-        {% if user.team %}
-          <a href="{{ url_for('team.show_team', team_id=user.team.id) }}">{{ user.team.name }}</a>
-          {% if g.user.id == user.id %}
-          <br>
-          <br>
-          <form role="form" action="" method="POST">
-            <input name="team_id" type="hidden" value="{{ user.team.id }}">
-            {{ leave_team_form.csrf_token }}
-            <br>
-            <button class="btn btn-primary" type="submit">Leave Team</button>
-          </form>
-          {% endif %}
-        {% else %}
-          {% if g.user.id == user.id %}
-          You're not belong to any team.
-          {% else %}
-          This user doesn't belong to any team.
-          {% endif %}
-        {% endif %}
+      <div class="box-join-team">
+        <h3 class="title">Team</h3>
+        <p class="description">
+          You're not belong to any team. You can <a class="link-inline" href="#">Create Team</a> or <a class="link-inline" href="#">Join Team</a>
+        </p>
+      </div>
+      <div class="box-achievement">
+        <h3 class="title">Achievements</h3>
+        <table class="table table-bordered table-customize table-responsive">
+          <thead>
+            <tr>
+              <th width="">Task</th>
+              <th width="">Category</th>
+              <th width="200px">Point</th>
+              <th width="200px">When</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-title="Task">Lorem ipsum dolor sit amet.</td>
+              <td data-title="Category">Lorem ipsum dolor.</td>
+              <td data-title="Point">180</td>
+              <td data-title="When">2016-09-28 07:35:16</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    {% if g.user.id == user.id and not user.team and not locked_team %}
-    <div class="panel panel-info">
-      <div class="panel-heading">
-        <h3 class="panel-title">Create Team</h3>
-      </div>
-      <div class="panel-body">
-        <a class="btn btn-primary" href="{{ url_for('team.create_team')}} ">Create Team</a>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="main-footer">
+      <div class="container">
+        <p class="copyright">&copy; 2016 Framgia Vietnam. All rights reserved.</p>
+        <div class="flex"></div>
+        <div class="follow-social">
+          <p class="title">Follow Life at Framgia on</p>
+          <div class="social-icon">
+            <a class="fa fa-facebook-f" href="#"></a>
+            <a class="fa fa-linkedin" href="#"></a>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="panel panel-danger">
-      <div class="panel-heading">
-        <h3 class="panel-title">Join Team</h3>
-      </div>
-      <div class="panel-body">
-        <form role="form" action="" method="POST">
-            <label>{{ join_team_form.invite_code.label }}</label>
-            <input name="invite_code" type="text" class="form-control" required autofocus>
-            {{ join_team_form.hidden_tag() }}
-            <br>
-            <button class="btn btn-primary" type="submit">Join Team</button>
-        </form>
-      </div>
-    </div>
-    {% endif %}
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-10 col-md-offset-1">
-    <h3>Achievements</h3>
-    <table class="table table-bordered">
-          <tr>
-              <th>Task</th>
-              <th>Category</th>
-              <th>Point</th>
-              <th>When</th>
-          </tr>
-        {% for info in user.solved_data|sort(attribute='created_at', reverse = True) %}
-          <tr>
-            <td><a href="{{ url_for('task.show_task', task_id=info.task.id) }}">{{ info.task.name }}</a></td>
-            <td>{{ info.task.category.name }}</td>
-            <td>{{ info.task.point }}</td>
-            <td>{{ info.created_at }}</td>
-          </tr>
-        {% endfor %}
-    </table>
-  </div>
-</div>
-{% endblock %}
+  </div> <!--/ End Footer -->
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="../../static/js/jquery-1.11.0.min.js"></script>
+  <script src="../../static/js/site.min.js"></script>
+</body>
+</html>

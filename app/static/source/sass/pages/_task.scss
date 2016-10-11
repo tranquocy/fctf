@@ -5,6 +5,16 @@
 .page-task {
   margin-bottom: 30px;
 
+  .row {
+    margin-left: -9px;
+    margin-right: -9px;
+  }
+
+  [class*="col-"] {
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+
   .block-task {
     margin-top: 32px;
 

@@ -1,0 +1,111 @@
+//
+// Pages :: Profile
+// --------------------------------------------------
+
+.page-profile {
+  margin-top: 20px;
+  margin-bottom: 30px;
+
+  .box-user {
+    position: relative;
+    text-align: center;
+
+    .avatar {
+      width: 136px;
+      height: 136px;
+      display: block;
+      border-radius: 50%;
+      margin: auto;
+    }
+
+    .name {
+      color: #000000;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: $font-weight-medium;
+      margin: 15px 0 0;
+    }
+
+    .link-inline {
+      display: block;
+      font-size: 13px;
+      line-height: 25px;
+    }
+
+    .wrap-button {
+      position: absolute;
+      right: 0;
+      top: 0;
+
+      @include respond-to(phone) {
+        position: static;
+      }
+
+      .btn + .btn {
+        margin-left: 7px;
+      }
+    }
+  }
+
+  .box-join-team {
+    margin-top: 20px;
+    padding-top: 25px;
+    border-top: 1px solid #e5e5e5;
+
+    .title {
+      margin: 0;
+      font-size: 20px;
+      color: #000000;
+      font-weight: $font-weight-medium;
+    }
+
+    .description {
+      margin-top: 10px;
+
+      .btn {
+        margin: 5px;
+        padding-left: 14px;
+        padding-right: 14px;
+        font-weight: $font-weight-normal;
+      }
+    }
+  }
+
+  .box-achievement {
+    margin-top: 40px;
+
+    .title {
+      margin: 0;
+      font-size: 20px;
+      color: #000000;
+      font-weight: $font-weight-medium;
+    }
+
+    .table-customize {
+      margin-top: 20px;
+
+      @include respond-to(phone) {
+        > tbody > tr > td,
+        > thead > tr > th {
+          &:nth-child(3) {
+            width: 50px;
+          }
+
+          &:nth-child(4) {
+            width: 150px;
+          }
+        }
+      }
+
+      @include respond-to(smallphone) {
+        > tbody > tr > td,
+        > thead > tr > th {
+          &:nth-child(3),
+          &:nth-child(4) {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
