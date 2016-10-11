@@ -9110,4 +9110,112 @@ a {
         .page-profile .box-achievement .table-customize > thead > tr > th:nth-child(4) {
           width: 100%; } }
 
+.activities-main-content {
+  padding-top: 30px;
+  background: #f3f5f6; }
+  .activities-main-content .activities {
+    width: 580px;
+    margin: 40px auto; }
+    .activities-main-content .activities .time {
+      font-weight: 600;
+      text-align: right; }
+    .activities-main-content .activities .circ {
+      background: #fc653c;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      padding: 10px 7px;
+      display: block;
+      margin: 0 auto;
+      position: relative; }
+      .activities-main-content .activities .circ:before {
+        width: 1px;
+        height: 70px;
+        content: "";
+        background: #ccc;
+        position: absolute;
+        top: 35px;
+        right: 15px; }
+    .activities-main-content .activities .events .member-info .teams {
+      margin-top: 5px;
+      float: left; }
+      .activities-main-content .activities .events .member-info .teams span {
+        background: #5f9bd7;
+        padding: 2px 5px;
+        color: #fff;
+        border-radius: 3px;
+        font-size: 12px; }
+    .activities-main-content .activities .events .member-info .member-name h4.user-profile {
+      float: left;
+      margin: 0;
+      padding: 5px 10px;
+      font-size: 14px;
+      font-weight: 900; }
+      .activities-main-content .activities .events .member-info .member-name h4.user-profile a {
+        color: #000; }
+    .activities-main-content .activities .events .member-info .member-avatar .img-rounded {
+      float: left;
+      width: 25px;
+      height: 25px;
+      border: 1px solid #ccc;
+      border-radius: 50%; }
+    .activities-main-content .activities .events .events-body {
+      margin-top: 10px; }
+      .activities-main-content .activities .events .events-body p {
+        border-top: 1px solid #ccc;
+        padding-top: 5px;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #000; }
+    @media (max-width: 600px) {
+      .activities-main-content .activities {
+        width: 100%;
+        padding: 0 20px; }
+        .activities-main-content .activities .activities-time,
+        .activities-main-content .activities .activities-circ,
+        .activities-main-content .activities .activities-details {
+          width: 100%;
+          padding: 10px 0; }
+          .activities-main-content .activities .activities-time .time,
+          .activities-main-content .activities .activities-circ .time,
+          .activities-main-content .activities .activities-details .time {
+            text-align: left; }
+          .activities-main-content .activities .activities-time .circ,
+          .activities-main-content .activities .activities-circ .circ,
+          .activities-main-content .activities .activities-details .circ {
+            margin: 0; }
+            .activities-main-content .activities .activities-time .circ:before,
+            .activities-main-content .activities .activities-circ .circ:before,
+            .activities-main-content .activities .activities-details .circ:before {
+              background: none; } }
+  .activities-main-content .activities-details {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 10px 0;
+    float: left;
+    position: relative;
+    background: #fff; }
+    .activities-main-content .activities-details:before {
+      top: 10px;
+      content: "";
+      display: block;
+      left: -10px;
+      position: absolute;
+      width: 0;
+      border-bottom: 10px solid transparent;
+      border-top: 10px solid transparent;
+      border-right: 10px solid #ccc; }
+    .activities-main-content .activities-details .events {
+      position: relative; }
+      .activities-main-content .activities-details .events:before {
+        border-bottom: 9px solid transparent;
+        border-top: 9px solid transparent;
+        border-right: 8px solid #fff;
+        content: "";
+        display: block;
+        top: 1px;
+        position: absolute;
+        width: 0;
+        left: -8px; }
+
 /*# sourceMappingURL=style.css.map */
