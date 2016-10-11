@@ -1,18 +1,119 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="row">
-  <div class="col-md-6 col-md-offset-3">
-    <form role="form" action="{{ url_for('user.edit_profile') }}" method="POST">
-        <h2>Edit Profile</h2>
-        <label>{{ form.name.label }}</label>
-        <input name="name" type="text" class="form-control" value="{{ form.name.data }}" required autofocus>
-        <br>
-        <label>{{ form.email.label }}</label>
-        <input name="email" type="email" class="form-control" value="{{  form.email.data }}" required >
-        {{ form.hidden_tag() }}
-        <br>
-        <button class="btn btn-lg btn-primary" type="submit">Update</button>
-    </form>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Framgia CTF</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Framgia CodeContest Team">
+  <link rel="shortcut icon" href="../../static/favicon.ico" type="image/x-icon">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="../../static/css/site.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-default navbar">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="base.html">
+          <img src="../../static/img/logo.png" alt="Logo" width="103" height="83">
+        </a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">Activities</a></li>
+          <li><a href="#">Tasks</a></li>
+          <li><a href="#">Teams</a></li>
+          <li><a href="#">Scoreboard</a></li>
+          <li><a href="#">About</a></li>
+        </ul>
+        <div class="navbar-right">
+          <!-- Box profile for desktop -->
+          <div class="dropdown box-profile for-desktop">
+            <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+              <span class="caret"></span>
+            </div>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+              <li><a href="#">Change Password</a></li>
+              <li><a href="#">My Profile</a></li>
+            </ul>
+          </div> <!--/ End Box profile for desktop -->
+        </div>
+      </div>
+    </div>
+    <!-- Box profile for mobile -->
+    <div class="dropdown box-profile for-mobile">
+      <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+        <span class="caret"></span>
+      </div>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li><a href="#">Change Password</a></li>
+        <li><a href="#">My Profile</a></li>
+      </ul>
+    </div> <!--/ End Box profile for mobile -->
+  </nav> <!--/ End Navbar  -->
+
+  <!-- Subheader -->
+  <div class="sub-header">
+    <div class="container">
+      <h4 class="title">Profile</h4>
+      <div class="flex"></div>
+      <ol class="breadcrumb">
+        <li class="item"><a class="link" href="#">Home</a></li>
+        <li class="item"><a class="link" href="#">Profile</a></li>
+        <li class="item active">Edit</li>
+      </ol>
+    </div>
+  </div><!--/ End Subheader -->
+
+  <div class="main-container page-edit-profile">
+    <div class="container">
+      <div class="box-form">
+        <!-- <div class="alert alert-danger" role="alert">Invalid e-mail or password</div> -->
+        <form class="form-customize" role="form" action="" method="POST">
+          <div class="form-group">
+            <input name="name" type="text" class="form-control" value="" required autofocus placeholder="Name">
+          </div>
+          <div class="form-group">
+            <input name="email" type="email" class="form-control" value="" required placeholder="Email">
+          </div>
+          <div class="action">
+            <button class="btn btn-lg btn-primary" type="submit">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
-</div>
-{% endblock %}
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="main-footer">
+      <div class="container">
+        <p class="copyright">&copy; 2016 Framgia Vietnam. All rights reserved.</p>
+        <div class="flex"></div>
+        <div class="follow-social">
+          <p class="title">Follow Life at Framgia on</p>
+          <div class="social-icon">
+            <a class="fa fa-facebook-f" href="#"></a>
+            <a class="fa fa-linkedin" href="#"></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> <!--/ End Footer -->
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="../../static/js/jquery-1.11.0.min.js"></script>
+  <script src="../../static/js/site.min.js"></script>
+</body>
+</html>
