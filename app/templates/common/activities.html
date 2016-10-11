@@ -1,81 +1,234 @@
-{% extends "base.html" %} {% block content %}
-<div style="display: none" id="one-activity-dom">
-  <dd class="">
-      <div class="circ"></div>
-      <div class="time"></div>
-      <div class="events">
-          <div class="pull-left">
-              <img class="events-object img-rounded" src="">
-          </div>
-          <div class="events-body">
-              <h4 class="events-heading"></h4>
-              <p></p>
-          </div>
-      </div>
-  </dd>
-</div>
-<div class="row clearfix">
-    <div class="col-md-10 col-md-offset-1">
-        <h2>Activities</h2>
-        <div class="timeline">
-            <dl>
-                <dt>Now</dt>
-                {% for activity in activities %}
-                <dd data-id={{ activity.id }} class="pos-{{ loop.cycle('left', 'right') }} clearfix">
-                    <div class="circ"></div>
-                    <div class="time">{{ activity.created_at.strftime('%b %d %H:%M') }}</div>
-                    <div class="events">
-                        <div class="pull-left">
-                            <img class="events-object img-rounded" src="{{ activity.user.get_avatar_url(64)}}">
-                        </div>
-                        <div class="events-body">
-                            <h4 class="events-heading">{{ activity.user.get_profile_link(False)|safe }} {% if activity.user.team %}({{ activity.user.team.name }}){% endif %}</h4>
-                            {% if activity.task.category.is_achievement() %}
-                            <p> unlocked an Achievement: <a href="{{ url_for('task.all_task') }}">{{ activity.task.name }}</a> and get bonused <strong>{{ activity.point }} points</strong></p>
-                            {% else %}
-                            <p> solved task <a href="{{ url_for('task.show_task', task_id=activity.task.id)}}">{{ activity.task.name }}</a> and scored <strong>{{ activity.point }} points</strong></p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </dd>
-                {% endfor %}
-                <dt>Start</dt>
-            </dl>
-        </div>
-    </div>
-</div>
-<script>
-  $("body").css("background-color", "#f1f2f6");
-  var loadAgain = true;
-  $(window).scroll(function() {
-      if (loadAgain && $(window).scrollTop() / $(document).height() >= 0.7) {
-          loadAgain = false;
-          var lastSide = "right";
-          if ($("dd").last().attr("class").indexOf("right") == -1) {
-            lastSide = "left";
-          }
-          var lastId = $("dd").last().data("id");
-          console.log(lastId, lastSide);
-          $.post("activities/more", {side: lastSide, id: lastId}).done(function(data) {
-              $.each(data['result'], function(index, value) {
-                 var html = create_activity(value);
-                 $("dd").last().after(html);
-              });
-              loadAgain = true;
-          });
-      }
-  });
 
-  function create_activity(data){
-    var dom = $("#one-activity-dom");
-    dom.find(".time").text(data['time']);
-    dom.find(".time").text(data['time']);
-    dom.find(".img-rounded").attr('src', data['avatar']);
-    dom.find("dd").attr('data-id', data['id']);
-    dom.find("dd").attr('class', data['class']);
-    dom.find(".events-heading").html(data['header']);
-    dom.find("p").html(data['footer']);
-    return dom.html();
-  }
-</script>
-{% endblock %}
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Framgia CTF</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Framgia CodeContest Team">
+  <link rel="shortcut icon" href="../../static/favicon.ico" type="image/x-icon">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="../../static/css/site.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-default navbar">
+  <div class="container">
+    <div class="navbar-header">
+    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="base.html">
+      <img src="../../static/img/logo.png" alt="Logo" width="103" height="83">
+    </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Home</a></li>
+      <li><a href="#">Activities</a></li>
+      <li><a href="#">Tasks</a></li>
+      <li><a href="#">Teams</a></li>
+      <li><a href="#">Scoreboard</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <div class="navbar-right">
+      <!-- Box profile for desktop -->
+      <div class="dropdown box-profile for-desktop">
+      <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+        <span class="caret"></span>
+      </div>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li><a href="#">Change Password</a></li>
+        <li><a href="#">My Profile</a></li>
+      </ul>
+      </div> <!--/ End Box profile for desktop -->
+    </div>
+    </div>
+  </div>
+  <!-- Box profile for mobile -->
+  <div class="dropdown box-profile for-mobile">
+    <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+    <span class="caret"></span>
+    </div>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+    <li><a href="#">Change Password</a></li>
+    <li><a href="#">My Profile</a></li>
+    </ul>
+  </div> <!--/ End Box profile for mobile -->
+  </nav> <!--/ End Navbar  -->
+
+  <!-- Subheader -->
+  <div class="sub-header">
+  <div class="container">
+    <h4 class="title">Scoreboard</h4>
+    <div class="flex"></div>
+    <ol class="breadcrumb">
+    <li class="item"><a class="link" href="#">Home</a></li>
+    <li class="item active">Scoreboard</li>
+    </ol>
+  </div>
+  </div><!--/ End Subheader -->
+  <!-- Activities main content -->
+  <div class="activities-main-content">
+    <div class="container">
+      <div class="row clearfix">
+        <div class="col-md-12">
+          <dl class="activities">
+            <dd class="pos-left clearfix">
+              <div class="col-md-2 col-xs-2 activities-time">
+                <div class="time">Oct 11 08:31</div>
+              </div>
+              <div class="col-md-2 col-xs-2 activities-circ">
+                <div class="circ">
+                  <img class="check-icon" src="../../static/img/check-icon.png" alt="">
+                </div>
+              </div>
+              <div class="col-md-8 col-xs-8 activities-details">
+                <div class="events col-md-12 col-sm-12 col-xs-12">
+                  <div class="member-info">
+                    <div class="member-avatar">
+                      <img class="events-object img-rounded" src="http://www.gravatar.com/avatar/d742245229250d5c627ebe71faf359ca?d=mm&amp;s=64">
+                    </div>
+                    <div class="member-name">
+                      <h4 class="user-profile"><a href="/user/profile/502">&nbsp;<span class="text-default">Nguyen Xuan Hao</span></a> </h4>
+                    </div>
+                    <div class="teams">
+                      <span>Fake</span>
+                    </div>
+                  </div>
+                  <div class="events-body col-md-12 col-xs-12">
+                    <p> solved task <a href="/task/6">Hidden Flag</a> and scored <strong>100 points</strong></p>
+                  </div>
+                </div>
+              </div>
+            </dd>
+          </dl>
+
+          <dl class="activities">
+            <dd class="pos-left clearfix">
+              <div class="col-md-2 col-xs-2 activities-time">
+                <div class="time">Oct 11 08:31</div>
+              </div>
+              <div class="col-md-2 col-xs-2 activities-circ">
+                <div class="circ">
+                  <img class="check-icon" src="../../static/img/check-icon.png" alt="">
+                </div>
+              </div>
+              <div class="col-md-8 col-xs-8 activities-details">
+                <div class="events col-md-12 col-sm-12 col-xs-12">
+                  <div class="member-info">
+                    <div class="member-avatar">
+                      <img class="events-object img-rounded" src="http://www.gravatar.com/avatar/d742245229250d5c627ebe71faf359ca?d=mm&amp;s=64">
+                    </div>
+                    <div class="member-name">
+                      <h4 class="user-profile"><a href="/user/profile/502">&nbsp;<span class="text-default">Nguyen Xuan Hao</span></a> </h4>
+                    </div>
+                    <div class="teams">
+                      <span>Fake</span>
+                    </div>
+                  </div>
+                  <div class="events-body col-md-12 col-xs-12">
+                    <p> solved task <a href="/task/6">Hidden Flag</a> and scored <strong>100 points</strong></p>
+                  </div>
+                </div>
+              </div>
+            </dd>
+          </dl>
+
+          <dl class="activities">
+            <dd class="pos-left clearfix">
+              <div class="col-md-2 col-xs-2 activities-time">
+                <div class="time">Oct 11 08:31</div>
+              </div>
+              <div class="col-md-2 col-xs-2 activities-circ">
+                <div class="circ">
+                  <img class="check-icon" src="../../static/img/check-icon.png" alt="">
+                </div>
+              </div>
+              <div class="col-md-8 col-xs-8 activities-details">
+                <div class="events col-md-12 col-sm-12 col-xs-12">
+                  <div class="member-info">
+                    <div class="member-avatar">
+                      <img class="events-object img-rounded" src="http://www.gravatar.com/avatar/d742245229250d5c627ebe71faf359ca?d=mm&amp;s=64">
+                    </div>
+                    <div class="member-name">
+                      <h4 class="user-profile"><a href="/user/profile/502">&nbsp;<span class="text-default">Nguyen Xuan Hao</span></a> </h4>
+                    </div>
+                    <div class="teams">
+                      <span>Fake</span>
+                    </div>
+                  </div>
+                  <div class="events-body col-md-12 col-xs-12">
+                    <p> solved task <a href="/task/6">Hidden Flag</a> and scored <strong>100 points</strong></p>
+                  </div>
+                </div>
+              </div>
+            </dd>
+          </dl>
+
+          <dl class="activities">
+            <dd class="pos-left clearfix">
+              <div class="col-md-2 col-xs-2 activities-time">
+                <div class="time">Oct 11 08:31</div>
+              </div>
+              <div class="col-md-2 col-xs-2 activities-circ">
+                <div class="circ">
+                  <img class="check-icon" src="../../static/img/check-icon.png" alt="">
+                </div>
+              </div>
+              <div class="col-md-8 col-xs-8 activities-details">
+                <div class="events col-md-12 col-sm-12 col-xs-12">
+                  <div class="member-info">
+                    <div class="member-avatar">
+                      <img class="events-object img-rounded" src="http://www.gravatar.com/avatar/d742245229250d5c627ebe71faf359ca?d=mm&amp;s=64">
+                    </div>
+                    <div class="member-name">
+                      <h4 class="user-profile"><a href="/user/profile/502">&nbsp;<span class="text-default">Nguyen Xuan Hao</span></a> </h4>
+                    </div>
+                    <div class="teams">
+                      <span>Fake</span>
+                    </div>
+                  </div>
+                  <div class="events-body col-md-12 col-xs-12">
+                    <p> solved task <a href="/task/6">Hidden Flag</a> and scored <strong>100 points</strong></p>
+                  </div>
+                </div>
+              </div>
+            </dd>
+          </dl>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End activities main content -->
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="main-footer">
+      <div class="container">
+        <p class="copyright">&copy; 2016 Framgia Vietnam. All rights reserved.</p>
+        <div class="flex"></div>
+        <div class="follow-social">
+          <p class="title">Follow Life at Framgia on</p>
+          <div class="social-icon">
+            <a class="fa fa-facebook-f" href="#"></a>
+            <a class="fa fa-linkedin" href="#"></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> <!--/ End Footer -->
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="../../static/js/jquery-1.11.0.min.js"></script>
+  <script src="../../static/js/site.min.js"></script>
+</body>
+</html>

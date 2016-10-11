@@ -1,0 +1,146 @@
+.activities-main-content {
+  padding-top: 30px;
+  background: #f3f5f6;
+
+  .activities {
+    width: 580px;
+    margin: 40px auto;
+
+    .time {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .circ {
+      background: #fc653c;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      padding: 10px 7px;
+      display: block;
+      margin: 0 auto;
+      position: relative;
+
+      &:before {
+        width: 1px;
+        height: 70px;
+        content: "";
+        background: #ccc;
+        position: absolute;
+        top: 35px;
+        right: 15px;
+      }
+    }
+
+    .events {
+
+      .member-info {
+
+        .teams {
+          margin-top: 5px;
+          float: left;
+          span {
+            background: #5f9bd7;
+            padding: 2px 5px;
+            color: #fff;
+            border-radius: 3px;
+            font-size: 12px;
+          }
+        }
+        .member-name {
+
+            h4.user-profile {
+            float: left;
+            margin: 0;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-weight: 900;
+
+            a {
+              color: #000;
+            }
+          }
+        }
+
+        .member-avatar .img-rounded {
+          float: left;
+          width: 25px;
+          height: 25px;
+          border: 1px solid #ccc;
+          border-radius: 50%;
+        }
+      }
+      .events-body {
+        margin-top: 10px;
+
+        p {
+          border-top: 1px solid #ccc;
+          padding-top: 5px;
+          margin-bottom: 5px;
+          font-weight: 600;
+          color: #000;
+        }
+      }
+    }
+    @media (max-width: 600px) {
+      width: 100%;
+      padding: 0 20px;
+
+      .activities-time,
+      .activities-circ,
+      .activities-details {
+        width: 100%;
+        padding: 10px 0;
+
+        .time {
+          text-align: left;
+        }
+
+        .circ {
+          margin: 0;
+
+          &:before {
+            background: none;
+          }
+        }
+      }
+    }
+  }
+
+  .activities-details {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 10px 0;
+    float: left;
+    position: relative;
+    background: #fff;
+
+    &:before {
+      top: 10px;
+      content: "";
+      display: block;
+      left: -10px;
+      position: absolute;
+      width: 0;
+      border-bottom: 10px solid transparent;
+      border-top: 10px solid transparent;
+      border-right: 10px solid #ccc;
+    }
+
+    .events {
+      position: relative;
+
+      &:before {
+        border-bottom: 9px solid transparent;
+        border-top: 9px solid transparent;
+        border-right: 8px solid #fff;
+        content: "";
+        display: block;
+        top: 1px;
+        position: absolute;
+        width: 0;
+        left: -8px;
+      }
+    }
+  }
+}
