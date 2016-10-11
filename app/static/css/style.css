@@ -1,7 +1,7 @@
 @charset "UTF-8";
 @import 'https://fonts.googleapis.com/css?family=Open+Sans:400,600,700';
 @import 'https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=vietnamese';
-.footer .info .list, .footer .contact .list, .award .list, .page-task .block-task .list-task {
+.footer .info .list, .footer .contact .list, .award .list, .page-task .block-task .list-task, .page-task-detail .list-people {
   list-style: none;
   padding: 0; }
 
@@ -9217,5 +9217,71 @@ a {
         position: absolute;
         width: 0;
         left: -8px; }
+
+.page-task-detail {
+  margin: 30px 0; }
+  .page-task-detail .task-name {
+    color: #000;
+    font-size: 25px;
+    line-height: 25px;
+    font-weight: 600;
+    margin-top: 10px; }
+  .page-task-detail .label-task {
+    background-color: #fc653c;
+    padding: 0px 6px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 3px; }
+  .page-task-detail .box-wrap {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #eaeaea;
+    border-radius: 5px; }
+    .page-task-detail .box-wrap p {
+      margin: 0; }
+  .page-task-detail .hint {
+    margin-top: 15px; }
+  .page-task-detail .solve-task {
+    padding-top: 15px;
+    margin-top: 15px;
+    border-top: 1px solid #e5e5e5; }
+    .page-task-detail .solve-task .text-info {
+      font-weight: 600;
+      color: #000; }
+  .page-task-detail .list-people {
+    margin-top: 10px; }
+    .page-task-detail .list-people .item {
+      display: inline-block;
+      list-style: none; }
+      .page-task-detail .list-people .item:not(:last-child) {
+        margin-right: 4px; }
+      .page-task-detail .list-people .item img {
+        border-radius: 50%;
+        border: 1px solid #ccc; }
+  .page-task-detail .form-frag {
+    padding-top: 15px;
+    margin-top: 15px;
+    border-top: 1px solid #e5e5e5; }
+    .page-task-detail .form-frag .form-group {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-align: center;
+          align-items: center;
+      width: 400px;
+      max-width: 100%; }
+    .page-task-detail .form-frag .form-control {
+      -ms-flex: 1;
+          flex: 1;
+      margin-left: 15px;
+      box-shadow: none;
+      border-radius: 3px; }
+      .page-task-detail .form-frag .form-control:focus {
+        border-color: #fc653c;
+        box-shadow: none; }
+    .page-task-detail .form-frag .btn-primary {
+      margin-top: 20px;
+      font-weight: 400; }
+  .page-task-detail .g-recaptcha iframe {
+    max-width: 100%; }
 
 /*# sourceMappingURL=style.css.map */
