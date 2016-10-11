@@ -1,136 +1,192 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="row clearfix">
-
-<div class="row">
-  <div class="col-md-10 col-md-offset-1">
-      <h1 class="text-center">{{ team.name }}</h1>
-      <h2 class="text-center">{{ team.get_place() }} <small>place</small></h2>
-      <h2 class="text-center">{{ team.get_total_score() }} <small>points</small></h2>
-      <div class="col-md-12">
-        <div id="breakdown-graph" style="max-height: 320px; position: relative; float: left; width: 50%;"></div>
-        <div id="category-graph" style="max-height: 320px; position: relative; float: left; width: 50%;"></div>
-        <div id="score-graph" style="clear: both;"></div>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Framgia CTF</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Framgia CodeContest Team">
+    <link rel="shortcut icon" href="../../static/favicon.ico" type="image/x-icon">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="../../static/css/site.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../static/css/style.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-default navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="base.html">
+            <img src="../../static/img/logo.png" alt="Logo" width="103" height="83">
+          </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">Activities</a></li>
+            <li><a href="#">Tasks</a></li>
+            <li><a href="#">Teams</a></li>
+            <li><a href="#">Scoreboard</a></li>
+            <li><a href="#">About</a></li>
+          </ul>
+          <div class="navbar-right">
+            <!-- Box profile for desktop -->
+            <div class="dropdown box-profile for-desktop">
+              <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+                <span class="caret"></span>
+              </div>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li><a href="#">Change Password</a></li>
+                <li><a href="#">My Profile</a></li>
+              </ul>
+            </div> <!--/ End Box profile for desktop -->
+          </div>
+        </div>
       </div>
-      <h5 class="text-center">{{ team.description }}</h5>
-      <table class="table table-striped">
-        <tr>
-          <td><h6>Members:</h6></td>
-          <td>
-          {% for user in team.members %}
-          {{ user.get_profile_link()|safe }}<br>
-          {% endfor %}
-          </td>
-        </tr>
-      {% if g.user in team.members or g.user.is_admin() %}
-        <tr>
-          <td><h6>Invite Code:</h6></td>
-          <td>{{ team.invite_code }}</td>
-        </tr>
-      </table>
-      <a class="btn btn-lg btn-primary" href="{{ url_for('team.edit_team', team_id=team.id) }}">Edit</a>
-      {% else %}
-      </table>
-      {% endif %}
-    <script>
-      var chart = c3.generate({
-          bindto: '#category-graph',
-          data: {
-              columns: [
-              {% for user, point in contributions.items() %}
-                  ['{{ user.name }}', {{ point }}],
-              {% endfor %}
-              ],
-              type : 'donut',
-              colors: {
-              {% for user, _ in contributions.items() %}
-                  '{{ user.name }}': '{{ user.color_hash() }}',
-              {% endfor %}
-              },
-          },
-          donut: {
-            title: "Members Contribution"
-          }
-      });
-      var chart = c3.generate({
-          bindto: '#breakdown-graph',
-          data: {
-              columns: [
-                  ['Solved', {{ team.solved_tasks()|length }}],
-                  ['Remaining', {{ total_tasks - team.solved_tasks()|length }}],
-              ],
-              type : 'donut',
-              colors: {
-                  'Remaining': '#ff8a80',
-                  'Solved': '#8cc152',
-              }
-          },
-          donut: {
-            title: "Solved vs Remaining"
-          }
-      });
-      var chart = c3.generate({
-          bindto: '#score-graph',
-          data: {
-              x: 'x',
-              xFormat: '%Y-%m-%d %H:%M:%S',
-              columns: [
-                  ['{{ team.name }}', {{ y_data }}],
-                  ['x', {{ x_data|safe }} ]
-              ],
-              types: {
-                  '{{ team.name }}': 'area-step',
-              },
-              colors: {
-                  '{{ team.name }}': '{{ team.color_hash() }}',
-              },
-              labels: true
-          },
-          axis: {
-              x: {
-                  type: 'timeseries',
-                  tick: {
-                      format: '%m/%d %H:%M'
-                  }
-              },
-              y: {
-                  label: {
-                      text: 'Score'
-                  }
-              }
-          },
-          zoom : {
-            enabled: true
-          }
-      });
-    </script>
-      <h3 class="text-center">Achievements</h3>
-        <table class="table table-bordered">
-          <tr>
-              <th>Task</th>
-              <th>Category</th>
-              <th>Point</th>
-              <th>User</th>
-              <th>Time</th>
-          </tr>
-        {% for achievement in achievements %}
-          <tr>
-            <td><a href="{{ url_for('task.show_task', task_id=achievement.task.id)}}">{{ achievement.task.name }}</a></td>
-            <td>{{ achievement.task.category.name }}</td>
-            <td>{{ achievement.point }}</td>
-            <td>{{ achievement.user.get_profile_link()|safe }}</td>
-            <td>{{ achievement.created_at }}</td>
-          </tr>
-        {% endfor %}
-      </table>
+      <!-- Box profile for mobile -->
+      <div class="dropdown box-profile for-mobile">
+        <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+          <span class="caret"></span>
+        </div>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li><a href="#">Change Password</a></li>
+          <li><a href="#">My Profile</a></li>
+        </ul>
+      </div> <!--/ End Box profile for mobile -->
+    </nav> <!--/ End Navbar  -->
+
+    <!-- Subheader -->
+    <div class="sub-header">
+      <div class="container">
+        <h4 class="title">Team detail</h4>
+        <div class="flex"></div>
+        <ol class="breadcrumb">
+          <li class="item"><a class="link" href="#">Home</a></li>
+          <li class="item"><a class="link" href="#">Teams</a></li>
+          <li class="item active">Team detail</li>
+        </ol>
+      </div>
+    </div><!--/ End Subheader -->
+    <!-- Team details main content -->
+    <div class="main-container page-team-detail">
+      <div class="container">
+
+        <div class="team-intro">
+          <div class="team-title">
+            <h1>Shadow Demon</h1>
+            <p>Nothing to fear</p>
+          </div>
+          <div class="team-details">
+            <div class="row">
+              <div class="team-reward col-md-6 col-xs-12">
+                <ul>
+                  <li><a href="#"><img src="../../static/img/medal.png" alt="">28th place</a></li>
+                  <li><a href="#"><img src="../../static/img/start.png" alt="">360 points</a></li>
+                </ul>
+              </div>
+              <div class="team-list col-md-6 col-xs-12">
+                <ul>
+                  <li>Members</li>
+                  <li><a href="#"><img src="../../static/img/team-member-1.png" alt=""></a></li>
+                  <li><a href="#"><img src="../../static/img/team-member-1.png" alt=""></a></li>
+                  <li><a href="#"><img src="../../static/img/team-member-1.png" alt=""></a></li>
+                  <li><a href="#"><img src="../../static/img/team-member-1.png" alt=""></a></li>
+                  <li><a href="#"><img src="../../static/img/team-member-1.png" alt=""></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-chart">
+          <!-- Chart box -->
+          <img src="../../static/img/chart.png" alt="">
+        </div>
+
+        <div class="team-achievements">
+          <h3>Achievements</h3>
+          <table class="table table-bordered table-customize table-responsive">
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Category</th>
+                <th>Point</th>
+                <th>User</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+              <tbody>
+                <tr>
+                <td data-title="Task"><a href="/task/138">The Very Beginning</a></td>
+                <td data-title="Category">Logic Game</td>
+                <td data-title="Point">10</td>
+                <td data-title="User"><a href="/user/profile/55"><img src="http://www.gravatar.com/avatar/c4f70b92d051f8323e18b24030f0d045?d=mm&s=24" alt="KhanhLD" title="KhanhLD"/></img>&nbsp;<span class="text-danger">KhanhLD</span></a></td>
+                <td data-title="Time">2016-06-18 10:22:45</td>
+              </tr>
+
+              <tr>
+                <td data-title="Task"><a href="/task/100">The Dead Clock</a></td>
+                <td data-title="Category">Logic Game</td>
+                <td data-title="Point">20</td>
+                <td data-title="User"><a href="/user/profile/2"><img src="http://www.gravatar.com/avatar/90b36c196a46f35da8c4fd1244cf15fd?d=mm&s=24" alt="bs90" title="bs90"/></img>&nbsp;<span class="text-danger">bs90</span></a></td>
+                <td data-title="Time">2016-06-18 11:12:44</td>
+              </tr>
+
+              <tr>
+                <td data-title="Task"><a href="/task/101">The Fotation</a></td>
+                <td data-title="Category">Logic Game</td>
+                <td data-title="Point">20</td>
+                <td data-title="User"><a href="/user/profile/2"><img src="http://www.gravatar.com/avatar/90b36c196a46f35da8c4fd1244cf15fd?d=mm&s=24" alt="bs90" title="bs90"/></img>&nbsp;<span class="text-danger">bs90</span></a></td>
+                <td data-title="Time">2016-06-18 11:13:11</td>
+              </tr>
+
+              <tr>
+                <td data-title="Task"><a href="/task/107">Hello world!</a></td>
+                <td data-title="Category">Logic Game</td>
+                <td data-title="Point">10</td>
+                <td data-title="User"><a href="/user/profile/2"><img src="http://www.gravatar.com/avatar/90b36c196a46f35da8c4fd1244cf15fd?d=mm&s=24" alt="bs90" title="bs90"/></img>&nbsp;<span class="text-danger">bs90</span></a></td>
+                <td data-title="Time">2016-06-18 18:10:32</td>
+              </tr>
+
+              <tr>
+                <td data-title="Task"><a href="/task/137">Picking CEO</a></td>
+                <td data-title="Category">Logic Game</td>
+                <td data-title="Point">5</td>
+                <td data-title="User"><a href="/user/profile/2"><img src="http://www.gravatar.com/avatar/90b36c196a46f35da8c4fd1244cf15fd?d=mm&s=24" alt="bs90" title="bs90"/></img>&nbsp;<span class="text-danger">bs90</span></a></td>
+                <td data-title="Time">2016-06-20 10:30:03</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-{% endblock %}
-{% block js %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.9/d3.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
-{% endblock %}
-{% block css %}
-<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css">
-{% endblock %}
+    <!-- Footer -->
+    <div class="footer">
+      <div class="main-footer">
+        <div class="container">
+          <p class="copyright">&copy; 2016 Framgia Vietnam. All rights reserved.</p>
+          <div class="flex"></div>
+          <div class="follow-social">
+            <p class="title">Follow Life at Framgia on</p>
+            <div class="social-icon">
+              <a class="fa fa-facebook-f" href="#"></a>
+              <a class="fa fa-linkedin" href="#"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!--/ End Footer -->
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="../../static/js/jquery-1.11.0.min.js"></script>
+    <script src="../../static/js/site.min.js"></script>
+  </body>
+</html>

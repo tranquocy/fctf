@@ -1,0 +1,105 @@
+.page-team-detail {
+  margin-top: 20px;
+
+  .team-intro {
+    padding-bottom: 20px;
+
+    .team-title {
+      padding-bottom: 20px;
+
+      h1 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #000;
+      }
+      p {
+        font-size: 14px;
+        padding-left: 10px;
+        background: url(../../../app/static/img/quote.png) no-repeat left top;
+      }
+    }
+
+    .team-details {
+
+      .team-reward ul {
+        padding-left: 0;
+        float: left;
+
+        li {
+          float: left;
+          list-style: none;
+          margin-right: 10px;
+
+          a {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            color: #000;
+            font-size: 16px;
+
+            &:hover {
+              text-decoration: none;
+            }
+          }
+        }
+      }
+
+      .team-list {
+
+        ul {
+          padding-left: 0;
+          float: right;
+
+          li {
+            float: left;
+            list-style: none;
+            margin-left: 10px;
+            font-size: 16px;
+            font-weight: 600;
+
+            @include respond-to(tablet) {
+              margin: 0 10px 0 0;
+            }
+
+            img {
+              border-radius: 50%;
+              border: 1px solid #ccc;
+            }
+          }
+
+          @include respond-to(tablet) {
+            float: left;
+            padding-top: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .team-chart {
+    padding: 20px 0;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  .team-achievements {
+
+    h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    table tr td {
+      @include respond-to(smallphone) {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
+  }
+}

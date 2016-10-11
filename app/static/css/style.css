@@ -9284,4 +9284,68 @@ a {
   .page-task-detail .g-recaptcha iframe {
     max-width: 100%; }
 
+.page-team-detail {
+  margin-top: 20px; }
+  .page-team-detail .team-intro {
+    padding-bottom: 20px; }
+    .page-team-detail .team-intro .team-title {
+      padding-bottom: 20px; }
+      .page-team-detail .team-intro .team-title h1 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #000; }
+      .page-team-detail .team-intro .team-title p {
+        font-size: 14px;
+        padding-left: 10px;
+        background: url(../../../app/static/img/quote.png) no-repeat left top; }
+    .page-team-detail .team-intro .team-details .team-reward ul {
+      padding-left: 0;
+      float: left; }
+      .page-team-detail .team-intro .team-details .team-reward ul li {
+        float: left;
+        list-style: none;
+        margin-right: 10px; }
+        .page-team-detail .team-intro .team-details .team-reward ul li a {
+          padding: 5px 10px;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          color: #000;
+          font-size: 16px; }
+          .page-team-detail .team-intro .team-details .team-reward ul li a:hover {
+            text-decoration: none; }
+    .page-team-detail .team-intro .team-details .team-list ul {
+      padding-left: 0;
+      float: right; }
+      .page-team-detail .team-intro .team-details .team-list ul li {
+        float: left;
+        list-style: none;
+        margin-left: 10px;
+        font-size: 16px;
+        font-weight: 600; }
+        @media (max-width: 992px) {
+          .page-team-detail .team-intro .team-details .team-list ul li {
+            margin: 0 10px 0 0; } }
+        .page-team-detail .team-intro .team-details .team-list ul li img {
+          border-radius: 50%;
+          border: 1px solid #ccc; }
+      @media (max-width: 992px) {
+        .page-team-detail .team-intro .team-details .team-list ul {
+          float: left;
+          padding-top: 20px; } }
+  .page-team-detail .team-chart {
+    padding: 20px 0;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc; }
+    .page-team-detail .team-chart img {
+      width: 100%; }
+  .page-team-detail .team-achievements h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000; }
+  @media (max-width: 480px) {
+    .page-team-detail .team-achievements table tr td {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden; } }
+
 /*# sourceMappingURL=style.css.map */
