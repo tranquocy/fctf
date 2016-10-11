@@ -8352,7 +8352,6 @@ button:focus {
       border: 1px solid rgba(0, 0, 0, 0.2); }
       .table-customize > thead > tr > th:first-child {
         border-radius: 3px 0 0 0;
-        text-align: center;
         border-top: 1px solid rgba(0, 0, 0, 0.2); }
       .table-customize > thead > tr > th:last-child {
         border-radius: 0 3px 0 0; }
@@ -8363,8 +8362,6 @@ button:focus {
     font-size: 14px;
     color: #000000;
     border: 1px solid #ccc; }
-    .table-customize > tbody > tr > td:first-child {
-      text-align: center; }
 
 .table-order > tbody > tr:nth-child(-n + 3) > td:first-child {
   position: relative;
@@ -8385,6 +8382,9 @@ button:focus {
 
 .table-order > tbody > tr:nth-child(3) > td:first-child {
   background: url(../img/bg-order-3.png) no-repeat center center; }
+
+.table-order > tbody > tr td:first-child, .table-order > tbody > tr th:first-child {
+  text-align: center; }
 
 @media (max-width: 480px) {
   .table-responsive, .table-responsive thead, .table-responsive tbody, .table-responsive th, .table-responsive td, .table-responsive tr {
@@ -8952,5 +8952,35 @@ button:focus {
     .page-task .block-task .label-primary {
       background-color: #1d76b4;
       padding: 6px 10px; }
+
+a {
+  color: #0099ff; }
+
+.team-main-content {
+  margin-top: 30px; }
+  .team-main-content table .team-members {
+    width: 230px; }
+    .team-main-content table .team-members ul {
+      padding: 0; }
+      .team-main-content table .team-members ul li {
+        float: left;
+        list-style: none;
+        width: 12.5%;
+        margin-right: 10px; }
+        .team-main-content table .team-members ul li:last-child {
+          margin-right: 0; }
+        .team-main-content table .team-members ul li img {
+          border-radius: 50%;
+          border: 1px solid #ccc; }
+  .team-main-content table tr td {
+    font-weight: 600; }
+
+@media screen and (max-width: 600px) {
+  .team-members {
+    width: 100% !important; }
+  tr td:before {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden; } }
 
 /*# sourceMappingURL=style.css.map */

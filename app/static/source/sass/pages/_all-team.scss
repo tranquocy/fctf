@@ -1,0 +1,45 @@
+a {
+  color: #0099ff;
+}
+.team-main-content {
+  margin-top: 30px;
+  table {
+    .team-members {
+      width: 230px;
+
+      ul {
+        padding: 0;
+
+        li {
+          float: left;
+          list-style: none;
+          width: 12.5%;
+          margin-right: 10px;
+
+          &:last-child {
+            margin-right: 0;
+          }
+
+          img {
+            border-radius: 50%;
+            border: 1px solid #ccc;
+          }
+        }
+      }
+    }
+    tr td {
+      font-weight: 600;
+    }
+  }
+}
+
+@media screen and (max-width:600px) {
+  .team-members {
+    width: 100%!important;
+  }
+  tr td:before {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}

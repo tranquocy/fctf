@@ -24,7 +24,6 @@
 
       &:first-child {
         border-radius: 3px 0 0 0;
-        text-align: center;
         border-top: 1px solid rgba(#000, 0.2);
       }
 
@@ -42,10 +41,6 @@
       font-size: 14px;
       color: $black;
       border: 1px solid #ccc;
-
-      &:first-child {
-        text-align: center;
-      }
     }
   }
 }
@@ -83,6 +78,12 @@
     &:nth-child(3) {
       > td:first-child {
         background: url(../img/bg-order-3.png) no-repeat center center;
+      }
+    }
+
+    td, th {
+      &:first-child {
+        text-align: center;
       }
     }
   }
