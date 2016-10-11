@@ -8,11 +8,62 @@
   background-color: #ffffff;
   margin-bottom: 0;
   border-bottom: 1px solid #dedede;
+  border-radius: 0;
+
+  .landing-page & {
+    border-bottom: none;
+
+    &:before {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 1px;
+      background-color: #e5e5e5;
+
+      @include respond-to(phone) {
+        display: none;
+      }
+    }
+  }
 
   .navbar-brand {
     position: relative;
     height: auto;
     background-color: #fff;
+
+    .landing-page & {
+      padding-left: 30px;
+      padding-right: 30px;
+
+      @include respond-to(phone) {
+        padding-left: 15px;
+      }
+
+      &:before,
+      &:after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        margin-top: -10px;
+        width: 1px;
+        height: 20px;
+        background-color: #e5e5e5;
+
+        @include respond-to(phone) {
+          display: none;
+        }
+      }
+
+      &:before {
+        left: 0;
+      }
+
+      &:after {
+        right: 0;
+      }
+    }
 
     @include respond-to(phone) {
       padding: 10px 15px;
@@ -25,6 +76,15 @@
     img {
       width: 65px;
       height: auto;
+
+      .landing-page & {
+        width: 103px;
+        height: auto;
+
+        @include respond-to(phone) {
+          width: 65px;
+        }
+      }
     }
   }
 
@@ -34,6 +94,10 @@
     margin-left: 45px;
     padding: 0 22px;
     background-color: #fff;
+
+    .landing-page & {
+      margin-top: 40px;
+    }
 
     @include respond-to(tablet) {
       margin-left: 25px;
@@ -95,6 +159,15 @@
     background: #fff;
     position: relative;
     z-index: 5;
+
+    .landing-page & {
+      margin-top: 45px;
+      padding: 0 9px 0 14px;
+
+      @include respond-to(phone) {
+        margin-top: 25px;
+      }
+    }
 
     &.for-mobile {
       display: none;

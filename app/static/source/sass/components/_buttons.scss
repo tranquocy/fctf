@@ -39,3 +39,19 @@
   font-size: 18px;
   padding: 12px 26px;
 }
+
+.btn-default {
+  background-color: #adadad;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  transition: background-color .3s;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &.active {
+    color: #fff !important;
+    background-color: darken(#adadad, 10%);
+  }
+}
