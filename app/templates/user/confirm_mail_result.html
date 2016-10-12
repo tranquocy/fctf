@@ -1,20 +1,117 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="row">
-  <div class="col-lg-9">
-  {% if result == 'success' %}
-    <h4>Dear {{ user.username }}!</h4>
-    <p>You activated you account successfully. Please go to <a href="{{ url_for('user.login') }}">login page</a> to login.</p>
-  {% elif result == 'activated' %}
-    <h4>Dear {{ user.username }}!</h4>
-    <p>You already activated you account. Please go to <a href="{{ url_for('user.login') }}">login page</a> to login.</p>
-  {% elif result == 'expired' %}
-    <h4>Dear {{ user.username }}!</h4>
-    <p>Your activation token is expired. <a href="{{ url_for('user.resend_confirm') }}">Resend activation email</a>
-  {% elif result == 'unknown' %}
-    <h4>Dear {{ user.username }}!</h4>
-    <p>Some thing went wrong. Please do everything again!</p>
-  {% endif %}
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Framgia Code Contest</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Framgia Code Contest Team">
+  <link rel="shortcut icon" href="../static/images/favicon.ico" type="image/x-icon">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="../../static/css/drunken-parrot.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-default navbar">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="base.html">
+          <img src="../../static/img/logo.png" alt="Logo" width="103" height="83">
+        </a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">Activities</a></li>
+          <li><a href="#">Tasks</a></li>
+          <li><a href="#">Teams</a></li>
+          <li><a href="#">Scoreboard</a></li>
+          <li><a href="#">About</a></li>
+        </ul>
+        <div class="navbar-right">
+          <!-- Box profile for desktop -->
+          <div class="dropdown box-profile for-desktop">
+            <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+              <span class="caret"></span>
+            </div>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+              <li><a href="#">Change Password</a></li>
+              <li><a href="#">My Profile</a></li>
+            </ul>
+          </div> <!--/ End Box profile for desktop -->
+        </div>
+      </div>
+    </div>
+    <!-- Box profile for mobile -->
+    <div class="dropdown box-profile for-mobile">
+      <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+        <span class="caret"></span>
+      </div>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li><a href="#">Change Password</a></li>
+        <li><a href="#">My Profile</a></li>
+      </ul>
+    </div> <!--/ End Box profile for mobile -->
+  </nav> <!--/ End Navbar  -->
+
+  <!-- Subheader -->
+  <div class="sub-header">
+    <div class="container">
+      <h4 class="title">Confirm Change</h4>
+      <div class="flex"></div>
+      <ol class="breadcrumb">
+        <li class="item active">Confirm Change</li>
+      </ol>
+    </div>
+  </div><!--/ End Subheader -->
+
+  <div class="main-container container">
+
+    <!-- Start confirm mail result content here -->
+    <div class="page-confirm-mail-result">
+      <h2 class="form-confirm-mail-result-heading">Dear Nguyen Thi Thu Ha!</h2>
+        <div class="tile tile-confirm-mail-result tile-customize">
+          <p>You activated you account successfully. Please go to <a href="#">login page</a> to login.</p>
+          <h4>Dear Nguyen Thi Thu Ha!</h4>
+          <p>You already activated you account. Please go to <a href="#">login page</a> to login.</p>
+          <h4>Dear Nguyen Thi Thu Ha!</h4>
+          <p>Your activation token is expired. <a href="#">Resend activation email</a></p>
+          <h4>Dear Nguyen Thi Thu Ha!!</h4>
+          <p>Some thing went wrong. Please do everything again!</p>
+        </div>
+    </div>
+    <!--End confirm mail resend content here -->
+
   </div>
-</div>
-{% endblock %}
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="main-footer">
+      <div class="container">
+        <p class="copyright">&copy; 2016 Framgia Vietnam. All rights reserved.</p>
+        <div class="flex"></div>
+        <div class="follow-social">
+          <p class="title">Follow Life at Framgia on</p>
+          <div class="social-icon">
+            <a class="fa fa-facebook-f" href="#"></a>
+            <a class="fa fa-linkedin" href="#"></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> <!--/ End Footer -->
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="../../static/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

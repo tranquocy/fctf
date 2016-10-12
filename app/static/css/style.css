@@ -9438,4 +9438,31 @@ a {
       color: #fc653c;
       font-weight: 700; }
 
+.page-confirm-mail-result {
+  width: 420px;
+  max-width: 100%;
+  margin: 40px auto 0; }
+  .page-confirm-mail-result .of-user {
+    background-color: #5aaddd;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 3px; }
+  .page-confirm-mail-result .tile-customize {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    padding: 15px 15px 5px; }
+    @media (max-width: 480px) {
+      .page-confirm-mail-result .tile-customize {
+        padding: 20px; } }
+  .page-confirm-mail-result .form-confirm-mail-result-heading {
+    background-color: #fc653c;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    padding: 10px 15px;
+    font-size: 18px;
+    margin-bottom: 7px;
+    border-radius: 3px; }
+
 /*# sourceMappingURL=style.css.map */
