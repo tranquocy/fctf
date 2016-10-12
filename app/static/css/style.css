@@ -8183,6 +8183,7 @@ button:focus {
   font-size: 14px;
   line-height: 18px;
   padding: 7px 26px;
+  border-radius: 3px;
   font-weight: 700;
   font-family: "Open Sans", sans-serif;
   transition: background-color .3s; }
@@ -8402,6 +8403,40 @@ button:focus {
   .link-inline:hover {
     text-decoration: none;
     color: #007acc; }
+
+.box-form {
+  width: 420px;
+  max-width: 100%;
+  margin: auto; }
+  .box-form form {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    padding: 30px 53px 40px; }
+    @media (max-width: 480px) {
+      .box-form form {
+        padding: 20px; } }
+  .box-form .action {
+    padding-top: 8px;
+    text-align: left; }
+
+.form-customize .form-control {
+  background-color: transparent;
+  box-shadow: none;
+  padding-left: 0;
+  padding-right: 0;
+  border: none;
+  border-bottom: 1px solid #fc653c;
+  border-radius: 0;
+  color: #000000; }
+  .form-customize .form-control::-webkit-input-placeholder {
+    color: #666666; }
+  .form-customize .form-control::-moz-placeholder {
+    color: #666666; }
+  .form-customize .form-control:-ms-input-placeholder {
+    color: #666666; }
+  .form-customize .form-control::placeholder {
+    color: #666666; }
 
 .table-customize {
   margin: 0;
@@ -9379,5 +9414,8 @@ a {
   @media (max-width: 768px) {
     .page-create-team {
       width: 80%; } }
+
+.page-edit-profile {
+  margin-top: 30px; }
 
 /*# sourceMappingURL=style.css.map */

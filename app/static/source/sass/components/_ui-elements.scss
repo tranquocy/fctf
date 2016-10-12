@@ -2,6 +2,7 @@
 // Components :: UI Elements
 // --------------------------------------------------
 
+// Heading title
 .heading-title {
   font-family: $font-family-secondary !important;
   font-size: 22px;
@@ -25,6 +26,7 @@
   }
 }
 
+// Link inline
 .link-inline {
   color: #0099ff;
   transition: color .3s ease;
@@ -32,5 +34,28 @@
   &:hover {
     text-decoration: none;
     color: darken(#0099ff, 10%);
+  }
+}
+
+// Box contain form input
+.box-form {
+  width: 420px;
+  max-width: 100%;
+  margin: auto;
+
+  form {
+    background-color: $white;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    padding: 30px 53px 40px;
+
+    @include respond-to(smallphone) {
+      padding: 20px;
+    }
+  }
+
+  .action {
+    padding-top: 8px;
+    text-align: left;
   }
 }

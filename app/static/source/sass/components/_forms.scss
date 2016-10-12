@@ -1,3 +1,20 @@
 //
 // Components :: Forms
 // --------------------------------------------------
+
+.form-customize {
+  .form-control {
+    background-color: transparent;
+    box-shadow: none;
+    padding-left: 0;
+    padding-right: 0;
+    border: none;
+    border-bottom: 1px solid $brand-primary;
+    border-radius: 0;
+    color: $black;
+
+    &::placeholder {
+      color: $brand-default;
+    }
+  }
+}
