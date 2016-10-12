@@ -9418,4 +9418,24 @@ a {
 .page-edit-profile {
   margin-top: 30px; }
 
+.page-about .about-heading {
+  background-color: #fc653c;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  padding: 10px 15px;
+  font-size: 18px;
+  margin-bottom: 7px;
+  border-radius: 3px; }
+
+.page-about .about-content {
+  background: #5aaddd;
+  border-radius: 3px;
+  padding: 20px 15px; }
+  .page-about .about-content p {
+    color: #fff; }
+    .page-about .about-content p a {
+      color: #fc653c;
+      font-weight: 700; }
+
 /*# sourceMappingURL=style.css.map */

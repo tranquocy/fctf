@@ -1,18 +1,119 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="row clearfix">
-  <div class="col-md-10 col-md-offset-1">
-   <h2>What's CTF ?</h2>
-      <p>
-      In computer security, Capture the Flag (CTF) is a computer security competition. CTF contests are usually designed to serve as an educational exercise to give participants experience in securing a machine, as well as conducting and reacting to the sort of attacks found in the real world. Reverse-engineering, network sniffing, protocol analysis, system administration, programming, and cryptanalysis are all skills which have been required by prior CTF contests at DEF CON. There are two main styles of capture the flag competitions: attack/defense and jeopardy.
-      </p>
-      <p>
-      In an attack/defense style competition, each team is given a machine (or a small network) to defend on an isolated network. Teams are scored on both their success in defending their assigned machine and on their success in attacking other team's machines. Depending on the nature of the particular CTF game, teams may either be attempting to take an opponent's flag from their machine or teams may be attempting to plant their own flag on their opponent's machine. One of the more prominent attack/defense CTF's is held every year at the hacker conference DEF CON.
-      </p>
-      <p>
-      Jeopardy-style competitions usually involve multiple categories of problems, each of which contains a variety of questions of different point values. Teams race to be the first to solve the most number of points, but do not directly attack each other..
-      </p>
-      (from <a href="http://en.wikipedia.org/wiki/Capture_the_flag" title="">Wikipedia</a>)
-  </div>
-</div>
-{% endblock %}
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Framgia CTF</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Framgia CodeContest Team">
+    <link rel="shortcut icon" href="../../static/favicon.ico" type="image/x-icon">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="../../static/css/site.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../static/css/style.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-default navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="base.html">
+            <img src="../../static/img/logo.png" alt="Logo" width="103" height="83">
+          </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">Activities</a></li>
+            <li><a href="#">Tasks</a></li>
+            <li><a href="#">Teams</a></li>
+            <li><a href="#">Scoreboard</a></li>
+            <li><a href="#">About</a></li>
+          </ul>
+          <div class="navbar-right">
+            <!-- Box profile for desktop -->
+            <div class="dropdown box-profile for-desktop">
+              <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+                <span class="caret"></span>
+              </div>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li><a href="#">Change Password</a></li>
+                <li><a href="#">My Profile</a></li>
+              </ul>
+            </div> <!--/ End Box profile for desktop -->
+          </div>
+        </div>
+      </div>
+      <!-- Box profile for mobile -->
+      <div class="dropdown box-profile for-mobile">
+        <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+          <span class="caret"></span>
+        </div>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li><a href="#">Change Password</a></li>
+          <li><a href="#">My Profile</a></li>
+        </ul>
+      </div> <!--/ End Box profile for mobile -->
+    </nav> <!--/ End Navbar  -->
+
+    <!-- Subheader -->
+    <div class="sub-header">
+      <div class="container">
+        <h4 class="title">Team detail</h4>
+        <div class="flex"></div>
+        <ol class="breadcrumb">
+          <li class="item"><a class="link" href="#">Home</a></li>
+          <li class="item"><a class="link" href="#">Teams</a></li>
+          <li class="item active">Team detail</li>
+        </ol>
+      </div>
+    </div><!--/ End Subheader -->
+    <!-- About main content -->
+    <div class="main-container page-about">
+      <div class="container">
+        <div class="about">
+          <h1 class="about-heading">What's CTF ?</h1>
+          <div class="about-content">
+            <p>
+            In computer security, Capture the Flag (CTF) is a computer security competition. CTF contests are usually designed to serve as an educational exercise to give participants experience in securing a machine, as well as conducting and reacting to the sort of attacks found in the real world. Reverse-engineering, network sniffing, protocol analysis, system administration, programming, and cryptanalysis are all skills which have been required by prior CTF contests at DEF CON. There are two main styles of capture the flag competitions: attack/defense and jeopardy.
+            </p>
+            <p>
+            In an attack/defense style competition, each team is given a machine (or a small network) to defend on an isolated network. Teams are scored on both their success in defending their assigned machine and on their success in attacking other team's machines. Depending on the nature of the particular CTF game, teams may either be attempting to take an opponent's flag from their machine or teams may be attempting to plant their own flag on their opponent's machine. One of the more prominent attack/defense CTF's is held every year at the hacker conference DEF CON.
+            </p>
+            <p>
+            Jeopardy-style competitions usually involve multiple categories of problems, each of which contains a variety of questions of different point values. Teams race to be the first to solve the most number of points, but do not directly attack each other..
+            </p>
+            <p>(from <a href="http://en.wikipedia.org/wiki/Capture_the_flag" title="">Wikipedia</a>)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="footer">
+      <div class="main-footer">
+        <div class="container">
+          <p class="copyright">&copy; 2016 Framgia Vietnam. All rights reserved.</p>
+          <div class="flex"></div>
+          <div class="follow-social">
+            <p class="title">Follow Life at Framgia on</p>
+            <div class="social-icon">
+              <a class="fa fa-facebook-f" href="#"></a>
+              <a class="fa fa-linkedin" href="#"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!--/ End Footer -->
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="../../static/js/jquery-1.11.0.min.js"></script>
+    <script src="../../static/js/site.min.js"></script>
+  </body>
+</html>

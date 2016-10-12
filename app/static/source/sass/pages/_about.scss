@@ -1,0 +1,32 @@
+//
+// Pages :: About
+// --------------------------------------------------
+
+.page-about {
+
+  .about-heading {
+    background-color: #fc653c;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    padding: 10px 15px;
+    font-size: 18px;
+    margin-bottom: 7px;
+    border-radius: 3px;
+  }
+
+  .about-content {
+    background: #5aaddd;
+    border-radius: 3px;
+    padding: 20px 15px;
+
+    p {
+      color: #fff;
+
+      a {
+        color: #fc653c;
+        font-weight: 700;
+      }
+    }
+  }
+}
