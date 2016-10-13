@@ -6,20 +6,28 @@
 {% for message in form.description.errors %}
 <div class="alert alert-danger">{{ message }}</div>
 {% endfor %}
-<div class="row">
-  <div class="col-md-6">
-    <form class="well" role="form" action="" method="POST">
-        <h2>Create Team</h2>
-        <label>{{ form.name.label }}</label>
-        <input name="name" type="text" class="form-control" required autofocus>
+  <div class="main-container container">
+    <!-- Start create team content here -->
+    <div class="page-create-team">
+    <h2 class="form-create-team-heading">Create team</h2>
+    <div class="tile tile-create-team tile-customize">
+      <form class="form-create-team" role="form" action="" method="POST">
+        <div class="form-group">
+          <label><label for="name">{{ form.name.label }}</label></label>
+          <input name="name" type="text" class="form-control" placeholder="Name" required>
+        </div>
+        <div class="form-group">
+          <label><label for="description">{{ form.description.label }}</label></label>
+          <textarea name="description" type="text" class="form-control" rows="4" cols="50"></textarea>
+          {{ form.hidden_tag() }}
+        </div>
         <br>
-        <label>{{ form.description.label }}</label>
-        <textarea  name="description" type="text" class="form-control" rows="4" cols="50"></textarea>
-        {{ form.hidden_tag() }}
-        <br>
-        <button class="btn btn-lg btn-primary" type="submit">Create</button>
-    </form>
+        <button class="btn btn-lg btn-primary" type="submit">Create team</button>
+      </form>
+    </div>
+    </div>
+    <!--End create team content here -->
+
   </div>
-</div>
 {% endblock %}
 
