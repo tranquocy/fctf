@@ -3,15 +3,8 @@
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 {% endblock %}
 {% block content %}
-{% for message in form.flag.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-{% for message in form.task_id.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-{% for message in form.recaptcha.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
+{% import 'helpers.html' as helpers %}
+{{ helpers.form_errors(form) }}
 <!-- Subheader -->
   <div class="sub-header">
     <div class="container">

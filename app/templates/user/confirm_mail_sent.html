@@ -1,9 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
-  <div class="col-lg-9">
-    <h4>Dear, {{ user.username }}!</h4>
-    <p>We sent you an email at address <strong>{{ user.email }}</strong> to confirm your registration.</p><p>Please check it and enjoy Framgia CTF. Thank you!</p>
+<!-- Subheader -->
+  <div class="sub-header">
+    <div class="container">
+      <h4 class="title">Resend Confirmation Mail</h4>
+      <div class="flex"></div>
+      <ol class="breadcrumb">
+        <li class="item active">Resend Mail</li>
+      </ol>
+    </div>
+  </div><!--/ End Subheader -->
+
+  <div class="main-container container">
+
+    <!-- Start forgot password result content here -->
+    <div class="page-confirm-mail-result">
+      <h2 class="form-confirm-mail-result-heading">Dear {{ user.username }}!</h2>
+      <div class="tile tile-confirm-mail-result tile-customize">
+        <p>We sent you an email at address <strong>{{ user.email }}</strong> to confirm your registration.</p><p>Please check it. Thank you!</p>
+      </div>
+    </div>
+    <!--End forgot password resend content here -->
+
   </div>
-</div>
 {% endblock %}

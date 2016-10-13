@@ -16,12 +16,8 @@
   <div class="main-container page-edit-profile">
     <div class="container">
       <div class="box-form">
-        {% for message in form.name.errors %}
-        <div class="alert alert-danger">{{ message }}</div>
-        {% endfor %}
-        {% for message in form.email.errors %}
-        <div class="alert alert-danger">{{ message }}</div>
-        {% endfor %}
+        {% import 'helpers.html' as helpers %}
+        {{ helpers.form_errors(form) }}
         <form class="form-customize" role="form" action="" method="POST">
           <div class="form-group">
             <input name="name" type="text" class="form-control" value="{{ form.name.data }}" required autofocus placeholder="Name">

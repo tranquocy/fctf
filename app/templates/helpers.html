@@ -1,0 +1,7 @@
+{% macro form_errors(form) %}
+{% for field in form._fields.values() %}
+	{% for message in field.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+	{% endfor %}
+{% endfor %}
+{% endmacro %}

@@ -1,11 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-{% for message in form.name.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-{% for message in form.description.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
+{% import 'helpers.html' as helpers %}
+{{ helpers.form_errors(form) }}
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
     <form role="form" action="" method="POST">

@@ -1,20 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
-  <div class="col-lg-9">
-  {% if result == 'success' %}
-    <h4>Dear {{ user.username }}!</h4>
-    <p>You activated you account successfully. Please go to <a href="{{ url_for('user.login') }}">login page</a> to login.</p>
-  {% elif result == 'activated' %}
-    <h4>Dear {{ user.username }}!</h4>
-    <p>You already activated you account. Please go to <a href="{{ url_for('user.login') }}">login page</a> to login.</p>
-  {% elif result == 'expired' %}
-    <h4>Dear {{ user.username }}!</h4>
-    <p>Your activation token is expired. <a href="{{ url_for('user.resend_confirm') }}">Resend activation email</a>
-  {% elif result == 'unknown' %}
-    <h4>Dear {{ user.username }}!</h4>
-    <p>Some thing went wrong. Please do everything again!</p>
-  {% endif %}
+<!-- Subheader -->
+  <div class="sub-header">
+    <div class="container">
+      <h4 class="title">Confirm Change</h4>
+      <div class="flex"></div>
+      <ol class="breadcrumb">
+        <li class="item active">Confirm Change</li>
+      </ol>
+    </div>
+  </div><!--/ End Subheader -->
+
+  <div class="main-container container">
+
+    <!-- Start confirm mail result content here -->
+    <div class="page-confirm-mail-result">
+      <h2 class="form-confirm-mail-result-heading">Dear {{ user.username }}!</h2>
+        <div class="tile tile-confirm-mail-result tile-customize">
+        {% if result == 'success' %}
+          <p>You activated you account successfully. Please go to <a href="{{ url_for('user.login') }}">login page</a> to login.</p>
+        {% elif result == 'activated' %}
+          <p>You already activated you account. Please go to <a href="{{ url_for('user.login') }}">login page</a> to login.</p>
+        {% elif result == 'expired' %}
+          <p>Your activation token is expired. <a href="{{ url_for('user.resend_confirm') }}">Resend activation email</a></p>
+        {% elif result == 'unknown' %}
+          <p>Some thing went wrong. Please try again!</p>
+        {% endif %}
+        </div>
+    </div>
+    <!--End confirm mail resend content here -->
+
   </div>
-</div>
 {% endblock %}

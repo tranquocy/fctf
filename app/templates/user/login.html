@@ -4,15 +4,11 @@
 <div class="main-container container">
     <!-- Start log in content here -->
     <div class="page-login">
-    {% for message in form.email.errors %}
-    <div class="alert alert-danger">{{ message }}</div>
-    {% endfor %}
-    {% for message in form.password.errors %}
-    <div class="alert alert-danger">{{ message }}</div>
-    {% endfor %}
+    {% import 'helpers.html' as helpers %}
+    {{ helpers.form_errors(form) }}
       <h2 class="form-login-heading">Please login</h2>
       <div class="tile tile-login tile-customize">
-        <form class="form-login" role="form" action="" method="POST">
+        <form class="form-login" role="form" action="{{ url_for('user.login') }}" method="POST">
           <div class="form-group">
             <input name="email" type="email" class="form-control" placeholder="Email address" required>
           </div>
@@ -23,6 +19,7 @@
             <p><a href="{{ url_for('user.resend_confirm') }}">Resend Confirmation Email</a></p>
             <p><a href="{{ url_for('user.forgot_password') }}">Forgot Password ?</a></p>
           </div>
+          {{ form.hidden_tag() }}
           <button class="btn btn-lg btn-primary" type="submit">Login</button>
         </form>
       </div>

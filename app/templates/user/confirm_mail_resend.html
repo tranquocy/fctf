@@ -1,14 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
-{% for message in form.email.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-<form class="form-signin" role="form" action="" method="POST">
-    <h4>Resend Confirmation Mail</h4>
-    Please enter your email
-    <input name="email" type="text" class="form-control" placeholder="Email" required autofocus>
-    {{ form.hidden_tag() }}
-    <br>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Resend</button>
-</form>
+<!-- Subheader -->
+  <div class="sub-header">
+    <div class="container">
+      <h4 class="title">Resend Confirmation Mail</h4>
+      <div class="flex"></div>
+      <ol class="breadcrumb">
+        <li class="item active">Resend Mail</li>
+      </ol>
+    </div>
+  </div><!--/ End Subheader -->
+
+  <div class="main-container container">
+
+    <!-- Start confirm mail resend content here -->
+    <div class="page-confirm-mail-resent">
+      {% import 'helpers.html' as helpers %}
+      {{ helpers.form_errors(form) }}
+      <h2 class="form-confirm-mail-resent-heading">Resend Confirmation Mail</h2>
+        <p class="of-user">Please enter your email</strong></p>
+        <div class="tile tile-confirm-mail-resent tile-customize">
+          <form class="form-confirm-mail" role="form" action="" method="POST">
+            <div class="form-group">
+              <input name="email" type="text" class="form-control" placeholder="Email" required autofocus>
+            </div>
+            {{ form.hidden_tag() }}
+            <button class="btn btn-lg btn-primary" type="submit">Resend</button>
+          </form>
+        </div>
+    </div>
+    <!--End confirm mail resend content here -->
+
+  </div>
 {% endblock %}
