@@ -82,7 +82,7 @@
         <div role="tabpanel" class="tab-pane" id="achievement">
           <div class="list-achievement">
           {% for achievement in achievements %}
-            {% if achievement.solved_users|length == 1 %}
+            {% if achievement.solved_users|length == 1 and cfgs.has_key(achievement.id) %}
             <div class="item">
               <span class="fa-stack fa-3x" style="color:{{ cfgs[achievement.id]["color"] }}">
                 <i class="fa fa-circle-thin fa-stack-2x"></i>

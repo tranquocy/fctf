@@ -57,7 +57,7 @@ def more_activities():
             'team': "<span>%s</span>" % activity.user.team.name if activity.user.team else "",
         }
 
-        if activity.task.category.is_achievement():
+        if not activity.task.category.is_achievement():
             item['body'] = u'<p> solved task <a href="{0:s}">{1:s}</a> and scored <strong>{2:s} points</strong></p>'.format(url_for('task.show_task', task_id=activity.task.id), activity.task.name, str(activity.task.point))
         else:
             item['body'] = u'<p> unlocked an Achievement: <a href="{0:s}">{1:s}</a> and get bonused <strong>{2:s} points</strong></p>'.format(url_for('task.all_task'), activity.task.name, str(activity.task.point))
@@ -121,11 +121,15 @@ def scoreboard():
     max_user_score = 0
     if len(users_data):
         max_user_score = max(users_data, key=lambda data: data[1])[1]
+    if not max_user_score:
+        max_user_score = 1
 
     teams_data = sorted(Team.get_team_points(), cmp=team_comparator, reverse=True)
-    max_team_score = 0
+    max_team_score = 1
     if len(teams_data):
         max_team_score = max(teams_data, key=lambda data: data[1])[1]
+    if not max_user_score:
+        max_user_score = 1
 
     all_team_data = []
     xs_data = []
