@@ -1,65 +1,105 @@
 {% extends "base.html" %} {% block content %}
 <div style="display: none" id="one-activity-dom">
-  <dd class="">
-      <div class="circ"></div>
-      <div class="time"></div>
-      <div class="events">
-          <div class="pull-left">
-              <img class="events-object img-rounded" src="">
-          </div>
-          <div class="events-body">
-              <h4 class="events-heading"></h4>
-              <p></p>
-          </div>
+  <dl class="activities">
+    <dd class="pos-left clearfix">
+      <div class="col-md-2 col-xs-2 activities-time">
+        <div class="time"></div>
       </div>
-  </dd>
-</div>
-<div class="row clearfix">
-    <div class="col-md-10 col-md-offset-1">
-        <h2>Activities</h2>
-        <div class="timeline">
-            <dl>
-                <dt>Now</dt>
-                {% for activity in activities %}
-                <dd data-id={{ activity.id }} class="pos-{{ loop.cycle('left', 'right') }} clearfix">
-                    <div class="circ"></div>
-                    <div class="time">{{ activity.created_at.strftime('%b %d %H:%M') }}</div>
-                    <div class="events">
-                        <div class="pull-left">
-                            <img class="events-object img-rounded" src="{{ activity.user.get_avatar_url(64)}}">
-                        </div>
-                        <div class="events-body">
-                            <h4 class="events-heading">{{ activity.user.get_profile_link(False)|safe }} {% if activity.user.team %}({{ activity.user.team.name }}){% endif %}</h4>
-                            {% if activity.task.category.is_achievement() %}
-                            <p> unlocked an Achievement: <a href="{{ url_for('task.all_task') }}">{{ activity.task.name }}</a> and get bonused <strong>{{ activity.point }} points</strong></p>
-                            {% else %}
-                            <p> solved task <a href="{{ url_for('task.show_task', task_id=activity.task.id)}}">{{ activity.task.name }}</a> and scored <strong>{{ activity.point }} points</strong></p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </dd>
-                {% endfor %}
-                <dt>Start</dt>
-            </dl>
+      <div class="col-md-2 col-xs-2 activities-circ">
+        <div class="circ">
+          <img class="check-icon" src="{{ url_for('static', filename="img/check-icon.png") }}" alt="">
         </div>
-    </div>
+      </div>
+      <div class="col-md-8 col-xs-8 activities-details">
+        <div class="events col-md-12 col-sm-12 col-xs-12">
+          <div class="member-info">
+            <div class="member-avatar">
+              <img class="events-object img-rounded" src="">
+            </div>
+            <div class="member-name">
+              <h4 class="user-profile"></h4>
+            </div>
+            <div class="teams">
+              <span></span>
+            </div>
+          </div>
+          <div class="events-body col-md-12 col-xs-12"></div>
+        </div>
+      </div>
+    </dd>
+  </dl>
 </div>
+<!-- Subheader -->
+<div class="sub-header">
+<div class="container">
+  <h4 class="title">Activities</h4>
+  <div class="flex"></div>
+  <ol class="breadcrumb">
+  <li class="item"><a class="link" href="{{ url_for('index') }}">Home</a></li>
+  <li class="item active">Activities</li>
+  </ol>
+</div>
+</div><!--/ End Subheader -->
+<!-- Activities main content -->
+<div class="activities-main-content">
+  <div class="container">
+    <div class="row clearfix">
+      <div class="col-md-12">
+        {% for activity in activities %}
+        <dl class="activities">
+          <dd data-id={{ activity.id }} class="pos-left clearfix">
+            <div class="col-md-2 col-xs-2 activities-time">
+              <div class="time">{{ activity.created_at.strftime('%b %d %H:%M') }}</div>
+            </div>
+            <div class="col-md-2 col-xs-2 activities-circ">
+              <div class="circ">
+                <img class="check-icon" src="{{ url_for('static', filename="img/check-icon.png") }}" alt="">
+              </div>
+            </div>
+            <div class="col-md-8 col-xs-8 activities-details">
+              <div class="events col-md-12 col-sm-12 col-xs-12">
+                <div class="member-info">
+                  <div class="member-avatar">
+                    <img class="events-object img-rounded" src="{{ activity.user.get_avatar_url(64)}}">
+                  </div>
+                  <div class="member-name">
+                    <h4 class="user-profile"><a href="/user/profile/502">&nbsp;<span class="text-default">{{ activity.user.get_profile_link(False)|safe }}</span></a> </h4>
+                  </div>
+                  <div class="teams">
+                  {% if activity.user.team %}
+                    <span>{{ activity.user.team.name }}</span>
+                  {% endif %}
+                  </div>
+                </div>
+                <div class="events-body col-md-12 col-xs-12">
+                  {% if activity.task.category.is_achievement() %}
+                  <p> unlocked an Achievement: <a href="{{ url_for('task.all_task') }}">{{ activity.task.name }}</a> and get bonused <strong>{{ activity.point }} points</strong></p>
+                  {% else %}
+                  <p> solved task <a href="{{ url_for('task.show_task', task_id=activity.task.id)}}">{{ activity.task.name }}</a> and scored <strong>{{ activity.point }} points</strong></p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </dd>
+        </dl>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End activities main content -->
 <script>
   $("body").css("background-color", "#f1f2f6");
   var loadAgain = true;
   $(window).scroll(function() {
       if (loadAgain && $(window).scrollTop() / $(document).height() >= 0.7) {
           loadAgain = false;
-          var lastSide = "right";
-          if ($("dd").last().attr("class").indexOf("right") == -1) {
-            lastSide = "left";
-          }
           var lastId = $("dd").last().data("id");
-          console.log(lastId, lastSide);
-          $.post("activities/more", {side: lastSide, id: lastId}).done(function(data) {
+          console.log(lastId);
+          $.post("activities/more", {id: lastId}).done(function(data) {
               $.each(data['result'], function(index, value) {
                  var html = create_activity(value);
-                 $("dd").last().after(html);
+                 $("dl").last().after(html);
               });
               loadAgain = true;
           });
@@ -69,12 +109,11 @@
   function create_activity(data){
     var dom = $("#one-activity-dom");
     dom.find(".time").text(data['time']);
-    dom.find(".time").text(data['time']);
     dom.find(".img-rounded").attr('src', data['avatar']);
     dom.find("dd").attr('data-id', data['id']);
-    dom.find("dd").attr('class', data['class']);
-    dom.find(".events-heading").html(data['header']);
-    dom.find("p").html(data['footer']);
+    dom.find(".user-profile").html(data['profile']);
+    dom.find(".teams").html(data['team']);
+    dom.find(".events-body").html(data['body']);
     return dom.html();
   }
 </script>

@@ -35,7 +35,7 @@ def load_user(user_id):
 @app.route('/activities')
 @login_required
 def show_activities():
-    activities = UserSolved.query.order_by(desc(UserSolved.created_at)).limit(20).all()
+    activities = UserSolved.query.order_by(desc(UserSolved.id)).limit(3).all()
     return render_template(
         'common/activities.html',
         activities=activities,
@@ -45,27 +45,24 @@ def show_activities():
 @app.route('/activities/more', methods=['POST'])
 @login_required
 def more_activities():
-    last_side = request.form.get('side', 'left')
     last_id = request.form.get('id')
-    activities = UserSolved.query.filter(UserSolved.id < last_id).order_by(desc(UserSolved.created_at)).limit(20).all()
+    activities = UserSolved.query.filter(UserSolved.id < last_id).order_by(desc(UserSolved.id)).limit(20).all()
     resp = []
     for activity in activities:
-        last_side = 'right' if last_side == 'left' else 'left'
-
         item = {
-            'class': 'pos-%s clearfix' % last_side,
             'id': activity.id,
             'time': activity.created_at.strftime('%b %d %H:%M'),
             'avatar': activity.user.get_avatar_url(64),
-            'header': u"{0:s} {1:s}".format(activity.user.get_profile_link(False), "(%s)" % activity.user.team.name if activity.user.team else ''),
+            'profile': activity.user.get_profile_link(False),
+            'team': "<span>%s</span>" % activity.user.team.name if activity.user.team else "",
         }
 
         if activity.task.category.is_achievement():
-            item['footer'] = u' solved task <a href="{0:s}">{1:s}</a> and scored <strong>{2:s} points</strong>'.format(url_for('task.show_task', task_id=activity.task.id), activity.task.name, str(activity.task.point))
+            item['body'] = u'<p> solved task <a href="{0:s}">{1:s}</a> and scored <strong>{2:s} points</strong></p>'.format(url_for('task.show_task', task_id=activity.task.id), activity.task.name, str(activity.task.point))
         else:
-            item['footer'] = u' unlocked an Achievement: <a href="{0:s}">{1:s}</a> and get bonused <strong>{2:s} points</strong>'.format(url_for('task.all_task'), activity.task.name, str(activity.task.point))
+            item['body'] = u'<p> unlocked an Achievement: <a href="{0:s}">{1:s}</a> and get bonused <strong>{2:s} points</strong></p>'.format(url_for('task.all_task'), activity.task.name, str(activity.task.point))
 
-        resp.append(resp)
+        resp.append(item)
 
     return jsonify(result=resp)
 
@@ -145,7 +142,7 @@ def scoreboard():
         xs_data.append((team, ", ".join(x_data)))
 
     achievements = [task for task in Task.query.all() if task.category.is_achievement()]
-    
+
     return render_template('common/scoreboard.html',
                            users_data=users_data, teams_data=teams_data,
                            max_user_score=max_user_score, max_team_score=max_team_score,
