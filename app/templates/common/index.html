@@ -1,72 +1,181 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row clearfix">
-  <div class="col-md-10 col-md-offset-1">
-    <div class="jumbotron">
-      <div id="carousel-ctf" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators">
-          <li data-target="#carousel-ctf" data-slide-to="0" class="active"></li>
-          <li class="" data-target="#carousel-ctf" data-slide-to="1"></li>
-          <li class="" data-target="#carousel-ctf" data-slide-to="2"></li>
-          <li class="" data-target="#carousel-ctf" data-slide-to="3"></li>
-          <li class="" data-target="#carousel-ctf" data-slide-to="4"></li>
-        </ol>
-        <div class="carousel-inner">
-          <div class="item active">
-            <img src="{{ url_for('static', filename='img/slider1.jpg') }}">
-            <div class="carousel-caption">
-              <h3>The Final Countdown</h3>
-              <p>The most epic CTF ever !</p>
-            </div>
-          </div>
-          <div class="item">
-            <img src="{{ url_for('static', filename='img/slider2.jpg') }}">
-            <div class="carousel-caption">
-              <h3>Tick Tock Tick Tock</h3>
-              <p>Can you escape ?</p>
-            </div>
-          </div>
-          <div class="item">
-            <img src="{{ url_for('static', filename='img/slider3.jpg') }}">
-            <div class="carousel-caption">
-              <h3>We're Framgia-ers !</h3>
-              <p>We will never give up</p>
-            </div>
-          </div>
-          <div class="item">
-            <img src="{{ url_for('static', filename='img/slider4.jpg') }}">
-            <div class="carousel-caption">
-              <h3>Teamwork</h3>
-              <p>Let's have fun !</p>
-            </div>
-          </div>
-          <div class="item">
-            <img src="{{ url_for('static', filename='img/slider5.jpg') }}">
-            <div class="carousel-caption">
-              <h3>Game Over</h3>
-              <p>We're winners ! We're champions !</p>
-            </div>
-          </div>
-        </div>
-        <a class="left carousel-control" href="#carousel-ctf" data-slide="prev">
-          <span class="glyphicon glyphicon-chevron-left"></span>
-        </a>
-        <a class="right carousel-control" href="#carousel-ctf" data-slide="next">
-          <span class="glyphicon glyphicon-chevron-right"></span>
-        </a>
+<!-- Banner -->
+  <div class="banner">
+    <div class="container">
+      <div class="inner">
+        <img class="text-img" src="{{ url_for('static', filename="img/codewar-text.png") }}" alt="">
+        <p class="datetime">
+          8h30 - 17h30
+          <span class="seperator">/</span>
+          13/11/2016
+        </p>
+        <p class="address">Framgia Vietnam, 13F Keangnam Landmark 72 Tower, Hà Nội</p>
+        <button class="btn btn-primary btn-uppercase btn-medium">Tham gia</button>
       </div>
-      <div class="jumbotron-contents">
-        <h1>
-          Hello !
-        </h1>
+    </div>
+  </div> <!--.Banner -->
+
+  <!-- Introduction -->
+  <div class="introduction">
+    <div class="container">
+      <h2 class="heading-title">Giới thiệu chung về Code War 2016</h2>
+      <div class="content">
         <p>
-          This is site for CTF Contest, organized by <strong>Problem? Team</strong> from <strong>Framgia Vietnam</strong>
+          Là một lập trình viên, ai cũng mang trong mình khả năng lập trình, suy nghĩ logic, cùng đam mê giải quyết những bài toán khó. Bạn đã sẵn sàng để thử sức trong một cuộc đua gay cấn, hồi hộp nhất từ trước đến nay giữa các anh tài chưa?
         </p>
         <p>
-          <a class="btn btn-primary btn-large" href="{{ url_for('user.signup') }}">Sign Up</a>
+          Trong gần 8 giờ căng thẳng và quyết liệt, bạn sẽ được so tài tư duy giải thuật, kĩ năng giải quyết vấn đề, tư duy logic và khả năng đối kháng với đối thủ. Hãy cùng các thành viên đội mình vận dụng bộ não và kĩ năng tuyệt vời để
+          giải quyết các bài toán, giành điểm, đoạt thưởng.
+        </p>
+        <p>
+          Tham gia ngay để hết mình trải nghiệm cùng Code War 2016!
         </p>
       </div>
     </div>
+  </div> <!--/ End Introduction -->
+
+  <!-- Award -->
+  <div class="award">
+    <div class="container">
+      <h2 class="heading-title">Giải thưởng</h2>
+      <div class="content">
+        <p>Chiến thắng thử thách ở Coderland và nhận ngay những giải thưởng hấp dẫn: </p>
+        <ul class="list">
+          <li class="item">
+            <span class="main-text">Giải Nhất</span>
+            <span class="sub-text">20,000,000 VND</span>
+          </li>
+          <li class="item">
+            <span class="main-text">Giải Nhì</span>
+            <span class="sub-text">10,000,000 VND</span>
+          </li>
+          <li class="item">
+            <span class="main-text">Giải Ba</span>
+            <span class="sub-text">5,000,000 VND</span>
+          </li>
+        </ul>
+        <p>cùng cơ hội tham dự</p>
+        <p class="text-after-party">After-Party</p>
+        <p>hoành tránh cùng gia đình Framgia Vietnam!</p>
+      </div>
+    </div>
+  </div> <!--/ End Award -->
+
+  <!-- Rule -->
+  <div class="rule">
+    <div class="container">
+      <h2 class="heading-title">Thể lệ</h2>
+      <div class="detail">
+        <p class="title">Luật chơi</p>
+        <div class="list">
+          <div class="item">
+            <h4 class="item-title">
+              <i class="glyphicon glyphicon-menu-left"></i>
+              Phần 1
+              <i class="glyphicon glyphicon-menu-right"></i>
+            </h4>
+            <div class="heading">
+              <h4 class="main-heading">Code Puzzle</h4>
+              <a class="link-inline link-heading" href="http://codewar.framgia.vn/">http://codewar.framgia.vn/</a>
+            </div>
+            <div class="content">
+              <p>Thi tài các kiến thức bảo mât</p>
+              <p>Coding (PHP, Java, Ruby...): giải quyết các bài toán tính toán thông qua các ngôn ngữ lập trình</p>
+              <p>Kỹ năng Google, giải quyết vấn đề</p>
+              <p>Sau khi giải quyết mỗi câu hỏi đưa ra, đều có một xâu kí tự đặc biệt, đội chơi submit xâu kí tự đó lên hệ thống để ghi điểm.</p>
+            </div>
+          </div>
+          <div class="item">
+            <h4 class="item-title">
+              <i class="glyphicon glyphicon-menu-left"></i>
+              Phần 2
+              <i class="glyphicon glyphicon-menu-right"></i>
+            </h4>
+            <div class="heading">
+              <h4 class="main-heading">Code Contest</h4>
+              <a class="link-inline link-heading" href="http://codecontest.framgia.vn/">http://codecontest.framgia.vn/</a>
+            </div>
+            <div class="content">
+              <p>Mỗi đội chơi cần viết một đoạn chương trình bằng ngôn ngữ tự chọn để giải quyết bài toán ban tổ chức (BTC) đưa ra.</p>
+              <p>Đội chơi đưa đoạn code chương trình của mình lên hệ thống, chạy qua các kiểm thử (testcase), nếu vượt qua hết sẽ được chấp nhận là câu trả lời đúng và ghi điểm.</p>
+            </div>
+          </div>
+          <div class="item">
+            <h4 class="item-title">
+              <i class="glyphicon glyphicon-menu-left"></i>
+              Phần 3
+              <i class="glyphicon glyphicon-menu-right"></i>
+            </h4>
+            <div class="heading">
+              <h4 class="main-heading">AI Tournament</h4>
+              <a class="link-inline link-heading" href="http://aicontest.framgia.vn/">http://aicontest.framgia.vn/</a>
+            </div>
+            <div class="content">
+              <p>Đội chơi lập trình một con Bot dựa trên một đề bài cho trước của BTC với input/output chỉ định sẵn.</p>
+              <p>Định kỳ trong thời gian thi, BTC sẽ tổ chức các tournament vòng tròn giữa các Bot, thi đấu theo thể thức 1:1 và phân thứ hạng.</p>
+              <p>Điểm số được tính theo thứ hạng tương ứng.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="seperator">
+          <i class="fa fa-star" aria-hidden="true"></i>
+        </div>
+
+        <div class="rule-content">
+          <h4 class="rule-title">Hình thức đánh giá & chấm điểm</h4>
+          <p>Các đội chơi giải các câu hỏi mà BTC đưa ra và gửi câu trả lời đúng lên hệ thống <a class="link-inline" href="http://ctodewareframgia.vn">http://codeware.framgia.vn</a> để được tính điểm.</p>
+          <p>Đội giành giải cao hơn là đội ghi được tổng điểm nhiều hơn sau 3 phần thi. Trong trường hợp điểm số bằng nhau, đội đoạt giải là đội có đáp án đúng sớm hơn.</p>
+        </div>
+
+        <div class="seperator">
+          <i class="fa fa-star" aria-hidden="true"></i>
+        </div>
+
+        <div class="rule-content">
+          <h4 class="rule-title">Thành phần tham gia</h4>
+          <p>Mỗi đội chơi bao gồm: 01 thành viên Framgia & 04 thành viên khác với ít nhất hai năm kinh nghiệm lập trình.</p>
+          <p>20 đội chơi đầu tiên đăng ký hợp lệ sẽ được chính thức tham gia cuộc thi.</p>
+        </div>
+
+        <div class="seperator">
+          <i class="fa fa-star" aria-hidden="true"></i>
+        </div>
+
+        <div class="rule-content">
+          <h4 class="rule-title">Phương thức đăng ký</h4>
+          <p>Bạn là thành viên Framgia</p>
+          <button class="btn btn-primary btn-uppercase btn-medium">Đăng ký</button>
+        </div>
+      </div>
+    </div>
+  </div> <!--/ End Rule -->
+{% endblock %}
+{% block footer %}
+<div class="container">
+  <div class="info">
+    <img class="icon-location" src="{{ url_for('static', filename="img/icon-location.png") }}" alt="Location Icons">
+    <ul class="list">
+      <li class="item">Code War 2016</li>
+      <li class="item">8h30 - 17h30</li>
+      <li class="item">13/11/2016</li>
+    </ul>
+    <p class="address">Framgia Vietnam, 13F Keangnam Landmark 72 Tower, Hà Nội</p>
+  </div>
+  <div class="contact">
+    <h3 class="title">Liên hệ</h3>
+    <ul class="list">
+      <li class="item">
+        <i class="fa fa-envelope"></i>
+        <a href="#">codewar@framgia.com</a>
+      </li>
+      <li class="item">
+        <i class="fa fa-phone"></i>
+        0437955417
+      </li>
+      <li>Ext: 102</li>
+    </ul>
   </div>
 </div>
 {% endblock %}
