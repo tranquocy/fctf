@@ -1,132 +1,182 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row clearfix">
-<div class="col-md-10 col-md-offset-1">
-  <h1 class="text-center">Top 10 Team Ranking</h1>
-  <div id="top10"></div>
-  <script>
-  var chart = c3.generate({
-          bindto: '#top10',
-          data: {
-              xFormat: '%Y-%m-%d %H:%M:%S',
-              xs: {
-                {% for team, xs in xs_data %}
-                  '{{ team.name }}': 'x{{ team.id }}',
-                {% endfor %}
-              },
-              columns: [
-                  {% for team, points in data %}
-                  ['{{ team.name }}', {{ points }}],
-                  {% endfor %}
-                  {% for team, xs in xs_data %}
-                  ['x{{ team.id }}', {{ xs|safe }}],
-                  {% endfor %}
-              ],
-              type: "step",
-              colors: {
-                  {% for team, points in data %}
-                  '{{ team.name }}': '{{ team.color_hash() }}',
-                  {% endfor %}
-              },
-          },
-          axis: {
-              x: {
-                  type: 'timeseries',
-                  tick: {
-                      format: '%m/%d %H:%M'
-                  }
-              },
-              y: {
-                  label: {
-                      text: 'Score'
-                  }
-              }
-          },
-          zoom : {
-            enabled: true
-          }
-      });
-  </script>
-  <div class="row">
-    <h3>Achievements</h3>
-    {% for achievement in achievements %}
-    <div style="float:left">
-        {% if achievement.solved_users|length == 1 %}
-        <span class="fa-stack fa-3x" style="color:{{ cfgs[achievement.id]["color"] }}">
-          <i class="fa fa-circle-thin fa-stack-2x"></i>
-          <i class="fa {{ cfgs[achievement.id]["icon"] }} fa-stack-1x" title="{{ achievement.name }} : {{ achievement.description }}"></i>
-        </span>
-        {% for user in achievement.solved_users %}
-        <p style="text-align:center">
-            <a href="{{ url_for('team.show_team', team_id=user.team.id) }}">{{ user.team.name }}</a>
-        </p>
-        {% endfor %}
-        {% else %}
-        <span class="fa-stack fa-3x" style="color:#CCCCCC">
-          <i class="fa fa-circle-thin fa-stack-2x"></i>
-          <i class="fa fa-question fa-stack-1x" title="???"></i>
-        </span>
-        {% endif %}
+  <!-- Subheader -->
+  <div class="sub-header">
+    <div class="container">
+      <h4 class="title">Scoreboard</h4>
+      <div class="flex"></div>
+      <ol class="breadcrumb">
+        <li class="item"><a class="link" href="#">Home</a></li>
+        <li class="item active">Scoreboard</li>
+      </ol>
     </div>
-    {% endfor %}
-  </div>
-  <div class="col-md-6">
-      <h1>Teams</h1>
-      <br>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for team, total_score in teams_data %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            <td><a href="{{ url_for('team.show_team', team_id=team.id)}}">{{ team.name }}</td>
-            <td>
-              <div class="progress">
-                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="{{ max_team_score }}" style="width: {{ total_score/max_team_score * 100 }}%;">
-                {{ total_score }}
-                </div>
-              </div>
-            </td>
-          </tr>
+  </div><!--/ End Subheader -->
+
+  <div class="main-container page-scoreboard">
+    <div class="container">
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs nav-tabs-customize" role="tablist">
+        <li role="presentation" class="active">
+          <a href="#ranking" aria-controls="ranking" role="tab" data-toggle="tab">Top 10 Team Ranking</a>
+        </li>
+        <li role="presentation">
+          <a href="#achievement" aria-controls="achievement" role="tab" data-toggle="tab">Achievements</a>
+        </li>
+        <li role="presentation">
+          <a href="#team" aria-controls="team" role="tab" data-toggle="tab">Teams</a>
+        </li>
+        <li role="presentation">
+          <a href="#user" aria-controls="user" role="tab" data-toggle="tab">Users</a>
+        </li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content tab-content-customize">
+        <div role="tabpanel" class="tab-pane active" id="ranking">
+          <div id="top10"></div>
+          <script>
+          var chart = c3.generate({
+            bindto: '#top10',
+            data: {
+                xFormat: '%Y-%m-%d %H:%M:%S',
+                xs: {
+                  {% for team, xs in xs_data %}
+                    '{{ team.name }}': 'x{{ team.id }}',
+                  {% endfor %}
+                },
+                columns: [
+                    {% for team, points in data %}
+                    ['{{ team.name }}', {{ points }}],
+                    {% endfor %}
+                    {% for team, xs in xs_data %}
+                    ['x{{ team.id }}', {{ xs|safe }}],
+                    {% endfor %}
+                ],
+                type: "step",
+                colors: {
+                    {% for team, points in data %}
+                    '{{ team.name }}': '{{ team.color_hash() }}',
+                    {% endfor %}
+                },
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        format: '%m/%d %H:%M'
+                    }
+                },
+                y: {
+                    label: {
+                        text: 'Score'
+                    }
+                }
+            },
+            zoom : {
+              enabled: true
+            }
+          });
+          </script>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="achievement">
+          <div class="list-achievement">
+          {% for achievement in achievements %}
+            {% if achievement.solved_users|length == 1 %}
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:{{ cfgs[achievement.id]["color"] }}">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa {{ cfgs[achievement.id]["icon"] }} fa-stack-1x" title="{{ achievement.name }} : {{ achievement.description }}"></i>
+              </span>
+              <p class="team-name">
+              {% for user in achievement.solved_users %}
+              {% if user.team %}
+                <a href="{{ url_for('team.show_team', team_id=user.team.id) }}">{{ user.team.name }}</a>
+              {% endif %}
+              {% endfor %}
+              </p>
+            </div>
+            {% else %}
+            <div class="item">
+              <span class="fa-stack fa-3x" style="color:#CCCCCC">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <i class="fa fa-question fa-stack-1x" title="???"></i>
+              </span>
+            </div>
+            {% endif %}
           {% endfor %}
-        </tbody>
-      </table>
+          </div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane tab-contain-table" id="team">
+          <table class="table table-bordered table-customize table-order table-responsive">
+            <thead>
+              <tr>
+                <th width="50px">#</th>
+                <th width="50%">Name</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for team, total_score in teams_data %}
+              <tr>
+                <td data-title="#">
+                  <span>{{ loop.index }}</span>
+                </td>
+                <td data-title="Name">
+                  <a href="{{ url_for('team.show_team', team_id=team.id)}}">{{ team.name }}</a>
+                </td>
+                <td data-title="Score">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="{{ total_score }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ total_score/max_team_score * 100 }}%;">
+                      <span class="sr-only">{{ total_score/max_team_score * 100 }}% Complete</span>
+                    </div>
+                  </div>
+                  <span class="number">{{ total_score }}</span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div role="tabpanel" class="tab-pane tab-contain-table tab-user" id="user">
+          <table class="table table-bordered table-customize table-order table-responsive">
+            <thead>
+              <tr>
+                <th width="50px">#</th>
+                <th width="50%">Name</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user, total_score in users_data %}
+              <tr>
+                <td data-title="#">
+                  <span>{{ loop.index }}</span>
+                </td>
+                <td data-title="Name">
+                  <a class="avatar-username" href="{{ url_for('user.profile', user_id=user.id) }}">
+                    <img src="{{ user.get_avatar_url(24) }}" alt="{{ user.name }}" title="{{ user.name }}">
+                    <span class="text-default">{{ user.name }}</span>
+                  </a>
+                </td>
+                <td data-title="Score">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="{{ total_score }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ total_score/max_user_score * 100 }}%;">
+                      <span class="sr-only">{{ total_score/max_user_score * 100 }}% Complete</span>
+                    </div>
+                  </div>
+                  <span class="number">{{ total_score }}</span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="col-md-6">
-      <h1>Users</h1>
-      <br>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for user, total_score in users_data %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ user.get_profile_link()|safe }}</td>
-            <td>
-              <div class="progress">
-                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ total_score }}" aria-valuemin="0" aria-valuemax="{{ max_user_score }}" style="width: {{ total_score/max_user_score * 100 }}%;">
-                {{ total_score }}
-                </div>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-  </div>
-</div>
 {% endblock %}
 {% block js %}
 <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.9/d3.min.js"></script>
