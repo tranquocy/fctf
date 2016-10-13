@@ -1,37 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row clearfix">
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1 col-centered">
-            <h1>All Tasks</h1>
-            <table style="margin-left: auto;margin-right: auto;">
-                <tr>
-                {% for category in categories if not category.is_achievement() %}
-                    <th style="text-align:center;"><h3>{{ category.name }}</h3></th>
-                {% endfor %}
-                </tr>
-                <tr>
-                {% for category in categories if not category.is_achievement() %}
-                    <td class="task-container">
-                    {% for task in category.tasks %}
-                        {% if task.can_access_by(g.user) %}
-                        <a class="btn {{ 'btn-success' if g.user.is_solved_task(task) else task.category.description + '-bg' }} btn-large task-item" href="{{ url_for('task.show_task', task_id=task.id)}}">
-                            <table class="task-inner">
-                                <tr>
-                                    <td>{{ task.name }}</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="label label-primary">{{ task.point }} pt</span></td>
-                                </tr>
-                            </table>
-                        </a>
-                        {% endif %}
-                    {% endfor %}
-                    </td>
-                {% endfor %}
-                </tr>
-            </table>
-        </div>
+<!-- Subheader -->
+  <div class="sub-header">
+    <div class="container">
+      <h4 class="title">Tasks</h4>
+      <div class="flex"></div>
+      <ol class="breadcrumb">
+        <li class="item"><a class="link" href="{{ url_for('index') }} ">Home</a></li>
+        <li class="item active">Tasks</li>
+      </ol>
     </div>
-</div>
+  </div><!--/ End Subheader -->
+
+  <div class="main-container page-task">
+    <div class="container">
+      <div class="row">
+      {% for category in categories if not category.is_achievement() %}
+        <div class="col-md-4 block-task">
+          <h3 class="heading">{{ category.name }}</h3>
+          <ul class="list-task">
+            {% for task in category.tasks %}
+            <li class="item-task">
+              <a href="{{ url_for('task.show_task', task_id=task.id)}}">
+                <span class="task-name">{{ task.name }}</span>
+                <span class="label {{ 'label-success' if g.user.is_solved_task(task) else 'label-primary' }}">{{ task.point }} pt</span>
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+  </div>
 {% endblock %}

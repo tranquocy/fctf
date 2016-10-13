@@ -9047,6 +9047,9 @@ body {
     .page-task .block-task .label-primary {
       background-color: #1d76b4;
       padding: 6px 10px; }
+    .page-task .block-task .label-success {
+      background-color: #5cb85c;
+      padding: 6px 10px; }
 
 a {
   color: #0099ff; }
