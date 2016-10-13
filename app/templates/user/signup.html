@@ -1,25 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-{% for message in form.username.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-{% for message in form.email.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-{% for message in form.password.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-{% for message in form.confirm.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-<form class="form-signup" role="form" action="{{ url_for('user.signup') }}" method="POST">
-    <h3 class="form-signup-heading">Please sign up</h3>
-    <input name="username" type="text" class="form-control" placeholder="Username" required autofocus><br>
-    <input name="email" type="email" class="form-control" placeholder="Email address" required><br>
-    <input name="password" type="password" class="form-control" placeholder="Password" required><br>
-    <input name="confirm" type="password" class="form-control" placeholder="Password Confirm" required>
-    {{ form.hidden_tag() }}
-    <br>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
-</form>
+
+<div class="main-container container">
+  <!-- Start sign up content here -->
+  <div class="page-sign-up">
+    {% for message in form.username.errors %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    {% for message in form.email.errors %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    {% for message in form.password.errors %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    {% for message in form.confirm.errors %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    <h2 class="form-signup-heading">Sign up</h2>
+    <div class="tile tile-sign-up tile-customize">
+      <form class="form-signup" role="form" action="{{ url_for('user.signup') }}" method="POST">
+        <div class="form-group">
+          <input name="username" type="text" class="form-control" placeholder="Username" required>
+        </div>
+        <div class="form-group">
+          <input name="email" type="email" class="form-control" placeholder="Email address" required>
+        </div>
+        <div class="form-group">
+          <input name="password" type="password" class="form-control" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+          <input name="confirm" type="password" class="form-control" placeholder="Password Confirm" required>
+        </div>
+        {{ form.hidden_tag() }}
+        <br>
+        <button class="btn btn-lg btn-primary" type="submit">Sign up</button>
+      </form>
+    </div>
+  </div>
+  <!--End sign up content here -->
+</div>
 {% endblock %}
