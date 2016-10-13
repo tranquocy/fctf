@@ -1,39 +1,90 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row clearfix">
-
-<div class="row">
-  <div class="col-md-10 col-md-offset-1">
-      <h1 class="text-center">{{ team.name }}</h1>
-      <h2 class="text-center">{{ team.get_place() }} <small>place</small></h2>
-      <h2 class="text-center">{{ team.get_total_score() }} <small>points</small></h2>
-      <div class="col-md-12">
-        <div id="breakdown-graph" style="max-height: 320px; position: relative; float: left; width: 50%;"></div>
-        <div id="category-graph" style="max-height: 320px; position: relative; float: left; width: 50%;"></div>
-        <div id="score-graph" style="clear: both;"></div>
+<!-- Subheader -->
+    <div class="sub-header">
+      <div class="container">
+        <h4 class="title">Team detail</h4>
+        <div class="flex"></div>
+        <ol class="breadcrumb">
+          <li class="item"><a class="link" href="{{ url_for('index') }}">Home</a></li>
+          <li class="item"><a class="link" href="{{ url_for('team.all_team') }}">Teams</a></li>
+          <li class="item active">Team detail</li>
+        </ol>
       </div>
-      <h5 class="text-center">{{ team.description }}</h5>
-      <table class="table table-striped">
-        <tr>
-          <td><h6>Members:</h6></td>
-          <td>
-          {% for user in team.members %}
-          {{ user.get_profile_link()|safe }}<br>
-          {% endfor %}
-          </td>
-        </tr>
-      {% if g.user in team.members or g.user.is_admin() %}
-        <tr>
-          <td><h6>Invite Code:</h6></td>
-          <td>{{ team.invite_code }}</td>
-        </tr>
-      </table>
-      <a class="btn btn-lg btn-primary" href="{{ url_for('team.edit_team', team_id=team.id) }}">Edit</a>
-      {% else %}
-      </table>
-      {% endif %}
+    </div><!--/ End Subheader -->
+    <!-- Team details main content -->
+    <div class="main-container page-team-detail">
+      <div class="container">
+
+        <div class="team-intro">
+          <div class="team-title">
+            <h1>{{ team.name }}</h1>
+            <p>{{ team.description }}</p>
+          </div>
+          <div class="team-details">
+            <div class="row">
+              <div class="team-reward col-md-6 col-xs-12">
+                <ul>
+                  <li><a href="#"><img src="{{ url_for('static', filename="img/medal.png") }}" alt="">{{ team.get_place() }} place</a></li>
+                  <li><a href="#"><img src="{{ url_for('static', filename="img/start.png") }}" alt="">{{ team.get_total_score() }} points</a></li>
+                </ul>
+              </div>
+              <div class="team-list col-md-6 col-xs-12">
+                <ul>
+                  <li>Members</li>
+                  {% for user in team.members %}
+                  <li><a href="{{ url_for('user.profile', user_id=user.id) }}"><img src="{{ user.get_avatar_url(23) }}" alt="{{ user.name }}" title="{{ user.name }}"></a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-chart" style="min-height: 320px;">
+          <!-- Chart box -->
+          <div id="breakdown-graph" style="min-height: 280px; position: relative; float: left; width: 25%;"></div>
+          <div id="category-graph" style="min-height: 280px; position: relative; float: left; width: 25%;"></div>
+          <div id="score-graph" style="min-height: 280px; position: relative; float: left; width: 50%;"></div>
+        </div>
+
+        {% if g.user in team.members or g.user.is_admin() %}
+        <div class="team-achievements">
+          <h3>Info</h3>
+            <p>Invite Code: {{ team.invite_code }}</p>
+            <p><a class="btn btn-lg btn-primary" href="{{ url_for('team.edit_team', team_id=team.id) }}">Edit</a></p>
+        </div>
+        {% endif %}
+
+        <div class="team-achievements">
+          <h3>Achievements</h3>
+          <table class="table table-bordered table-customize table-responsive">
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Category</th>
+                <th>Point</th>
+                <th>User</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+              <tbody>
+              {% for achievement in achievements %}
+                <tr>
+                <td data-title="Task"><a href="{{ url_for('task.show_task', task_id=achievement.task.id)}}">{{ achievement.task.name }}</a></td>
+                <td data-title="Category">{{ achievement.task.category.name }}</td>
+                <td data-title="Point">{{ achievement.point }}</td>
+                <td data-title="User">{{ achievement.user.get_profile_link()|safe }}</td>
+                <td data-title="Time">{{ achievement.created_at }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
     <script>
-      var chart = c3.generate({
+      var categoryChart = c3.generate({
           bindto: '#category-graph',
           data: {
               columns: [
@@ -50,9 +101,13 @@
           },
           donut: {
             title: "Members Contribution"
+          },
+          size: {
+            width: 280,
+            height: 280
           }
       });
-      var chart = c3.generate({
+      var breakdownChart = c3.generate({
           bindto: '#breakdown-graph',
           data: {
               columns: [
@@ -67,6 +122,10 @@
           },
           donut: {
             title: "Solved vs Remaining"
+          },
+          size: {
+            width: 280,
+            height: 280
           }
       });
       var chart = c3.generate({
@@ -101,31 +160,13 @@
           },
           zoom : {
             enabled: true
+          },
+          size: {
+            width: 500,
+            height: 280
           }
       });
     </script>
-      <h3 class="text-center">Achievements</h3>
-        <table class="table table-bordered">
-          <tr>
-              <th>Task</th>
-              <th>Category</th>
-              <th>Point</th>
-              <th>User</th>
-              <th>Time</th>
-          </tr>
-        {% for achievement in achievements %}
-          <tr>
-            <td><a href="{{ url_for('task.show_task', task_id=achievement.task.id)}}">{{ achievement.task.name }}</a></td>
-            <td>{{ achievement.task.category.name }}</td>
-            <td>{{ achievement.point }}</td>
-            <td>{{ achievement.user.get_profile_link()|safe }}</td>
-            <td>{{ achievement.created_at }}</td>
-          </tr>
-        {% endfor %}
-      </table>
-    </div>
-  </div>
-</div>
 {% endblock %}
 {% block js %}
 <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.9/d3.min.js"></script>

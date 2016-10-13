@@ -49,6 +49,8 @@ class Team(db.Model):
         for point in result:
             return point[0] if point[0] else 0
 
+        return 0
+
     def get_place(self):
         place = 1
         for team, point in Team.get_team_points():

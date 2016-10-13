@@ -9337,7 +9337,7 @@ a {
       .page-team-detail .team-intro .team-title p {
         font-size: 14px;
         padding-left: 10px;
-        background: url(../../../app/static/img/quote.png) no-repeat left top; }
+        background: url(../../static/img/quote.png) no-repeat left top; }
     .page-team-detail .team-intro .team-details .team-reward ul {
       padding-left: 0;
       float: left; }
