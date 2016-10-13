@@ -35,7 +35,7 @@ def load_user(user_id):
 @app.route('/activities')
 @login_required
 def show_activities():
-    activities = UserSolved.query.order_by(desc(UserSolved.id)).limit(3).all()
+    activities = UserSolved.query.order_by(desc(UserSolved.id)).limit(20).all()
     return render_template(
         'common/activities.html',
         activities=activities,
