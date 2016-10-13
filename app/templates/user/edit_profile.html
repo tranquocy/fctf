@@ -1,18 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
-  <div class="col-md-6 col-md-offset-3">
-    <form role="form" action="{{ url_for('user.edit_profile') }}" method="POST">
-        <h2>Edit Profile</h2>
-        <label>{{ form.name.label }}</label>
-        <input name="name" type="text" class="form-control" value="{{ form.name.data }}" required autofocus>
-        <br>
-        <label>{{ form.email.label }}</label>
-        <input name="email" type="email" class="form-control" value="{{  form.email.data }}" required >
-        {{ form.hidden_tag() }}
-        <br>
-        <button class="btn btn-lg btn-primary" type="submit">Update</button>
-    </form>
+<!-- Subheader -->
+  <div class="sub-header">
+    <div class="container">
+      <h4 class="title">Profile</h4>
+      <div class="flex"></div>
+      <ol class="breadcrumb">
+        <li class="item"><a class="link" href="{{ url_for('index') }}">Home</a></li>
+        <li class="item"><a class="link" href="{{ url_for('user.profile') }}">Profile</a></li>
+        <li class="item active">Edit</li>
+      </ol>
+    </div>
+  </div><!--/ End Subheader -->
+
+  <div class="main-container page-edit-profile">
+    <div class="container">
+      <div class="box-form">
+        {% for message in form.name.errors %}
+        <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+        {% for message in form.email.errors %}
+        <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+        <form class="form-customize" role="form" action="" method="POST">
+          <div class="form-group">
+            <input name="name" type="text" class="form-control" value="{{ form.name.data }}" required autofocus placeholder="Name">
+          </div>
+          <div class="form-group">
+            <input name="email" type="email" class="form-control" value="{{ form.email.data }}" required placeholder="Email">
+          </div>
+          {{ form.hidden_tag() }}
+          <div class="action">
+            <button class="btn btn-lg btn-primary" type="submit">Update</button>
+          </div>
+        </form>
+      </div>    
+    </div>
   </div>
-</div>
 {% endblock %}
