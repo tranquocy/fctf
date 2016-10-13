@@ -1,22 +1,33 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
 {% block content %}
-{% for message in form.email.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-{% for message in form.password.errors %}
-<div class="alert alert-danger">{{ message }}</div>
-{% endfor %}
-<form class="form-signin" role="form" action="" method="POST">
-    <h2 class="form-signin-heading">Please login</h2>
-    <input name="email" type="text" class="form-control" placeholder="Email" required autofocus><br>
-    <input name="password" type="password" class="form-control" placeholder="Password" required>
-    {{ form.hidden_tag() }}
-    <br>
-    <p>
-        <a href="{{ url_for('user.resend_confirm') }}">Resend Confirmation Email</a><br>
-        <a href="{{ url_for('user.forgot_password') }}">Forgot Password ?</a>
-    </p>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
-</form>
+<div class="main-container container">
+    <!-- Start log in content here -->
+    <div class="page-login">
+    {% for message in form.email.errors %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    {% for message in form.password.errors %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+      <h2 class="form-login-heading">Please login</h2>
+      <div class="tile tile-login tile-customize">
+        <form class="form-login" role="form" action="" method="POST">
+          <div class="form-group">
+            <input name="email" type="email" class="form-control" placeholder="Email address" required>
+          </div>
+          <div class="form-group">
+            <input name="password" type="password" class="form-control" placeholder="Password" required>
+          </div>
+          <div class="forgot-login">
+            <p><a href="{{ url_for('user.resend_confirm') }}">Resend Confirmation Email</a></p>
+            <p><a href="{{ url_for('user.forgot_password') }}">Forgot Password ?</a></p>
+          </div>
+          <button class="btn btn-lg btn-primary" type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+    <!--End log in content here -->
+
+  </div>
 {% endblock %}
