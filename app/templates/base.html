@@ -21,7 +21,7 @@
     {% block css %}{% endblock %}
     {% block js %}{% endblock %}
   </head>
-  <body {% if request.path == url_for('index') %}class="landing-page"{% endif %}>
+  <body {% if request.path in ['/index', '/'] %}class="landing-page"{% endif %}>
     <!-- Navbar -->
     <nav class="navbar navbar-default navbar">
       <div class="container">
