@@ -1,29 +1,49 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row clearfix">
+    <!-- Subheader -->
+    <div class="sub-header">
+    <div class="container">
+      <h4 class="title">Teams</h4>
+      <div class="flex"></div>
+      <ol class="breadcrumb">
+      <li class="item"><a class="link" href="{{ url_for('index') }}">Home</a></li>
+      <li class="item active">Teams</li>
+      </ol>
+    </div>
+    </div>
+    <!-- End Subheader -->
 
-<div class="row">
-  <div class="col-md-10 col-md-offset-1">
-      <h1>All Teams</h1>
-      <br>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Number of members</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for team in teams if team.members.count() %}
-          <tr>
-            <td><a href="{{ url_for('team.show_team', team_id=team.id)}}">{{ team.name }}</td>
-            <td>{{ team.description }}</td>
-            <td>{{ team.members.count() }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-  </div>
-</div>
+    <!-- Team main content -->
+    <div class="team-main-content">
+      <div class="container">
+        <div class="row clearfix">
+          <div class="col-md-12">
+            <table class="table table-bordered table-customize table-responsive">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Members</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for team in teams if team.members.count() %}
+                <tr>
+                  <td data-title="Name"><a href="{{ url_for('team.show_team', team_id=team.id)}}">{{ team.name }}</td>
+                  <td data-title="Description">{{ team.description }}</td>
+                  <td data-title="Members" class="team-members">
+                    <ul>
+                      {% for user in team.members %}
+                      <li><a href="{{ url_for('user.profile', user_id=user.id) }}"><img src="{{ user.get_avatar_url(23) }}" title="{{ user.name }}" alt="{{ user.name }}"></a></li>
+                      {% endfor %}
+                    </ul>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 {% endblock %}
