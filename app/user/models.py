@@ -62,7 +62,7 @@ class User(db.Model):
 
     def get_avatar_url(self, size=160):
         email_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
-        return u'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % (email_hash, size)
+        return u'http://www.gravatar.com/avatar/%s?d=identicon&s=%d' % (email_hash, size)
 
     def get_avatar_img(self, size=160):
         return u'<img src="{0:s}" alt="{1:s}" title="{2:s}"/></img>'.format(self.get_avatar_url(size), self.name,

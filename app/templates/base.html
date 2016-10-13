@@ -80,9 +80,9 @@
       <div class="dropdown box-profile for-mobile">
         <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           {% if g.user.is_authenticated() %}
-          <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+          <img class="avatar-image" src="{{ g.user.get_avatar_url(26) }}" alt="">
           {% else %}
-          <img class="avatar-image" src="../../static/img/avatar.jpg" alt="">
+          <img class="avatar-image" src="http://www.gravatar.com/avatar/0?d=mm&s=26" alt="">
           {% endif %}
           <span class="caret"></span>
         </div>
