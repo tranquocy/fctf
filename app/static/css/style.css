@@ -8682,46 +8682,105 @@ body {
     margin-top: 30px; }
   .award .list {
     font-family: "Roboto Slab", "Open Sans", sans-serif;
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    width: 350px;
-    max-width: 100%;
-    margin: 25px auto; }
-    .award .list .item {
+    margin: 55px auto;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: distribute;
+        justify-content: space-around;
+    padding: 0 105px; }
+    @media (max-width: 992px) {
+      .award .list {
+        padding: 0; } }
+    @media (max-width: 768px) {
+      .award .list {
+        -ms-flex-direction: column;
+            flex-direction: column;
+        margin: 30px auto; } }
+    .award .list li {
+      text-align: center;
       display: -ms-flexbox;
       display: flex;
+      -ms-flex-direction: column;
+          flex-direction: column;
       -ms-flex-align: center;
           align-items: center; }
-      .award .list .item:not(:last-child) {
-        border-bottom: 1px solid #e0e0e0; }
+      .award .list li.top1 {
+        -ms-flex-order: 2;
+            order: 2; }
+        @media (max-width: 768px) {
+          .award .list li.top1 {
+            -ms-flex-order: 1;
+                order: 1; } }
+      .award .list li.top2 {
+        -ms-flex-order: 1;
+            order: 1; }
+        @media (max-width: 768px) {
+          .award .list li.top2 {
+            -ms-flex-order: 2;
+                order: 2; } }
+      .award .list li.top3 {
+        -ms-flex-order: 3;
+            order: 3; }
+    .award .list .wrap-image {
+      height: 110px;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-align: end;
+          align-items: flex-end; }
     .award .list .main-text,
     .award .list .sub-text {
       font-size: 22px;
-      line-height: 24px;
-      padding-top: 11px;
-      padding-bottom: 11px; }
+      line-height: 24px; }
       @media (max-width: 480px) {
         .award .list .main-text,
         .award .list .sub-text {
           font-size: 18px;
           line-height: 20px; } }
     .award .list .main-text {
-      width: 150px;
       color: #000;
-      text-align: left;
-      padding-left: 15px;
-      border-right: 1px solid #e0e0e0; }
+      padding-top: 15px; }
     .award .list .sub-text {
-      -ms-flex: 1;
-          flex: 1;
       color: #fc653c;
-      text-align: right;
-      padding-right: 15px; }
+      font-weight: 700;
+      position: relative;
+      margin-left: 30px;
+      padding-top: 10px; }
+      .award .list .sub-text sup {
+        font-size: 11px;
+        right: 4px; }
+    .award .list .top2 .sub-text,
+    .award .list .top3 .sub-text {
+      font-size: 30px;
+      line-height: 30px; }
+      @media (max-width: 480px) {
+        .award .list .top2 .sub-text,
+        .award .list .top3 .sub-text {
+          font-size: 24px;
+          line-height: 24px; } }
+      .award .list .top2 .sub-text sup,
+      .award .list .top3 .sub-text sup {
+        top: -12px; }
+        @media (max-width: 480px) {
+          .award .list .top2 .sub-text sup,
+          .award .list .top3 .sub-text sup {
+            top: -8px; } }
+    .award .list .top1 .sub-text {
+      font-size: 40px;
+      line-height: 40px; }
+      @media (max-width: 480px) {
+        .award .list .top1 .sub-text {
+          font-size: 34px;
+          line-height: 34px; } }
+      .award .list .top1 .sub-text sup {
+        top: -20px; }
+        @media (max-width: 480px) {
+          .award .list .top1 .sub-text sup {
+            top: -14px; } }
   .award .text-after-party {
     text-transform: uppercase;
     font-size: 30px;
     line-height: 30px;
-    color: #f99073;
+    color: #fc653c;
     font-weight: 700; }
 
 .rule {
