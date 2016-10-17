@@ -37,6 +37,11 @@
       padding-left: 30px;
       padding-right: 30px;
 
+      @include respond-to(tablet) {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+
       @include respond-to(phone) {
         padding-left: 15px;
       }
@@ -90,6 +95,7 @@
 
   .navbar-nav {
     position: relative;
+    z-index: 10;
     margin-top: 25px;
     margin-left: 45px;
     padding: 0 22px;
@@ -97,10 +103,16 @@
 
     .landing-page & {
       margin-top: 40px;
+
+      @include respond-to(phone) {
+        margin-top: 20px;
+        margin-bottom: 0;
+      }
     }
 
     @include respond-to(tablet) {
-      margin-left: 25px;
+      margin-left: 10px;
+      padding: 0 10px;
     }
 
     @include respond-to(phone) {
@@ -113,6 +125,10 @@
     li {
       + li {
         padding-left: 25px;
+
+        @include respond-to(tablet) {
+          padding-left: 15px;
+        }
 
         @include respond-to(phone) {
           padding-left: 0;
@@ -209,6 +225,51 @@
       @include respond-to(phone) {
         left: auto;
         right: 0;
+      }
+    }
+  }
+
+  .menu {
+    margin-top: 42px;
+    background-color: #fff;
+    padding-left: 10px;
+    padding-right: 10px;
+    position: relative;
+    z-index: 10;
+
+    @include respond-to(phone) {
+      margin: 10px 0;
+      padding: 0;
+      background-color: transparent;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: transparent;
+
+      &:hover {
+        background-color: $brand-primary;
+        color: #fff;
+      }
+
+      @include respond-to(phone) {
+        display: block;
+        border: none;
+        text-align: left;
+        padding: 6px 0;
+
+        &:hover {
+          background-color: transparent;
+          color: $brand-primary;
+        }
+      }
+
+      + .btn {
+        margin-left: 10px;
+
+        @include respond-to(phone) {
+          margin-left: 0;
+        }
       }
     }
   }
