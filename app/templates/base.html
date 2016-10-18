@@ -50,52 +50,41 @@
                 <li {% if request.path == url_for('admin.index') %}class="active"{% endif %}><a href="{{ url_for('admin.index') }}">DB</a></li>
             {% endif %}
           </ul>
-          {% endif %}
           <div class="navbar-right">
             <!-- Box profile for desktop -->
             <div class="dropdown box-profile for-desktop">
               <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              {% if g.user.is_authenticated() %}
                 <img class="avatar-image" src="{{ g.user.get_avatar_url(26) }}" alt="">
-              {% else %}
-                <img class="avatar-image" src="http://www.gravatar.com/avatar/0?d=mm&s=26" alt="">
-              {% endif %}
                 <span class="caret"></span>
               </div>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-              {% if g.user.is_authenticated() %}
                 <li><a href="{{ url_for('user.profile')}}">Profile</a></li>
                 <li><a href="{{ url_for('user.logout') }}">Log out</a></li>
-              {% else %}
-                <li><a href="{{ url_for('user.signup') }}">Sign up</a></li>
-                <li><a href="{{ url_for('user.login') }}">Log in</a></li>
-              {% endif %}
               </ul>
             </div> <!--/ End Box profile for desktop -->
           </div>
+          {% else %}
+          <div class="navbar-right menu">
+            <a class="btn btn-border" href="{{ url_for('user.signup')}}">Sign up</a>
+            <a class="btn btn-border" href="{{ url_for('user.login')}}">Log in</a>
+          </div>
+          {% endif %}
         </div><!--/.nav-collapse -->
       </div>
 
       <!-- Box profile for mobile -->
+      {% if g.user.is_authenticated() %}
       <div class="dropdown box-profile for-mobile">
         <div class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          {% if g.user.is_authenticated() %}
           <img class="avatar-image" src="{{ g.user.get_avatar_url(26) }}" alt="">
-          {% else %}
-          <img class="avatar-image" src="http://www.gravatar.com/avatar/0?d=mm&s=26" alt="">
-          {% endif %}
           <span class="caret"></span>
         </div>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        {% if g.user.is_authenticated() %}
           <li><a href="{{ url_for('user.profile')}}">Profile</a></li>
           <li><a href="{{ url_for('user.logout') }}">Log out</a></li>
-        {% else %}
-          <li><a href="{{ url_for('user.signup') }}">Sign up</a></li>
-          <li><a href="{{ url_for('user.login') }}">Log in</a></li>
-        {% endif %}
         </ul>
       </div> <!--/ End Box profile for mobile -->
+      {% endif %}
     </nav> <!--/ End Navbar  -->
     {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}
