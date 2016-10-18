@@ -52,27 +52,57 @@
   .list {
     @extend %reset-list-style;
     font-family: $font-family-secondary;
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    width: 350px;
-    max-width: 100%;
-    margin: 25px auto;
+    margin: 55px auto;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 105px;
 
-    .item {
+    @include respond-to(tablet) {
+      padding: 0;
+    }
+
+    @include respond-to(phone) {
+      flex-direction: column;
+      margin: 30px auto;
+    }
+
+    li {
+      text-align: center;
       display: flex;
+      flex-direction: column;
       align-items: center;
 
-      &:not(:last-child) {
-        border-bottom: 1px solid #e0e0e0;
+      &.top1 {
+        order: 2;
+
+        @include respond-to(phone) {
+          order: 1;
+        }
       }
+
+      &.top2 {
+        order: 1;
+
+        @include respond-to(phone) {
+          order: 2;
+        }
+      }
+
+      &.top3 {
+        order: 3;
+      }
+    }
+
+    .wrap-image {
+      height: 110px;
+      display: flex;
+      align-items: flex-end;
     }
 
     .main-text,
     .sub-text {
       font-size: 22px;
       line-height: 24px;
-      padding-top: 11px;
-      padding-bottom: 11px;
 
       @include respond-to(smallphone) {
         font-size: 18px;
@@ -81,18 +111,58 @@
     }
 
     .main-text {
-      width: 150px;
       color: #000;
-      text-align: left;
-      padding-left: 15px;
-      border-right: 1px solid #e0e0e0;
+      padding-top: 15px;
     }
 
     .sub-text {
-      flex: 1;
       color: $brand-primary;
-      text-align: right;
-      padding-right: 15px;
+      font-weight: $font-weight-bold;
+      position: relative;
+      margin-left: 30px;
+      padding-top: 10px;
+
+      sup {
+        font-size: 11px;
+        right: 4px;
+      }
+    }
+
+    .top2 .sub-text,
+    .top3 .sub-text {
+      font-size: 30px;
+      line-height: 30px;
+
+      @include respond-to(smallphone) {
+        font-size: 24px;
+        line-height: 24px;
+      }
+
+      sup {
+        top: -12px;
+
+        @include respond-to(smallphone) {
+          top: -8px;
+        }
+      }
+    }
+
+    .top1 .sub-text {
+      font-size: 40px;
+      line-height: 40px;
+
+      @include respond-to(smallphone) {
+        font-size: 34px;
+        line-height: 34px;
+      }
+
+      sup {
+        top: -20px;
+
+        @include respond-to(smallphone) {
+          top: -14px;
+        }
+      }
     }
   }
 
@@ -100,7 +170,7 @@
     text-transform: uppercase;
     font-size: 30px;
     line-height: 30px;
-    color: #f99073;
+    color: $brand-primary;
     font-weight: $font-weight-bold;
   }
 }
