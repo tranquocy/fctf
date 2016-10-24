@@ -15,6 +15,7 @@ user_module = Blueprint('user', __name__)
 
 @user_module.route('/signup', methods=['GET', 'POST'])
 def signup():
+    return redirect(url_for('index'))
     if g.user is not None and g.user.is_authenticated():
         return redirect(url_for('index'))
 
@@ -44,6 +45,7 @@ def signup():
 
 @user_module.route('/login', methods=['GET', 'POST'])
 def login():
+    return redirect(url_for('index'))
     if g.user is not None and g.user.is_authenticated():
         return redirect(url_for('index'))
     form = LoginForm()
@@ -141,6 +143,7 @@ def change_password(user_id=None):
 
 @user_module.route('/password/forgot', methods=['GET', 'POST'])
 def forgot_password():
+    return redirect(url_for('index'))
     form = SendForgotPasswordForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -209,6 +212,7 @@ def confirm_activation(token):
 
 @user_module.route('/mail/resend', methods=['GET', 'POST'])
 def resend_confirm():
+    return redirect(url_for('index'))
     form = ResendMailForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()

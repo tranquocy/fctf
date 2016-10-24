@@ -1,3 +1,4 @@
+
 from flask import Blueprint, render_template, request, g, send_from_directory, abort, jsonify, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import desc, asc
@@ -69,15 +70,16 @@ def more_activities():
 
 @app.route('/')
 @app.route('/index')
+@app.route('/index/vi')
 def index():
     return render_template(
         'common/index.html',
     )
 
-@app.route('/start')
-def start():
+@app.route('/index/en')
+def index_en():
     return render_template(
-        'common/start.html',
+        'common/index_en.html',
     )
 
 

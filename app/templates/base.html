@@ -21,7 +21,7 @@
     {% block css %}{% endblock %}
     {% block js %}{% endblock %}
   </head>
-  <body {% if request.path in ['/index', '/'] %}class="landing-page"{% endif %}>
+  <body {% if request.path in ['/index', '/', '/index/en', '/index/vi'] %}class="landing-page"{% endif %}>
     <!-- Navbar -->
     <nav class="navbar navbar-default navbar">
       <div class="container">
@@ -65,8 +65,8 @@
           </div>
           {% else %}
           <div class="navbar-right menu">
-            <a class="btn btn-border" href="{{ url_for('user.signup')}}">Sign up</a>
-            <a class="btn btn-border" href="{{ url_for('user.login')}}">Log in</a>
+            <a class="btn btn-border" href="{{ url_for('index') }}">VN</a>
+            <a class="btn btn-border" href="{{ url_for('index_en') }}">EN</a>
           </div>
           {% endif %}
         </div><!--/.nav-collapse -->
